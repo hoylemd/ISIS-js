@@ -1,12 +1,14 @@
 /* Function to load an image from a path and return an image object
  * strPath: a String containing the relative path to the image
  * returns: an Image object mapped to the provided path */
-function loadImage(strPath)
+function loadImage(entry, callback)
 {
 	// construct and initialize the object
 	var objImage = new Image();
-	objImage.src = strPath;
-	
+	var blnDoneLoading = false
+	objImage.onload = function(){callback(entry.id);};
+	objImage.src = entry.path;
+
 	return objImage;
 }
 

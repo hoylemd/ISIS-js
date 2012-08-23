@@ -7,12 +7,43 @@ window.onload = function()
 		var objCanvas = document.getElementById("myCanvas");
 		var objContext = objCanvas.getContext("2d");
 		
+		/* image manifest */
+		var objImageManifest = {
+			"spaceTile" : {id: "spaceTile", path : "space.png", 
+				loaded: false},
+			"immortal1" : {id: "immortal1", path : "Immortal1.png", 
+				loaded: false},
+			"immortal2" : {id: "immortal2", path : "Immortal2.png",
+			   	loaded: false},
+		};
+
+		/* function to update the manifest of looaded images */
+		var funImageLoaded = function(id)
+		{
+			var blnDone = true;
+			objImageManifest[id].loaded = true;
+			for (var ent in objImageManifest)
+			{
+				//alert("inloop " + objImageManifest[ent].loaded)
+				if (objImageManifest[ent].loaded == false)
+				{
+					blnDone = false;
+					break;
+				}
+			}	
+
+			if (blnDone) funDrawBackground();
+		}
+
 		/* Load up all neccesary content */
 		var objImageLibrary = function(){
 			return {
-				spaceTile : loadImage("space.png"),
-				immortal1 : loadImage("Immortal1.png"),
-				immortal2 : loadImage("Immortal2.png")
+				spaceTile : loadImage(objImageManifest["spaceTile"],
+								   	funImageLoaded),
+				immortal1 : loadImage(objImageManifest["immortal1"],
+									funImageLoaded),
+				immortal2 : loadImage(objImageManifest["immortal2"],
+									funImageLoaded)
 			}
 		}();
 
@@ -34,7 +65,8 @@ window.onload = function()
 				// draw each tile
 				for(var j = 0; j < 15; j++)
 				{
-					objContext.drawImage(objImageLibrary["spaceTile"], -50, -50);
+					objContext.drawImage(objImageLibrary["spaceTile"], -50,
+						-50);
 					objContext.translate(100, 0);
 				}
 			
@@ -80,9 +112,9 @@ window.onload = function()
 			context : objContext,
 			images : objImageLibrary,
 			resetContext : funResetContext,
-			drawBackground : funDrawBackground
+			drawBackground : funDrawBackground,
 		}	
+
 	}();
 
-	ISIS.drawBackground();
 };
