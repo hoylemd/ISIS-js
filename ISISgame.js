@@ -8,11 +8,13 @@ window.onload = function()
 		var objContext = objCanvas.getContext("2d");
 		
 		/* Load up all neccesary content */
-		var objImageLibrary = {
-			spaceTile : loadImage("space.png"),
-			immortal1 : loadImage("Immortal1.png"),
-			immortal2 : loadImage("Immortal2.png")
-		};
+		var objImageLibrary = function(){
+			return {
+				spaceTile : loadImage("space.png"),
+				immortal1 : loadImage("Immortal1.png"),
+				immortal2 : loadImage("Immortal2.png")
+			}
+		}();
 
 		/* Function to reset the canvas context */
 		var funResetContext = function()
