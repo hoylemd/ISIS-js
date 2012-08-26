@@ -1,6 +1,9 @@
 
 var ISIS_unit = function(context)
 {
+	var tileSize = 100;
+	var offset = 0;
+
 	// Unit class prototype function (hidden)
 	var unit_prototype =
 	{
@@ -10,8 +13,17 @@ var ISIS_unit = function(context)
 
 		// movement function
 		moveTo : function(intX, intY){
-			this.x = intX;
-			this.y = intY;
+
+			//alert(intX + ", " + intY + ", " + tileSize); 			
+			var xOffset = intX % tileSize;
+			var yOffset = intY % tileSize;
+
+			//alert(xOffset + ", " + yOffset);
+
+			//alert((intX - xOffset) + ", " + (intY - yOffset));
+
+			this.x = intX - xOffset;
+			this.y = intY - yOffset;
 		},
 
 		// drawing function
@@ -23,7 +35,7 @@ var ISIS_unit = function(context)
 			// draw the sprite image if it exists
 			if (this.image)
 			{
-				context.translate(this.x, this.y);
+				context.translate(this.x + offset, this.y + offset);
 				context.drawImage(this.image, 0, 0);
 				context.reset();
 			}
@@ -33,7 +45,7 @@ var ISIS_unit = function(context)
 	// builder function for unit
 	return function(image)
 	{
-		// build the prototyoe
+		// build thae prototyoe
 		var new_unit =  {
 			__proto__ : unit_prototype
 		};
@@ -42,6 +54,7 @@ var ISIS_unit = function(context)
 		if (image)
 		{
 			new_unit.image = image;
+			offset = tileSize - image.width;
 		}
 
 		// return the new unit
