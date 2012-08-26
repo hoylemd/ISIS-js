@@ -1,15 +1,19 @@
 
 // Unit class constructor
 function Unit(intX, intY, strName, imgSprite, intRadius){
+	var x = intX;
+	var y = intY;
+	var name = strName;
+	var sprite = imgSprite;
+	var radius = intRadius;
 	return {
-		x : intX,
-		y : intY,
-		name : strName,
-		sprite : imgSprite,
-		radius : intRadius,
 		moveTo : function(intX, intY){
 			this.x = intX;
 			this.y = intY;
+		},
+		draw: function(objContext)
+		{
+
 		}
 	}
 }
