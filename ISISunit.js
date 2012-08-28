@@ -54,7 +54,7 @@ var ISIS_unit = function(context)
 		if (image)
 		{
 			new_unit.image = image;
-			offset = tileSize - image.width;
+			offset = (tileSize - image.width) / 2;
 		}
 
 		// return the new unit

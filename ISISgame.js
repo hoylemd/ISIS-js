@@ -71,22 +71,56 @@ var ISIS_engine = function()
 		objContext.translate(50, 50)
 	
 		// draw rows
-		for (var i = 0; i < 15; i++)
+		for (var i = 0; i < 16; i++)
 		{
 			// draw each tile
-			for(var j = 0; j < 15; j++)
+			for(var j = 0; j < 16; j++)
 			{
 				objContext.drawImage(images["spaceTile"], -50,
 					-50);
 				objContext.translate(100, 0);
 			}
 		
-			objContext.translate(-1500, 100);
+			objContext.translate(-1600, 100);
 		}
 
 		// reset the context
 		objContext.reset();
 	};
+
+	var drawGrid = function()
+	{
+		// set up for grid drawing
+		objContext.reset();	
+		objContext.lineWidth = 1;
+		objContext.strokeStyle = "#440044";
+		objContext.beginPath;
+		var currX = -0.5;
+		var currY = -0.5;
+
+		// draw vertical lines
+		for(var i = 1; i < 16; i++)
+		{
+			currX += 100;
+			objContext.moveTo(currX, currY);
+			objContext.lineTo(currX, currY + 1601);
+		}
+
+		var currX = -0.5;
+		var currY = -0.5;
+
+		// draw horizontal lines
+		for(var i = 1; i < 16; i++)
+		{
+			currY += 100;
+			objContext.moveTo(currX, currY);
+			objContext.lineTo(currX + 1601, currY);
+		}
+
+		// draw the lines
+		objContext.stroke();
+		objContext.reset();
+	}
 
 	var funUpdate = function()
 	{
@@ -95,6 +129,8 @@ var ISIS_engine = function()
 		objContext.reset();
 
 		funDrawBackground();
+
+		drawGrid();
 
 		player.draw();
 	}
