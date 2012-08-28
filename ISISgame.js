@@ -28,6 +28,8 @@ var ISIS_engine = function()
 			loaded: false},
 		"immortal2" : {id: "immortal2", path : "Immortal2.png",
 			loaded: false},
+		"ArkadianCruiser" : {id: "ArkadianCruiser", path: "ark-cru.png",
+			loaded: false}
 	};
 
 	/* function to update the manifest of looaded images */
@@ -47,7 +49,7 @@ var ISIS_engine = function()
 
 		if (blnDone) 
 		{
-			player = unit(images["immortal1"]);
+			player = unit(images["ArkadianCruiser"]);
 			funUpdate();
 		}
 	}
@@ -60,6 +62,8 @@ var ISIS_engine = function()
 			immortal1 : io.loadImage(objImageManifest["immortal1"],
 								funImageLoaded),
 			immortal2 : io.loadImage(objImageManifest["immortal2"],
+								funImageLoaded),
+			ArkadianCruiser : io.loadImage(objImageManifest["ArkadianCruiser"],
 								funImageLoaded)
 		}
 	}();
