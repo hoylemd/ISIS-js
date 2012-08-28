@@ -11,8 +11,14 @@ var ISIS_engine = function()
 
 	// player object	
 	var unit = ISIS_unit(objContext);
-	
 	var player = null;
+
+	// Map data
+	var tilesX;
+	var tilesY;
+	var mapWidth;
+	var mapHeight;
+
 
 	/* image manifest */
 	var objImageManifest = {
@@ -71,17 +77,17 @@ var ISIS_engine = function()
 		objContext.translate(50, 50)
 	
 		// draw rows
-		for (var i = 0; i < 16; i++)
+		for (var i = 0; i < tilesY; i++)
 		{
 			// draw each tile
-			for(var j = 0; j < 16; j++)
+			for(var j = 0; j < tilesX; j++)
 			{
 				objContext.drawImage(images["spaceTile"], -50,
 					-50);
 				objContext.translate(100, 0);
 			}
 		
-			objContext.translate(-1600, 100);
+			objContext.translate(-mapWidth, 100);
 		}
 
 		// reset the context
@@ -99,22 +105,22 @@ var ISIS_engine = function()
 		var currY = -0.5;
 
 		// draw vertical lines
-		for(var i = 1; i < 16; i++)
+		for(var i = 1; i < tilesX; i++)
 		{
 			currX += 100;
 			objContext.moveTo(currX, currY);
-			objContext.lineTo(currX, currY + 1601);
+			objContext.lineTo(currX, currY + mapHeight + 1);
 		}
 
 		var currX = -0.5;
 		var currY = -0.5;
 
 		// draw horizontal lines
-		for(var i = 1; i < 16; i++)
+		for(var i = 1; i < tilesY; i++)
 		{
 			currY += 100;
 			objContext.moveTo(currX, currY);
-			objContext.lineTo(currX + 1601, currY);
+			objContext.lineTo(currX + mapWidth + 1, currY);
 		}
 
 		// draw the lines
@@ -124,10 +130,21 @@ var ISIS_engine = function()
 
 	var funUpdate = function()
 	{
+		var width = document.body.clientWidth - 25;
+		var height = document.body.clientHeight - 25;
+
+		objCanvas.width = width;
+		objCanvas.height = height;
+			
 		// Prepare for next round of drawing			
 		objContext.clearRect(0, 0, 1500, 1500);
 		objContext.reset();
 
+		tilesX = Math.floor(width / 100);
+		tilesY = Math.floor(height / 100);
+		mapWidth = tilesX * 100;
+		mapHeight = tilesY * 100;
+		
 		funDrawBackground();
 
 		drawGrid();

@@ -8,6 +8,6 @@
 		<link rel="stylesheet" type="text/css" href = "ISIS.css"/>
 	</head>
 	<body>
-		<canvas id="myCanvas" width="1600" height="1600"></canvas><br/>
+		<canvas id="myCanvas"></canvas><br/>
 	</body>
 </html>
