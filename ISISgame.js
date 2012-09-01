@@ -12,6 +12,7 @@ var ISIS_engine = function()
 	// player object	
 	var unit = ISIS_unit(objContext);
 	var player = null;
+	var enemy = null;
 
 	// Map data
 	var tilesX;
@@ -50,6 +51,9 @@ var ISIS_engine = function()
 		if (blnDone) 
 		{
 			player = unit(images["ArkadianCruiser"]);
+			enemy = unit(images["immortal2"]);
+			enemy.moveTo(700, 400);
+			enemy.rotation = 0;
 			funUpdate();
 		}
 	}
@@ -154,6 +158,7 @@ var ISIS_engine = function()
 		drawGrid();
 
 		player.draw();
+		enemy.draw();
 	}
 
 	//Add an event listener for mouse clicks

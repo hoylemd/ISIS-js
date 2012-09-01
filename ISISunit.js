@@ -2,9 +2,8 @@ Math.TAU = 2 * Math.PI;
 
 var ISIS_unit = function(context)
 {
+
 	var tileSize = 100;
-	var offset = 0;
-	var rotation = 0;
 
 	// Unit class prototype function (hidden)
 	var unit_prototype =
@@ -12,6 +11,9 @@ var ISIS_unit = function(context)
 		x : 0,	// y coord
 		y : 0,	// x coord
 		name : "Unnamed Unit",	// unit name 
+		
+		offset : 0,
+		rotation : 0,
 
 		// movement function
 		moveTo : function(intX, intY){
@@ -30,39 +32,38 @@ var ISIS_unit = function(context)
 			var dx = newX - this.x;
 			var dy = newY - this.y;
 
-			alert(dx + ", " + dy);
 			// determine quadrant
 			if (dy < 0)
 			{
 				if (dx == 0)
 				{
-					rotation = 0;
+					this.rotation = 0;
 				}
 				else
 				{
-					rotation = -1 * Math.atan(dx / dy);
+					this.rotation = -1 * Math.atan(dx / dy);
 				}
 			}
 			else if (dy == 0)
 			{
 				if (dx > 0)
 				{
-					rotation = Math.TAU * 0.25;
+					this.rotation = Math.TAU * 0.25;
 				}
 				else if (dx < 0)
 				{
-					rotation = Math.TAU * -0.25;
+					this.rotation = Math.TAU * -0.25;
 				}
 			}
 			else
 			{
 				if (dx == 0)
 				{
-					rotation = Math.TAU * 0.5;
+					this.rotation = Math.TAU * 0.5;
 				}
 				else
 				{
-					rotation =  Math.TAU * 0.5 - Math.atan(dx / dy) ;
+					this.rotation =  Math.TAU * 0.5 - Math.atan(dx / dy) ;
 				}
 			}
 
@@ -81,10 +82,10 @@ var ISIS_unit = function(context)
 			{
 				context.translate(this.x + 0.5 * tileSize,
 					   	this.y + 0.5 * tileSize);
-				context.rotate(rotation);
+				context.rotate(this.rotation);
 				context.translate();
-				context.drawImage(this.image, -1 * (0.5 * tileSize - offset), 
-					-1 * (0.5 * tileSize - offset));
+				context.drawImage(this.image, -1 * (0.5 * tileSize - this.offset), 
+					-1 * (0.5 * tileSize - this.offset));
 				context.reset();
 			}
 		}
@@ -93,16 +94,16 @@ var ISIS_unit = function(context)
 	// builder function for unit
 	return function(image)
 	{
-		// build thae prototyoe
+		// build the prototyoe
 		var new_unit =  {
 			__proto__ : unit_prototype
 		};
-
+		
 		// add the sprite image if it exists
 		if (image)
 		{
 			new_unit.image = image;
-			offset = (tileSize - image.width) / 2;
+			new_unit.offset = (tileSize - image.width) / 2;
 		}
 
 		// return the new unit
