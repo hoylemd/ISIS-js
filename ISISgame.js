@@ -186,8 +186,9 @@ var ISIS_engine = function()
 		{
 			// get the mouse position
 			var mousePos = io.getMousePos(objCanvas, evt);
-			
-			player.moveTo(mousePos.x, mousePos.y);	
+		
+			if (mousePos.x < mapWidth && mousePos.y < mapHeight)
+				player.moveTo(mousePos.x, mousePos.y);	
 		
 			funUpdate();
 		}
