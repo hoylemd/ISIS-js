@@ -9,17 +9,21 @@ var ISIS_engine = function()
 	// I/O object
 	var io = ISIS_IO();
 
-	// player object	
+	// unit objects	
 	var unit = ISIS_unit(objContext);
 	var player = null;
 	var enemy = null;
+
+	// Bar data
+	var barHeight = 50;
 
 	// Map data
 	var tilesX;
 	var tilesY;
 	var mapWidth;
 	var mapHeight;
-
+	var clientWidth;
+	var clientHeight;
 
 	/* image manifest */
 	var objImageManifest = {
@@ -81,6 +85,12 @@ var ISIS_engine = function()
 	/* Function to redraw the background */
 	var funDrawBackground = function ()
 	{
+		
+		// clear the screen
+		objContext.clearRect(0, 0, objCanvas.width, objCanvas.height);
+		objContext.fillStyle = "#990099";
+		objContext.fillRect(0, 0, objCanvas.width, objCanvas.height);
+
 		// set the context to the tile offset
 		objContext.translate(50, 50)
 	
@@ -134,22 +144,29 @@ var ISIS_engine = function()
 		// draw the lines
 		objContext.stroke();
 		objContext.reset();
-	}
+	};
+
+	var drawBar = function()
+	{
+		objContext.reset();
+		objContext.fillStyle = "#999999";
+		objContext.fillRect(0, clientHeight - barHeight, clientWidth, barHeight);
+	};
 
 	var funUpdate = function()
 	{
-		var width = document.body.clientWidth - 25;
-		var height = document.body.clientHeight - 25;
+		clientWidth = document.body.clientWidth - 20;
+		clientHeight = document.body.clientHeight - 20;
 
-		objCanvas.width = width;
-		objCanvas.height = height;
+		objCanvas.width = clientWidth;
+		objCanvas.height = clientHeight;
 			
 		// Prepare for next round of drawing			
 		objContext.clearRect(0, 0, 1500, 1500);
 		objContext.reset();
 
-		tilesX = Math.floor(width / 100);
-		tilesY = Math.floor(height / 100);
+		tilesX = Math.floor(clientWidth / 100);
+		tilesY = Math.floor((clientHeight - barHeight) / 100);
 		mapWidth = tilesX * 100;
 		mapHeight = tilesY * 100;
 		
@@ -159,7 +176,9 @@ var ISIS_engine = function()
 
 		player.draw();
 		enemy.draw();
-	}
+
+		drawBar();
+	};
 
 	//Add an event listener for mouse clicks
 	objCanvas.addEventListener('click', 
@@ -178,6 +197,6 @@ var ISIS_engine = function()
 		context : objContext,
 		images : images,
 		drawBackground : funDrawBackground,
-	}	
+	};	
 
 };
