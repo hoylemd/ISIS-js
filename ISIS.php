@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>Better Sigmas</title>
+		<title>Project ISIS</title>
 		<script type = "text/javascript" src = "ISISUtils.js"></script>
 		<script type = "text/javascript" src = "ISISgame.js"/></script>
 		<script type = "text/javascript" src = "ISISunit.js"/></script>

@@ -171,8 +171,8 @@ var ISIS_engine = function()
 
 	var funUpdate = function()
 	{
-		clientWidth = document.body.clientWidth - 20;
-		clientHeight = document.body.clientHeight - 20;
+		clientWidth = 1000;
+		clientHeight = 750;
 
 		objCanvas.width = clientWidth;
 		objCanvas.height = clientHeight;
