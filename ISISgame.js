@@ -14,6 +14,9 @@ var ISIS_engine = function()
 	var player = null;
 	var enemy = null;
 
+	// orders objects
+	var orders = ISIS_order();
+
 	// Bar data
 	var buttonWidth = 150;
 	var barHeight = 50;
@@ -207,7 +210,7 @@ var ISIS_engine = function()
 			if (mousePos.x < mapWidth && mousePos.y < mapHeight &&
 				moveOrder)
 			{
-				moveTarget = {x : mousePos.x, y : mousePos.y};
+				player.registerOrder(orders.move(mousePos.x, mousePos.y));
 				moveOrder = false;	
 			}
 			if (mousePos.y > (clientHeight - barHeight))
@@ -216,11 +219,8 @@ var ISIS_engine = function()
 					moveOrder = !moveOrder;
 				if (mousePos.x > clientWidth - buttonWidth)
 				{
-					if (moveTarget != null)
-					{
-						player.moveTo(moveTarget.x, moveTarget.y);
-						moveTarget = null;
-					}
+					player.carryOut();
+					//player.moveTo(moveTarget.x, moveTarget.y);
 				}
 			}
 

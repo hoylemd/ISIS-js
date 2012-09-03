@@ -87,10 +87,25 @@ var ISIS_unit = function(context)
 					   	this.y + 0.5 * tileSize);
 				context.rotate(this.rotation);
 				context.translate();
-				context.drawImage(this.image, -1 * (0.5 * tileSize - this.offset), 
+				context.drawImage(this.image,
+					-1 * (0.5 * tileSize - this.offset), 
 					-1 * (0.5 * tileSize - this.offset));
 				context.reset();
 			}
+		},
+
+		// order registration
+		registerOrder : function(order)
+		{
+			order.owner = this;
+			this.order = order;
+		},
+
+		// carry out orders function
+		carryOut : function()
+		{
+			if (this.order)
+				this.moveTo(this.order.destX, this.order.destY);
 		}
 	}
 
