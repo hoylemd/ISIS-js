@@ -15,10 +15,11 @@ var ISIS_engine = function()
 	var enemy = null;
 
 	// Bar data
+	var buttonWidth = 150;
 	var barHeight = 50;
 
 	// Orders data
-	var MoveOrder = false;
+	var moveOrder = false;
 
 	// Map data
 	var tilesX;
@@ -89,7 +90,7 @@ var ISIS_engine = function()
 
 	/* Function to redraw the background */
 	var funDrawBackground = function ()
-	{
+{
 		
 		// clear the screen
 		objContext.clearRect(0, 0, objCanvas.width, objCanvas.height);
@@ -160,7 +161,12 @@ var ISIS_engine = function()
 		
 		objContext.reset();
 		objContext.translate(0, barTop);
-		objContext.drawImage(images["MoveButton"], 0, 0);
+		var buttonImage;
+		if (moveOrder)
+			buttonImage = images["MoveButtonPressed"];
+		else
+			buttonImage = images["MoveButton"];
+		objContext.drawImage(buttonImage, 0, 0);
 	};
 
 	var funUpdate = function()
@@ -199,7 +205,12 @@ var ISIS_engine = function()
 		
 			if (mousePos.x < mapWidth && mousePos.y < mapHeight)
 				player.moveTo(mousePos.x, mousePos.y);	
-		
+			if (mousePos.y > (clientHeight - barHeight))
+			{	
+				if (mousePos.x < buttonWidth)		
+					moveOrder = !moveOrder;
+			}
+
 			funUpdate();
 		}
 	);	
