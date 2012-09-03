@@ -31,18 +31,16 @@ var ISIS_engine = function()
 
 	/* image manifest */
 	var objImageManifest = {
-		"spaceTile" : {id: "spaceTile", path : "space.png", 
-			loaded: false},
-		"immortal1" : {id: "immortal1", path : "Immortal1.png", 
-			loaded: false},
-		"immortal2" : {id: "immortal2", path : "Immortal2.png",
-			loaded: false},
+		"spaceTile" : {id: "spaceTile", path : "space.png", loaded: false},
+		"immortal1" : {id: "immortal1", path : "Immortal1.png", loaded: false},
+		"immortal2" : {id: "immortal2", path : "Immortal2.png", loaded: false},
 		"ArkadianCruiser" : {id: "ArkadianCruiser", path: "ark-cru.png",
 			loaded: false},
 		"MoveButton" : {id: "MoveButton", path: "MoveButton.png",
 			loaded: false},
-		"MoveButtonPressed" : {id: "MoveButtonPressed", path: "MoveButtonPressed.png",
-			loaded: false}
+		"MoveButtonPressed" : {id: "MoveButtonPressed", 
+			path: "MoveButtonPressed.png", loaded: false},
+		"GoButton" : {id: "GoButton", path: "GoButton.png", loaded: false}
 	};
 
 	/* function to update the manifest of looaded images */
@@ -167,6 +165,8 @@ var ISIS_engine = function()
 		else
 			buttonImage = images["MoveButton"];
 		objContext.drawImage(buttonImage, 0, 0);
+		objContext.translate(clientWidth - buttonWidth, 0);
+		objContext.drawImage(images["GoButton"], 0, 0);
 	};
 
 	var funUpdate = function()
