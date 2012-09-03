@@ -15,6 +15,9 @@ var ISIS_unit = function(context)
 		offset : 0,
 		rotation : 0,
 
+		hp : 10,
+		maxHp : 10,
+
 		// movement function
 		moveTo : function(intX, intY){
 			//alert(intX + ", " + intY + ", " + tileSize); 			
