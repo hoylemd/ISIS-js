@@ -1,5 +1,3 @@
-Math.TAU = 2 * Math.PI
-
 var ISIS_order = function()
 {
 

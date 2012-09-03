@@ -1,6 +1,9 @@
 
 var ISIS_IO = function()
 {
+	// Add the Tau constant to Math
+	Math.TAU = 2 * Math.PI;
+
 	/* Function to load an image from a path and return an image object
 	 * strPath: a String containing the relative path to the image
 	 * returns: an Image object mapped to the provided path */
