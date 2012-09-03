@@ -155,7 +155,12 @@ var ISIS_engine = function()
 	{
 		objContext.reset();
 		objContext.fillStyle = "#999999";
-		objContext.fillRect(0, clientHeight - barHeight, clientWidth, barHeight);
+		var barTop = clientHeight - barHeight;
+		objContext.fillRect(0, barTop, clientWidth, barHeight);
+		
+		objContext.reset();
+		objContext.translate(0, barTop);
+		objContext.drawImage(images["MoveButton"], 0, 0);
 	};
 
 	var funUpdate = function()
