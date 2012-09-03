@@ -5,7 +5,7 @@ var ISIS_unit = function(context)
 
 	var tileSize = 100;
 
-	// Unit class prototype function (hidden)
+	// Unit class prototype (hidden)
 	var unit_prototype =
 	{
 		x : 0,	// y coord
