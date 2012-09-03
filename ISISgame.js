@@ -17,6 +17,9 @@ var ISIS_engine = function()
 	// Bar data
 	var barHeight = 50;
 
+	// Orders data
+	var MoveOrder = false;
+
 	// Map data
 	var tilesX;
 	var tilesY;
@@ -34,6 +37,10 @@ var ISIS_engine = function()
 		"immortal2" : {id: "immortal2", path : "Immortal2.png",
 			loaded: false},
 		"ArkadianCruiser" : {id: "ArkadianCruiser", path: "ark-cru.png",
+			loaded: false},
+		"MoveButton" : {id: "MoveButton", path: "MoveButton.png",
+			loaded: false},
+		"MoveButtonPressed" : {id: "MoveButtonPressed", path: "MoveButtonPressed.png",
 			loaded: false}
 	};
 
@@ -64,16 +71,14 @@ var ISIS_engine = function()
 
 	/* Load up all neccesary content */
 	var images = function(){
-		return {
-			spaceTile : io.loadImage(objImageManifest["spaceTile"],
-								funImageLoaded),
-			immortal1 : io.loadImage(objImageManifest["immortal1"],
-								funImageLoaded),
-			immortal2 : io.loadImage(objImageManifest["immortal2"],
-								funImageLoaded),
-			ArkadianCruiser : io.loadImage(objImageManifest["ArkadianCruiser"],
-								funImageLoaded)
+		var theImages = {}
+
+		for ( i in objImageManifest )
+		{
+			theImages[i] = io.loadImage(objImageManifest[i], funImageLoaded);
 		}
+
+		return theImages;
 	}();
 
 	/* Function to reset the canvas context */
