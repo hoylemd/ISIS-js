@@ -20,6 +20,7 @@ var ISIS_engine = function()
 
 	// Orders data
 	var moveOrder = false;
+	var moveTarget = null;
 
 	// Map data
 	var tilesX;
@@ -206,13 +207,21 @@ var ISIS_engine = function()
 			if (mousePos.x < mapWidth && mousePos.y < mapHeight &&
 				moveOrder)
 			{
-				player.moveTo(mousePos.x, mousePos.y);
+				moveTarget = {x : mousePos.x, y : mousePos.y};
 				moveOrder = false;	
 			}
 			if (mousePos.y > (clientHeight - barHeight))
 			{	
 				if (mousePos.x < buttonWidth)		
 					moveOrder = !moveOrder;
+				if (mousePos.x > clientWidth - buttonWidth)
+				{
+					if (moveTarget != null)
+					{
+						player.moveTo(moveTarget.x, moveTarget.y);
+						moveTarget = null;
+					}
+				}
 			}
 
 			funUpdate();
