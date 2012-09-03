@@ -203,8 +203,12 @@ var ISIS_engine = function()
 			// get the mouse position
 			var mousePos = io.getMousePos(objCanvas, evt);
 		
-			if (mousePos.x < mapWidth && mousePos.y < mapHeight)
-				player.moveTo(mousePos.x, mousePos.y);	
+			if (mousePos.x < mapWidth && mousePos.y < mapHeight &&
+				moveOrder)
+			{
+				player.moveTo(mousePos.x, mousePos.y);
+				moveOrder = false;	
+			}
 			if (mousePos.y > (clientHeight - barHeight))
 			{	
 				if (mousePos.x < buttonWidth)		
