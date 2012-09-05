@@ -42,6 +42,45 @@ var ISIS_IO = function()
 		};
 	}
 
+	// Function to get the angle in radians between two points
+	// x1: the x coordinate of the first point
+	// y1: the y coordinate of the first point
+	// x2: the x coordinate of the second point
+	// y2: the y coordinate of the second point
+	Math.calculateLineAngle = function(x1, y1, x2, y2)
+	{
+
+		// calculate deltas
+		var dx = x2 - x1;
+		var dy = y2 - y1;
+
+		// initialize rotation
+		var rotation = 0;
+
+		// calculate by quadrant
+		if (dy < 0)
+		{
+			if (dx != 0)
+				rotation = -1 * Math.atan(dx / dy);
+		}
+		else if (dy == 0)
+		{
+			if (dx > 0)
+				rotation = Math.TAU * 0.25;
+			else if (dx < 0)
+				rotation = Math.TAU * -0.25;
+		}
+		else
+		{
+			if (dx == 0)
+				rotation = Math.TAU * 0.5;
+			else
+				rotation =  Math.TAU * 0.5 - Math.atan(dx / dy);
+		}
+
+		return rotation;
+	}
+
 	/* return the object */
 	return {
 		loadImage : funLoadImage,

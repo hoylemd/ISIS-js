@@ -18,55 +18,14 @@ var ISIS_unit = function(context)
 
 		// movement function
 		moveTo : function(intX, intY){
-			//alert(intX + ", " + intY + ", " + tileSize); 			
 			var xOffset = intX % tileSize;
 			var yOffset = intY % tileSize;
-
-			//alert(xOffset + ", " + yOffset);
-
-			//alert((intX - xOffset) + ", " + (intY - yOffset));
 
 			var newX = intX - xOffset;
 			var newY = intY - yOffset;
 			
-			// calculate rotation
-			var dx = newX - this.x;
-			var dy = newY - this.y;
-
-			// determine quadrant
-			if (dy < 0)
-			{
-				if (dx == 0)
-				{
-					this.rotation = 0;
-				}
-				else
-				{
-					this.rotation = -1 * Math.atan(dx / dy);
-				}
-			}
-			else if (dy == 0)
-			{
-				if (dx > 0)
-				{
-					this.rotation = Math.TAU * 0.25;
-				}
-				else if (dx < 0)
-				{
-					this.rotation = Math.TAU * -0.25;
-				}
-			}
-			else
-			{
-				if (dx == 0)
-				{
-					this.rotation = Math.TAU * 0.5;
-				}
-				else
-				{
-					this.rotation =  Math.TAU * 0.5 - Math.atan(dx / dy) ;
-				}
-			}
+			this.rotation = Math.calculateLineAngle(this.x, this.y,
+				newX, newY);
 
 			this.x = newX;
 			this.y = newY;
