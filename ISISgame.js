@@ -137,7 +137,6 @@ var ISIS_engine = function()
 		objContext.reset();	
 		objContext.lineWidth = 1;
 		objContext.strokeStyle = "#440044";
-		objContext.beginPath;
 
 		// set initial pixel offset (makes lines draw sharp)
 		var currX = -0.5;
