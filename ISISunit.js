@@ -1,32 +1,44 @@
+// Unit object source file
+// author: hoylemd
+
+// Main setup function
 var ISIS_unit = function(context)
 {
-
+	// tile constant
 	var tileSize = 100;
 
 	// Unit class prototype (hidden)
 	var unit_prototype =
 	{
-		x : 0,	// y coord
-		y : 0,	// x coord
-		name : "Unnamed Unit",	// unit name 
+		// unit data
+		x : 0,
+		y : 0,
+		name : "Unnamed Unit",
 		
+		// sprite drawing data
 		offset : 0,
 		rotation : 0,
 
+		// combat data
 		hp : 10,
 		maxHp : 10,
 
 		// movement function
-		moveTo : function(intX, intY){
+		moveTo : function(intX, intY)
+		{
+			// recalculate offset
 			var xOffset = intX % tileSize;
 			var yOffset = intY % tileSize;
 
+			// canculate new sprite position
 			var newX = intX - xOffset;
 			var newY = intY - yOffset;
 			
+			// calculate new rotation
 			this.rotation = Math.calculateLineAngle(this.x, this.y,
 				newX, newY);
 
+			// move the sprite
 			this.x = newX;
 			this.y = newY;
 		},

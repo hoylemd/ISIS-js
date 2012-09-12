@@ -1,8 +1,10 @@
+// main game engine
+// author: hoylemd
 
-// ISIS main engine class
+// ISIS main engine builder
 var ISIS_engine = function()
 {
-	/* graphics objects */
+	// graphics objects
 	var objCanvas = document.getElementById("myCanvas");
 	var objContext = objCanvas.getContext("2d");
 
@@ -33,7 +35,7 @@ var ISIS_engine = function()
 	var clientWidth;
 	var clientHeight;
 
-	/* image manifest */
+	// image manifest
 	var objImageManifest = {
 		"spaceTile" : {id: "spaceTile", path : "space.png", loaded: false},
 		"immortal1" : {id: "immortal1", path : "Immortal1.png", loaded: false},
@@ -47,14 +49,20 @@ var ISIS_engine = function()
 		"GoButton" : {id: "GoButton", path: "GoButton.png", loaded: false}
 	};
 
-	/* function to update the manifest of looaded images */
+	// function to update the manifest of loaded images
+	// id: the id of the image that's finsihed loading
 	var funImageLoaded = function(id)
 	{
+		// assume done until proven otherwise
 		var blnDone = true;
+
+		// set the specified image loaded flag to true
 		objImageManifest[id].loaded = true;
+
+		// look over the manifest looking for unleaded images
 		for (var ent in objImageManifest)
 		{
-			//alert("inloop " + objImageManifest[ent].loaded)
+			// set done flag to done if some are unloaded
 			if (objImageManifest[ent].loaded == false)
 			{
 				blnDone = false;
@@ -62,6 +70,7 @@ var ISIS_engine = function()
 			}
 		}	
 
+		// if done, initialize game.
 		if (blnDone) 
 		{
 			player = unit(images["ArkadianCruiser"]);
@@ -72,10 +81,11 @@ var ISIS_engine = function()
 		}
 	}
 
-	/* Load up all neccesary content */
+	// Load up all neccesary content
 	var images = function(){
 		var theImages = {}
 
+		// Load the images in the manifest
 		for ( i in objImageManifest )
 		{
 			theImages[i] = io.loadImage(objImageManifest[i], funImageLoaded);
@@ -84,15 +94,15 @@ var ISIS_engine = function()
 		return theImages;
 	}();
 
-	/* Function to reset the canvas context */
+	// augment the context with a reset function
 	objContext.reset = function()
 	{	
 		this.setTransform(1, 0, 0, 1, 0, 0);	
 	};
 
-	/* Function to redraw the background */
+	// Function to redraw the background
 	var funDrawBackground = function ()
-{
+	{
 		
 		// clear the screen
 		objContext.clearRect(0, 0, objCanvas.width, objCanvas.height);
@@ -120,6 +130,7 @@ var ISIS_engine = function()
 		objContext.reset();
 	};
 
+	// function to draw the grid lines
 	var drawGrid = function()
 	{
 		// set up for grid drawing
@@ -127,6 +138,8 @@ var ISIS_engine = function()
 		objContext.lineWidth = 1;
 		objContext.strokeStyle = "#440044";
 		objContext.beginPath;
+
+		// set initial pixel offset (makes lines draw sharp)
 		var currX = -0.5;
 		var currY = -0.5;
 
@@ -138,6 +151,7 @@ var ISIS_engine = function()
 			objContext.lineTo(currX, currY + mapHeight + 1);
 		}
 
+		// reset initial pixel offset
 		var currX = -0.5;
 		var currY = -0.5;
 
@@ -154,80 +168,105 @@ var ISIS_engine = function()
 		objContext.reset();
 	};
 
+	// function to draw the bottom orders bar
 	var drawBar = function()
 	{
+		// set up
 		objContext.reset();
 		objContext.fillStyle = "#999999";
+
+		// calculate position
 		var barTop = clientHeight - barHeight;
+		
+		// draw the bar background
 		objContext.fillRect(0, barTop, clientWidth, barHeight);
 		
+		// prepare to draw buttons
 		objContext.reset();
 		objContext.translate(0, barTop);
 		var buttonImage;
+
+		// draw the Move button
 		if (moveOrder)
 			buttonImage = images["MoveButtonPressed"];
 		else
 			buttonImage = images["MoveButton"];
 		objContext.drawImage(buttonImage, 0, 0);
+
+		// draw the Go button
 		objContext.translate(clientWidth - buttonWidth, 0);
 		objContext.drawImage(images["GoButton"], 0, 0);
 	};
 
+	// function to update the screen
 	var funUpdate = function()
 	{
+		// reset the window size
 		clientWidth = 1000;
 		clientHeight = 750;
 
+		// resize the canvas
 		objCanvas.width = clientWidth;
 		objCanvas.height = clientHeight;
 			
-		// Prepare for next round of drawing			
-		objContext.clearRect(0, 0, 1500, 1500);
-		objContext.reset();
-
+		// recalculate map dimensions
 		tilesX = Math.floor(clientWidth / 100);
 		tilesY = Math.floor((clientHeight - barHeight) / 100);
 		mapWidth = tilesX * 100;
 		mapHeight = tilesY * 100;
 		
-		funDrawBackground();
+		// Prepare for next round of drawing			
+		objContext.clearRect(0, 0, clientWidth, clientHeight);
+		objContext.reset();
 
+		// draw  backdrop
+		funDrawBackground();
 		drawGrid();
 
+		// draw sprites
 		player.draw();
 		enemy.draw();
 
+		// draw the UI
 		drawBar();
 	};
 
-	//Add an event listener for mouse clicks
+	// Add an event listener for mouse clicks
 	objCanvas.addEventListener('click', 
 		function(evt)
 		{
 			// get the mouse position
 			var mousePos = io.getMousePos(objCanvas, evt);
-		
+			
+			// clip to the section of the screen	
 			if (mousePos.x < mapWidth && mousePos.y < mapHeight &&
 				moveOrder)
 			{
+				// register a move order if the move order is active
 				player.registerOrder(orders.move(mousePos.x, mousePos.y));
 				moveOrder = false;	
 			}
 			if (mousePos.y > (clientHeight - barHeight))
 			{	
-				if (mousePos.x < buttonWidth)		
+				// click on a button
+				if (mousePos.x < buttonWidth)
+				{
+					// Move button		
 					moveOrder = !moveOrder;
+				}
 				if (mousePos.x > clientWidth - buttonWidth)
 				{
+					// Go button
 					player.carryOut();
-					//player.moveTo(moveTarget.x, moveTarget.y);
 				}
 			}
-
+			
+			// Update the screen
 			funUpdate();
 		}
 	);	
 
+	// Expose objects
 	return {
 		context : objContext,
 		images : images,

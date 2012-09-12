@@ -1,12 +1,17 @@
+// Orders object file
+
+// Builder function for orders factory object
 var ISIS_order = function()
 {
 
 	// Order class prototype (hidden)
 	var order_prototype =
 	{	
-		name : "Unnamed Order",	// order name 
+		// generic members
+		name : "Unnamed Order", 
 	}
 
+	// construct object
 	return {
 
 		// builder function for Move order
@@ -25,6 +30,7 @@ var ISIS_order = function()
 			}
 			else
 			{
+				// log error
 				console.log("Move Order created without destination.");
 			}
 

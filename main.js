@@ -1,5 +1,8 @@
+// Main driver file 
+// author: hoylemd
+//
 window.onload = function()
 {
-	var ISIS = {};
-	ISIS.engine = ISIS_engine();
+	//initialize game object
+	var ISIS = ISIS_engine();
 }
