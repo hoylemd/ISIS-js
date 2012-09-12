@@ -61,6 +61,7 @@ var ISIS_unit = function(context)
 					-1 * (0.5 * tileSize - this.offset));
 				context.reset();
 			}
+
 		},
 
 		// order registration
@@ -75,6 +76,7 @@ var ISIS_unit = function(context)
 		{
 			if (this.order)
 				this.moveTo(this.order.destX, this.order.destY);
+			this.order = null;
 		}
 	}
 
