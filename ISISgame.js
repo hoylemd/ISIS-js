@@ -262,7 +262,7 @@ var ISIS_engine = function()
 				if (attackOrder)
 				{
 					// register an attack order is the attack order is active
-					//player.registerOrder(orders.attack(mousePos.x, mousePos.y);
+					player.registerOrder(orders.attack(player, enemy);
 					console.log("attack on " + mousePos.x + ", " + mousePos.y);
 					attackOrder = false;
 				}
