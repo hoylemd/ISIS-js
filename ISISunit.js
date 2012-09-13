@@ -139,6 +139,22 @@ var ISIS_unit = function(context)
 
 			this.orders.move = null;
 			this.orders.attack = null;
+		},
+
+		// point collision function
+		collide : function(point)
+		{
+			var dx = point.x - this.x;
+			var dy = point.y - this.y;
+			return ((dx > 0 && dx < tileSize) &&
+				(dy > 0 && dy < tileSize));
+		
+		},
+
+		// order cancelling function
+		clearOrder : function(order)
+		{
+			this.orders[order] = null;
 		}
 	}
 

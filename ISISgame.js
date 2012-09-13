@@ -258,16 +258,26 @@ var ISIS_engine = function()
 				if (moveOrder)
 				{
 					// register a move order if the move order is active
-					player.registerOrder(orders.move(mousePos.x, mousePos.y));
-					moveOrder = false;	
+					if (!enemy.collide(mousePos))
+						player.registerOrder(orders.move(mousePos.x,
+							   	mousePos.y));
+					else
+						player.clearOrder("move");
 				}
 				if (attackOrder)
 				{
-					// register an attack order is the attack order is active
-					player.registerOrder(orders.attack(player, enemy));
-					console.log("attack on " + mousePos.x + ", " + mousePos.y);
-					attackOrder = false;
+					// register an attack order if the attack order is active
+					if (enemy.collide(mousePos))
+					{
+						player.registerOrder(orders.attack(player, enemy));
+						console.log("attack on " + mousePos.x + ", " + 
+							mousePos.y);
+					}
+					else
+						player.clearOrder("attack");
 				}
+				moveOrder = false;	
+				attackOrder = false;
 			}
 			if (mousePos.y > (clientHeight - barHeight))
 			{	
