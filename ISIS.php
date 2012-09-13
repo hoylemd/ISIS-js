@@ -10,5 +10,7 @@
 	</head>
 	<body>
 		<canvas id="myCanvas"></canvas><br/>
+
+		Click the "Move" button to choose where to move your ship, then click "Go" to move it there.
 	</body>
 </html>
