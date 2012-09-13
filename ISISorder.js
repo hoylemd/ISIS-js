@@ -22,6 +22,9 @@ var ISIS_order = function()
 				__proto__ : order_prototype
 			};
 			
+			// add the name
+			new_order.name = "move";
+
 			// add the destination
 			if (toX && toY)
 			{
@@ -34,7 +37,31 @@ var ISIS_order = function()
 				console.log("Move Order created without destination.");
 			}
 
-			// return the new unit
+			// return the new order
+			return new_order;
+		},
+
+		// builder function for Attack order
+		attack: function(source, target)
+		{
+			// build the prototype
+			var new_order = {
+				__proto__ : order_prototype
+			}
+
+			// add the name
+			new_order.name = "attack";
+
+			// add the target and source
+			if (source)
+				new_order.source = source;
+			else
+				console.log("Attack order created without source.");
+			if (target)
+				new_order.target = target;
+			else
+				console.log("Attack order created without target.");
+
 			return new_order;
 		}
 	}
