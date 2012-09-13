@@ -25,6 +25,7 @@ var ISIS_engine = function()
 
 	// Orders data
 	var moveOrder = false;
+	var attackOrder = false;
 	var moveTarget = null;
 
 	// Map data
@@ -46,7 +47,11 @@ var ISIS_engine = function()
 			loaded: false},
 		"MoveButtonPressed" : {id: "MoveButtonPressed", 
 			path: "MoveButtonPressed.png", loaded: false},
-		"GoButton" : {id: "GoButton", path: "GoButton.png", loaded: false}
+		"GoButton" : {id: "GoButton", path: "GoButton.png", loaded: false},
+		"AttackButton" : {id: "AttackButton", path: "AttackButton.png", 
+			loaded: false},
+		"AttackButtonPressed" : {id: "AttackButtonPressed", 
+			path: "AttackButtonPressed.png", loaded: false}
 	};
 
 	// function to update the manifest of loaded images
@@ -193,6 +198,13 @@ var ISIS_engine = function()
 			buttonImage = images["MoveButton"];
 		objContext.drawImage(buttonImage, 0, 0);
 
+		// draw the Attack button
+		if (attackOrder)
+			buttonImage = images["AttackButtonPressed"];
+		else
+			buttonImage = images["AttackButton"];
+		objContext.drawImage(buttonImage, buttonWidth, 0);
+
 		// draw the Go button
 		objContext.translate(clientWidth - buttonWidth, 0);
 		objContext.drawImage(images["GoButton"], 0, 0);
@@ -239,12 +251,21 @@ var ISIS_engine = function()
 			var mousePos = io.getMousePos(objCanvas, evt);
 			
 			// clip to the section of the screen	
-			if (mousePos.x < mapWidth && mousePos.y < mapHeight &&
-				moveOrder)
-			{
-				// register a move order if the move order is active
-				player.registerOrder(orders.move(mousePos.x, mousePos.y));
-				moveOrder = false;	
+			if (mousePos.x < mapWidth && mousePos.y < mapHeight)
+	   		{
+				if (moveOrder)
+				{
+					// register a move order if the move order is active
+					player.registerOrder(orders.move(mousePos.x, mousePos.y));
+					moveOrder = false;	
+				}
+				if (attackOrder)
+				{
+					// register an attack order is the attack order is active
+					//player.registerOrder(orders.attack(mousePos.x, mousePos.y);
+					console.log("attack on " + mousePos.x + ", " + mousePos.y);
+					attackOrder = false;
+				}
 			}
 			if (mousePos.y > (clientHeight - barHeight))
 			{	
@@ -254,7 +275,11 @@ var ISIS_engine = function()
 					// Move button		
 					moveOrder = !moveOrder;
 				}
-				if (mousePos.x > clientWidth - buttonWidth)
+				else if (mousePos.x < 2 * buttonWidth)
+				{	
+					attackOrder = !attackOrder;
+				}
+				else if (mousePos.x > clientWidth - buttonWidth)
 				{
 					// Go button
 					player.carryOut();
