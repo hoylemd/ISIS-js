@@ -79,23 +79,25 @@ var ISIS_unit = function(context)
 			}
 
 			// draw the order lines if they exist
-			if (this.order)
+			for (var order in this.orders)
 			{
-				context.beginPath();
+				if (this.orders[order])
+				{
+					context.beginPath();
 
-				// set up line drawing
-				context.lineWidth = 1;
-				context.strokeStyle = "#00CC00";
+					// set up line drawing
+					context.lineWidth = 1;
+					context.strokeStyle = this.orders[order].colour;
 
-				// draw the line
-				context.moveTo(this.x + tileOffset, this.y + tileOffset);
-				context.lineTo(this.order.x + tileOffset,
-					   	this.order.y + tileOffset);
-				context.stroke();
+					// draw the line
+					context.moveTo(this.x + tileOffset, this.y + tileOffset);
+					context.lineTo(this.orders[order].x + tileOffset,
+							this.orders[order].y + tileOffset);
+					context.stroke();
 
-				// reset
-				context.reset();
-
+					// reset
+					context.reset();
+				}
 			}
 
 		},
@@ -103,21 +105,40 @@ var ISIS_unit = function(context)
 		// order registration
 		registerOrder : function(order)
 		{
-			// snap the order position
-			var snapCoords = snapToGrid(order.x, order.y);
-			order.x = snapCoords.x;
-			order.y = snapCoords.y;
+			// register move order
+			if (order.name === "move")
+			{
+				// snap the order position
+				var snapCoords = snapToGrid(order.x, order.y);
+				order.x = snapCoords.x;
+				order.y = snapCoords.y;
 
-			order.owner = this;
-			this.order = order;
+				order.owner = this;
+				this.orders.move = order;
+			}
+			// register attack order
+			else if (order.name === "attack")
+			{
+				order.x = order.target.x;
+				order.y = order.target.y;
+				order.owner = this;
+				this.orders.attack = order;
+			}
 		},
 
 		// carry out orders function
 		carryOut : function()
 		{
-			if (this.order)
-				this.moveTo(this.order.x, this.order.y);
-			this.order = null;
+			// move order
+			if (this.orders.move)
+				this.moveTo(this.orders.move.x, this.orders.move.y);
+
+			// attack order
+			if (this.orders.attack)
+				this.orders.attack.hp -= 1;
+
+			this.orders.move = null;
+			this.orders.attack = null;
 		}
 	}
 
@@ -135,6 +156,9 @@ var ISIS_unit = function(context)
 			new_unit.image = image;
 			new_unit.offset = (tileSize - image.width) / 2;
 		}
+
+		// add the orders object
+		new_unit.orders = {};
 
 		// return the new unit
 		return new_unit;

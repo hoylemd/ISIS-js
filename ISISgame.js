@@ -79,7 +79,9 @@ var ISIS_engine = function()
 		if (blnDone) 
 		{
 			player = unit(images["ArkadianCruiser"]);
+			player.name = "Arkadian Cruiser";
 			enemy = unit(images["immortal2"]);
+			enemy.name = "Immortal";
 			enemy.moveTo(700, 400);
 			enemy.rotation = 0;
 			funUpdate();
@@ -262,7 +264,7 @@ var ISIS_engine = function()
 				if (attackOrder)
 				{
 					// register an attack order is the attack order is active
-					player.registerOrder(orders.attack(player, enemy);
+					player.registerOrder(orders.attack(player, enemy));
 					console.log("attack on " + mousePos.x + ", " + mousePos.y);
 					attackOrder = false;
 				}

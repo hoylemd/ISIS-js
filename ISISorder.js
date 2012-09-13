@@ -9,6 +9,7 @@ var ISIS_order = function()
 	{	
 		// generic members
 		name : "Unnamed Order", 
+		colour : "#EEEEEE"
 	}
 
 	// construct object
@@ -24,6 +25,7 @@ var ISIS_order = function()
 			
 			// add the name
 			new_order.name = "move";
+			new_order.colour = "00CC00";
 
 			// add the destination
 			if (toX && toY)
@@ -51,6 +53,7 @@ var ISIS_order = function()
 
 			// add the name
 			new_order.name = "attack";
+			new_order.colour = "#CC0000";
 
 			// add the target and source
 			if (source)
