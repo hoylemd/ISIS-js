@@ -7,6 +7,20 @@ var ISIS_unit = function(context)
 	// tile constant
 	var tileSize = 100;
 
+	// function to snap coordinates to the grid
+	var snapToGrid = function(xIn, yIn)
+	{
+		// calculate offset
+		var xOff = xIn % tileSize;
+		var yOff = yIn % tileSize;
+
+		// return new coords
+		return {
+			x: xIn - xOff,
+			y: yIn - yOff
+		};
+	}
+
 	// Unit class prototype (hidden)
 	var unit_prototype =
 	{
@@ -26,13 +40,12 @@ var ISIS_unit = function(context)
 		// movement function
 		moveTo : function(intX, intY)
 		{
-			// recalculate offset
-			var xOffset = intX % tileSize;
-			var yOffset = intY % tileSize;
+			// calculate snapped coordinates
+			var snapCoords = snapToGrid(intX, intY);
 
 			// canculate new sprite position
-			var newX = intX - xOffset;
-			var newY = intY - yOffset;
+			var newX = snapCoords.x;
+			var newY = snapCoords.y;
 			
 			// calculate new rotation
 			this.rotation = Math.calculateLineAngle(this.x, this.y,
@@ -46,20 +59,43 @@ var ISIS_unit = function(context)
 		// drawing function
 		draw: function()
 		{
+			// calculate tile offset
+			tileOffset = tileSize / 2;
+
 			// reset the context
 			context.reset();
 
 			// draw the sprite image if it exists
 			if (this.image)
 			{
-				context.translate(this.x + 0.5 * tileSize,
-					   	this.y + 0.5 * tileSize);
+				context.translate(this.x + tileOffset,
+					   	this.y + tileOffset);
 				context.rotate(this.rotation);
 				context.translate();
 				context.drawImage(this.image,
-					-1 * (0.5 * tileSize - this.offset), 
-					-1 * (0.5 * tileSize - this.offset));
+					-1 * (tileOffset - this.offset), 
+					-1 * (tileOffset - this.offset));
 				context.reset();
+			}
+
+			// draw the order lines if they exist
+			if (this.order)
+			{
+				context.beginPath();
+
+				// set up line drawing
+				context.lineWidth = 1;
+				context.strokeStyle = "#00CC00";
+
+				// draw the line
+				context.moveTo(this.x + tileOffset, this.y + tileOffset);
+				context.lineTo(this.order.x + tileOffset,
+					   	this.order.y + tileOffset);
+				context.stroke();
+
+				// reset
+				context.reset();
+
 			}
 
 		},
@@ -67,6 +103,11 @@ var ISIS_unit = function(context)
 		// order registration
 		registerOrder : function(order)
 		{
+			// snap the order position
+			var snapCoords = snapToGrid(order.x, order.y);
+			order.x = snapCoords.x;
+			order.y = snapCoords.y;
+
 			order.owner = this;
 			this.order = order;
 		},
@@ -75,7 +116,7 @@ var ISIS_unit = function(context)
 		carryOut : function()
 		{
 			if (this.order)
-				this.moveTo(this.order.destX, this.order.destY);
+				this.moveTo(this.order.x, this.order.y);
 			this.order = null;
 		}
 	}

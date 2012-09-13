@@ -135,6 +135,7 @@ var ISIS_engine = function()
 	{
 		// set up for grid drawing
 		objContext.reset();	
+		objContext.beginPath();
 		objContext.lineWidth = 1;
 		objContext.strokeStyle = "#440044";
 

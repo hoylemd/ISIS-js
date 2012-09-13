@@ -25,8 +25,8 @@ var ISIS_order = function()
 			// add the destination
 			if (toX && toY)
 			{
-				new_order.destX = toX;
-				new_order.destY = toY;
+				new_order.x = toX;
+				new_order.y = toY;
 			}
 			else
 			{
