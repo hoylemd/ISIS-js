@@ -39,9 +39,9 @@ var ISIS_engine = function()
 	// image manifest
 	var objImageManifest = {
 		"spaceTile" : {id: "spaceTile", path : "space.png", loaded: false},
-		"immortal1" : {id: "immortal1", path : "Immortal1.png", loaded: false},
-		"immortal2" : {id: "immortal2", path : "Immortal2.png", loaded: false},
 		"ArkadianCruiser" : {id: "ArkadianCruiser", path: "ark-cru.png",
+			loaded: false},
+		"TerranCruiser" : {id: "TerranCruiser", path: "ter-cru.png",
 			loaded: false},
 		"MoveButton" : {id: "MoveButton", path: "MoveButton.png",
 			loaded: false},
@@ -80,8 +80,8 @@ var ISIS_engine = function()
 		{
 			player = unit(images["ArkadianCruiser"]);
 			player.name = "Arkadian Cruiser";
-			enemy = unit(images["immortal2"]);
-			enemy.name = "Immortal";
+			enemy = unit(images["TerranCruiser"]);
+			enemy.name = "Terran Cruiser";
 			enemy.moveTo(700, 400);
 			enemy.rotation = 0;
 			funUpdate();
@@ -240,6 +240,10 @@ var ISIS_engine = function()
 		// draw sprites
 		player.draw();
 		enemy.draw();
+
+		// draw order lines
+		player.drawLines();
+		enemy.drawLines();
 
 		// draw the UI
 		drawBar();

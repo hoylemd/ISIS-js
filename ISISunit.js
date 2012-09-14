@@ -78,6 +78,14 @@ var ISIS_unit = function(context)
 				context.reset();
 			}
 
+
+		},
+
+		drawLines: function()
+		{
+			// calculate tile offset
+			tileOffset = tileSize / 2;
+			
 			// draw the order lines if they exist
 			for (var order in this.orders)
 			{
@@ -99,7 +107,6 @@ var ISIS_unit = function(context)
 					context.reset();
 				}
 			}
-
 		},
 
 		// order registration
