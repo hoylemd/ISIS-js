@@ -71,7 +71,6 @@ var ISIS_unit = function(context)
 				context.translate(this.x + tileOffset,
 					   	this.y + tileOffset);
 				context.rotate(this.rotation);
-				context.translate();
 				context.drawImage(this.image,
 					-1 * (tileOffset - this.offset), 
 					-1 * (tileOffset - this.offset));
