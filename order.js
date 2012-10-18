@@ -30,8 +30,7 @@ var ISIS_order = function()
 			// add the destination
 			if (toX && toY)
 			{
-				new_order.x = toX;
-				new_order.y = toY;
+				new_order.position = {x:toX, y:toY};
 			}
 			else
 			{
@@ -61,7 +60,10 @@ var ISIS_order = function()
 			else
 				console.log("Attack order created without source.");
 			if (target)
+			{
 				new_order.target = target;
+				new_order.position = target.position;
+			}
 			else
 				console.log("Attack order created without target.");
 

@@ -25,13 +25,11 @@ var ISIS_unit = function(context)
 	var unit_prototype =
 	{
 		// unit data
-		x : 0,
-		y : 0,
+		position: {x:0, y:0},
 		name : "Unnamed Unit",
 		
 		// sprite drawing data
 		offset : 0,
-		rotation : 0,
 
 		// combat data
 		hp : 10,
@@ -45,39 +43,29 @@ var ISIS_unit = function(context)
 
 			// canculate new sprite position
 			var newX = snapCoords.x;
-			var newY = snapCoords.y;
-			
-			// calculate new rotation
-			this.rotation = Math.calculateLineAngle(this.x, this.y,
-				newX, newY);
+			var newY = snapCoords.y;		
+
+			this.position.x = newX;
+			this.position.y = newY;
 
 			// move the sprite
-			this.x = newX;
-			this.y = newY;
+			if (this.sprite)
+			{
+				this.sprite.moveTo(this.position);
+			}
+
+		},
+
+		rotate: function(rads)
+		{
+			this.sprite.rotate(rads);
 		},
 
 		// drawing function
 		draw: function()
 		{
-			// calculate tile offset
-			tileOffset = tileSize / 2;
-
-			// reset the context
-			context.reset();
-
-			// draw the sprite image if it exists
-			if (this.image)
-			{
-				context.translate(this.x + tileOffset,
-					   	this.y + tileOffset);
-				context.rotate(this.rotation);
-				context.drawImage(this.image,
-					-1 * (tileOffset - this.offset), 
-					-1 * (tileOffset - this.offset));
-				context.reset();
-			}
-
-
+			if (this.sprite)
+				this.sprite.draw();
 		},
 
 		drawLines: function()
@@ -90,6 +78,7 @@ var ISIS_unit = function(context)
 			{
 				if (this.orders[order])
 				{
+					context.reset();
 					context.beginPath();
 
 					// set up line drawing
@@ -97,9 +86,10 @@ var ISIS_unit = function(context)
 					context.strokeStyle = this.orders[order].colour;
 
 					// draw the line
-					context.moveTo(this.x + tileOffset, this.y + tileOffset);
-					context.lineTo(this.orders[order].x + tileOffset,
-							this.orders[order].y + tileOffset);
+					context.moveTo(this.position.x + tileOffset, 
+							this.position.y + tileOffset);
+					context.lineTo(this.orders[order].position.x + tileOffset,
+							this.orders[order].position.y + tileOffset);
 					context.stroke();
 
 					// reset
@@ -115,9 +105,9 @@ var ISIS_unit = function(context)
 			if (order.name === "move")
 			{
 				// snap the order position
-				var snapCoords = snapToGrid(order.x, order.y);
-				order.x = snapCoords.x;
-				order.y = snapCoords.y;
+				var snapCoords = snapToGrid(order.position.x, order.position.y);
+				order.position.x = snapCoords.x;
+				order.position.y = snapCoords.y;
 
 				order.owner = this;
 				this.orders.move = order;
@@ -137,7 +127,8 @@ var ISIS_unit = function(context)
 		{
 			// move order
 			if (this.orders.move)
-				this.moveTo(this.orders.move.x, this.orders.move.y);
+				this.moveTo(this.orders.move.position.x, 
+					this.orders.move.position.y);
 
 			// attack order
 			if (this.orders.attack)
@@ -150,8 +141,9 @@ var ISIS_unit = function(context)
 		// point collision function
 		collide : function(point)
 		{
-			var dx = point.x - this.x;
-			var dy = point.y - this.y;
+			var dx = point.x - this.position.x;
+			var dy = point.y - this.position.y;
+
 			return ((dx > 0 && dx < tileSize) &&
 				(dy > 0 && dy < tileSize));
 		
@@ -165,19 +157,18 @@ var ISIS_unit = function(context)
 	}
 
 	// builder function for unit
-	return function(image)
+	return function(sprite)
 	{
 		// build the prototyoe
 		var new_unit =  {
 			__proto__ : unit_prototype
 		};
 		
-		// add the sprite image if it exists
-		if (image)
-		{
-			new_unit.image = image;
-			new_unit.offset = (tileSize - image.width) / 2;
-		}
+		// add the sprite if it exists
+		new_unit["sprite"] = sprite;
+
+		// instantiate a new position
+		new_unit.position = {x: 0, y:0};
 
 		// add the orders object
 		new_unit.orders = {};

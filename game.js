@@ -8,6 +8,9 @@ var ISIS_engine = function()
 	var objCanvas = document.getElementById("myCanvas");
 	var objContext = objCanvas.getContext("2d");
 
+	// sprite objects
+	var sprite = ISIS_sprite(objContext);
+
 	// I/O object
 	var io = ISIS_IO();
 
@@ -58,6 +61,8 @@ var ISIS_engine = function()
 	// id: the id of the image that's finsihed loading
 	var funImageLoaded = function(id)
 	{
+		var newSprite = null;
+
 		// assume done until proven otherwise
 		var blnDone = true;
 
@@ -78,12 +83,17 @@ var ISIS_engine = function()
 		// if done, initialize game.
 		if (blnDone) 
 		{
-			player = unit(images["ArkadianCruiser"]);
+			newSprite = sprite(images["ArkadianCruiser"], {x:1, y:1}, 0);
+			player = unit(newSprite);
 			player.name = "Arkadian Cruiser";
-			enemy = unit(images["TerranCruiser"]);
+			player.moveTo(0, 300);
+			player.rotate(1/4 * Math.TAU);
+
+			newSprite = sprite(images["TerranCruiser"], {x:1, y:1}, 0);
+			enemy = unit(newSprite);
 			enemy.name = "Terran Cruiser";
-			enemy.moveTo(700, 400);
-			enemy.rotation = 0;
+			enemy.moveTo(900, 300);
+			enemy.rotate(3/4 * Math.TAU);
 			funUpdate();
 		}
 	}
