@@ -10,6 +10,7 @@ var ISIS_engine = function()
 
 	// sprite objects
 	var sprite = ISIS_sprite(objContext);
+	var spriteManager = ISIS_spriteManager()();
 
 	// I/O object
 	var io = ISIS_IO();
@@ -83,13 +84,16 @@ var ISIS_engine = function()
 		// if done, initialize game.
 		if (blnDone) 
 		{
+					
 			newSprite = sprite(images["ArkadianCruiser"], {x:1, y:1}, 0);
+			spriteManager.addSprite(newSprite, "player");
 			player = unit(newSprite);
 			player.name = "Arkadian Cruiser";
 			player.moveTo(0, 300);
 			player.rotate(1/4 * Math.TAU);
 
 			newSprite = sprite(images["TerranCruiser"], {x:1, y:1}, 0);
+			spriteManager.addSprite(newSprite, "enemy");
 			enemy = unit(newSprite);
 			enemy.name = "Terran Cruiser";
 			enemy.moveTo(900, 300);
@@ -243,13 +247,14 @@ var ISIS_engine = function()
 		objContext.clearRect(0, 0, clientWidth, clientHeight);
 		objContext.reset();
 
+		spriteManager.update();
+
 		// draw  backdrop
 		funDrawBackground();
 		drawGrid();
 
 		// draw sprites
-		player.draw();
-		enemy.draw();
+		spriteManager.draw();
 
 		// draw order lines
 		player.drawLines();

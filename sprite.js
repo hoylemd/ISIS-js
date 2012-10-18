@@ -51,6 +51,20 @@ var ISIS_sprite = function(context)
 			}
 		},
 
+		// function called by the global draw whenever it gets around to it
+		// msElapsed: the number of milliseconds since the last time this
+		//  method was called.
+		'draw_handler' : function(msElapsed)
+		{
+			msSinceLastFrame += msElapsed;
+		
+			if (msSinceLastFrame > msBetweenFrames)
+			{
+				this.draw();
+				msSinceLastFrame = 0;
+			}	
+		},
+
 		'draw' : function()
 		{
 			if (this.image)

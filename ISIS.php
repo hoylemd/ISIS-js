@@ -10,6 +10,7 @@
 
 		<script type = "text/javascript" src = "Utils.js"></script>
 		<script type = "text/javascript" src = "sprite.js"></script>
+		<script type = "text/javascript" src = "spriteManager.js"></script>
 		<script type = "text/javascript" src = "game.js"></script>
 		<script type = "text/javascript" src = "unit.js"></script>
 		<script type = "text/javascript" src = "order.js"></script>

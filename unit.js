@@ -61,13 +61,6 @@ var ISIS_unit = function(context)
 			this.sprite.rotate(rads);
 		},
 
-		// drawing function
-		draw: function()
-		{
-			if (this.sprite)
-				this.sprite.draw();
-		},
-
 		drawLines: function()
 		{
 			// calculate tile offset
