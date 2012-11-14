@@ -127,7 +127,7 @@ var ISIS_engine = function()
 		
 		// clear the screen
 		objContext.clearRect(0, 0, objCanvas.width, objCanvas.height);
-		objContext.fillStyle = "#990099";
+		objContext.fillStyle = "#110011";
 		objContext.fillRect(0, 0, objCanvas.width, objCanvas.height);
 
 		// set the context to the tile offset
@@ -194,7 +194,7 @@ var ISIS_engine = function()
 	{
 		// set up
 		objContext.reset();
-		objContext.fillStyle = "#999999";
+		objContext.fillStyle = "#777777";
 
 		// calculate position
 		var barTop = clientHeight - barHeight;
@@ -230,8 +230,9 @@ var ISIS_engine = function()
 	var funUpdate = function()
 	{
 		// reset the window size
-		clientWidth = 1000;
-		clientHeight = 750;
+		clientWidth = $(window).width();
+
+		clientHeight = $(window).height();
 
 		// resize the canvas
 		objCanvas.width = clientWidth;

@@ -1,0 +1,14 @@
+frame loop
+fleets interface
+pause
+ship obhect
+animate attacks
+hit and dodge rolls with end of attack anim
+weapon recycle times
+hit rolls
+dodge rolls
+victory state
+defeat state
+ship destruction
+combat ai
+
