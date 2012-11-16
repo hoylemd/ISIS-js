@@ -19,7 +19,11 @@ var ISIS_fleetView = function(context)
 
 		// set the context to the tile offset
 		context.translate(this.tileOffset.x, this.tileOffset.y);
-	
+
+		// move to the view position
+		console.log("adjusting to " + this.position.x + "," + this.position.y);
+		context.translate(this.position.x, this.position.y);
+
 		// draw rows
 		for (i = 0; i < this.tiles.y; i++)
 		{
@@ -51,6 +55,8 @@ var ISIS_fleetView = function(context)
 
 	var funMove = function(x, y)
 	{
+		console.log("move to " + x + "," + y + " from " +
+			this.position.x + "," + this.position.y);
 		this.position.x = x;
 		this.position.y = y;
 	};
@@ -66,7 +72,6 @@ var ISIS_fleetView = function(context)
 			this.drawBackground();
 			//funDrawSprites();
 		},
-
 		resize: funResize,
 		move: funMove
 	};

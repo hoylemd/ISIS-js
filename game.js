@@ -106,11 +106,13 @@ var ISIS_engine = function()
 
 			playerFleetView = fleetView(images["spaceTile"]);
 			playerFleetView.move(0, 0);
-			playerFleetView.resize(1000, 600);
+			playerFleetView.resize(500, 600);
+
+			enemyFleetView = fleetView(images["spaceTile"]);
+			enemyFleetView.move(600, 0);
+			enemyFleetView.resize(500, 600);
 
 			funUpdate();
-
-
 		}
 	}
 
@@ -136,7 +138,6 @@ var ISIS_engine = function()
 	// Function to redraw the background
 	var funDrawBackground = function ()
 	{
-		
 		// clear the screen
 		objContext.clearRect(0, 0, objCanvas.width, objCanvas.height);
 		objContext.fillStyle = "#110011";
@@ -265,6 +266,7 @@ var ISIS_engine = function()
 		// draw  backdrop
 		//funDrawBackground();
 		playerFleetView.draw();
+		enemyFleetView.draw();		
 		drawGrid();
 
 		// draw sprites
