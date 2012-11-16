@@ -1,5 +1,10 @@
 frame loop
 fleets interface
+    - fleetview object - done
+	- separate fleet views - done
+	- add grids
+	- remove movement
+	- move ships
 pause
 ship obhect
 animate attacks

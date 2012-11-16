@@ -135,73 +135,6 @@ var ISIS_engine = function()
 		this.setTransform(1, 0, 0, 1, 0, 0);	
 	};
 
-	// Function to redraw the background
-	var funDrawBackground = function ()
-	{
-		// clear the screen
-		objContext.clearRect(0, 0, objCanvas.width, objCanvas.height);
-		objContext.fillStyle = "#110011";
-		objContext.fillRect(0, 0, objCanvas.width, objCanvas.height);
-
-		// set the context to the tile offset
-		objContext.translate(50, 50)
-	
-		// draw rows
-		for (var i = 0; i < tilesY; i++)
-		{
-			// draw each tile
-			for(var j = 0; j < tilesX; j++)
-			{
-				objContext.drawImage(images["spaceTile"], -50,
-					-50);
-				objContext.translate(100, 0);
-			}
-		
-			objContext.translate(-mapWidth, 100);
-		}
-
-		// reset the context
-		objContext.reset();
-	};
-
-	// function to draw the grid lines
-	var drawGrid = function()
-	{
-		// set up for grid drawing
-		objContext.reset();	
-		objContext.beginPath();
-		objContext.lineWidth = 1;
-		objContext.strokeStyle = "#440044";
-
-		// set initial pixel offset (makes lines draw sharp)
-		var currX = -0.5;
-		var currY = -0.5;
-
-		// draw vertical lines
-		for(var i = 1; i < tilesX; i++)
-		{
-			currX += 100;
-			objContext.moveTo(currX, currY);
-			objContext.lineTo(currX, currY + mapHeight + 1);
-		}
-
-		// reset initial pixel offset
-		var currX = -0.5;
-		var currY = -0.5;
-
-		// draw horizontal lines
-		for(var i = 1; i < tilesY; i++)
-		{
-			currY += 100;
-			objContext.moveTo(currX, currY);
-			objContext.lineTo(currX + mapWidth + 1, currY);
-		}
-
-		// draw the lines
-		objContext.stroke();
-		objContext.reset();
-	};
-
 	// function to draw the bottom orders bar
 	var drawBar = function()
 	{
@@ -267,7 +200,6 @@ var ISIS_engine = function()
 		//funDrawBackground();
 		playerFleetView.draw();
 		enemyFleetView.draw();		
-		drawGrid();
 
 		// draw sprites
 		spriteManager.draw();
@@ -342,7 +274,6 @@ var ISIS_engine = function()
 	return {
 		context : objContext,
 		images : images,
-		drawBackground : funDrawBackground,
 	};	
 
 };

@@ -44,6 +44,46 @@ var ISIS_fleetView = function(context)
 		context.reset();
 	};
 	
+	// function to draw the grid lines
+	var funDrawGrid = function()
+	{
+		console.log("grid");
+		// set up for grid drawing
+		context.reset();
+		context.translate(this.position.x, this.position.y);
+		context.beginPath();
+		context.lineWidth = 1;
+		context.strokeStyle = "#440044";
+
+		// set initial pixel offset (makes lines draw sharp)
+		var currX = -0.5;
+		var currY = -0.5;
+
+		// draw vertical lines
+		for(var i = 1; i < this.tiles.x; i++)
+		{
+			currX += this.tileDimensions.x;
+			context.moveTo(currX, currY);
+			context.lineTo(currX, currY + this.dimensions.y + 1);
+		}
+
+		// reset initial pixel offset
+		var currX = -0.5;
+		var currY = -0.5;
+
+		// draw horizontal lines
+		for(var i = 1; i < this.tiles.y; i++)
+		{
+			currY += 100;
+			context.moveTo(currX, currY);
+			context.lineTo(currX + this.dimensions.x + 1, currY);
+		}
+
+		// draw the lines
+		context.stroke();
+		context.reset();
+	}
+
 	var funResize = function(x, y)
 	{
 		this.dimensions.x = x;
@@ -67,9 +107,11 @@ var ISIS_fleetView = function(context)
 		// sprite drawing data
 		spriteRotation: 0,
 		drawBackground: funDrawBackground,
+		drawGrid: funDrawGrid,
 		draw: function()
 		{
 			this.drawBackground();
+			this.drawGrid();
 			//funDrawSprites();
 		},
 		resize: funResize,
