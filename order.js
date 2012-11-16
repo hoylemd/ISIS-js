@@ -14,35 +14,6 @@ var ISIS_order = function()
 
 	// construct object
 	return {
-
-		// builder function for Move order
-		move: function(toX, toY)
-		{
-			// build the prototyoe
-			var new_order =  {
-				__proto__ : order_prototype
-			};
-			
-			// add the name
-			new_order.name = "move";
-			new_order.colour = "00CC00";
-
-			// add the destination
-			if (toX && toY)
-			{
-				new_order.position = {x:toX, y:toY};
-			}
-			else
-			{
-				// log error
-				console.log("Move Order created without destination.");
-			}
-
-			// return the new order
-			return new_order;
-		},
-
-		// builder function for Attack order
 		attack: function(source, target)
 		{
 			// build the prototype

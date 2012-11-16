@@ -94,19 +94,7 @@ var ISIS_unit = function(context)
 		// order registration
 		registerOrder : function(order)
 		{
-			// register move order
-			if (order.name === "move")
-			{
-				// snap the order position
-				var snapCoords = snapToGrid(order.position.x, order.position.y);
-				order.position.x = snapCoords.x;
-				order.position.y = snapCoords.y;
-
-				order.owner = this;
-				this.orders.move = order;
-			}
-			// register attack order
-			else if (order.name === "attack")
+			if (order.name === "attack")
 			{
 				order.x = order.target.x;
 				order.y = order.target.y;
@@ -118,16 +106,10 @@ var ISIS_unit = function(context)
 		// carry out orders function
 		carryOut : function()
 		{
-			// move order
-			if (this.orders.move)
-				this.moveTo(this.orders.move.position.x, 
-					this.orders.move.position.y);
-
 			// attack order
 			if (this.orders.attack)
 				this.orders.attack.hp -= 1;
 
-			this.orders.move = null;
 			this.orders.attack = null;
 		},
 

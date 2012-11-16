@@ -33,9 +33,7 @@ var ISIS_engine = function()
 	var barHeight = 50;
 
 	// Orders data
-	var moveOrder = false;
 	var attackOrder = false;
-	var moveTarget = null;
 
 	// Map data
 	var tilesX;
@@ -94,14 +92,14 @@ var ISIS_engine = function()
 			spriteManager.addSprite(newSprite, "player");
 			player = unit(newSprite);
 			player.name = "Arkadian Cruiser";
-			player.moveTo(0, 300);
+			player.moveTo(300, 200);
 			player.rotate(1/4 * Math.TAU);
 
 			newSprite = sprite(images["TerranCruiser"], {x:1, y:1}, 0);
 			spriteManager.addSprite(newSprite, "enemy");
 			enemy = unit(newSprite);
 			enemy.name = "Terran Cruiser";
-			enemy.moveTo(900, 300);
+			enemy.moveTo(700, 200);
 			enemy.rotate(3/4 * Math.TAU);
 
 			playerFleetView = fleetView(images["spaceTile"]);
@@ -153,19 +151,12 @@ var ISIS_engine = function()
 		objContext.translate(0, barTop);
 		var buttonImage;
 
-		// draw the Move button
-		if (moveOrder)
-			buttonImage = images["MoveButtonPressed"];
-		else
-			buttonImage = images["MoveButton"];
-		objContext.drawImage(buttonImage, 0, 0);
-
 		// draw the Attack button
 		if (attackOrder)
 			buttonImage = images["AttackButtonPressed"];
 		else
 			buttonImage = images["AttackButton"];
-		objContext.drawImage(buttonImage, buttonWidth, 0);
+		objContext.drawImage(buttonImage, 0, 0);
 
 		// draw the Go button
 		objContext.translate(clientWidth - buttonWidth, 0);
@@ -222,15 +213,6 @@ var ISIS_engine = function()
 			// clip to the section of the screen	
 			if (mousePos.x < mapWidth && mousePos.y < mapHeight)
 	   		{
-				if (moveOrder)
-				{
-					// register a move order if the move order is active
-					if (!enemy.collide(mousePos))
-						player.registerOrder(orders.move(mousePos.x,
-							   	mousePos.y));
-					else
-						player.clearOrder("move");
-				}
 				if (attackOrder)
 				{
 					// register an attack order if the attack order is active
@@ -243,7 +225,6 @@ var ISIS_engine = function()
 					else
 						player.clearOrder("attack");
 				}
-				moveOrder = false;	
 				attackOrder = false;
 			}
 			if (mousePos.y > (clientHeight - barHeight))
@@ -251,11 +232,6 @@ var ISIS_engine = function()
 				// click on a button
 				if (mousePos.x < buttonWidth)
 				{
-					// Move button		
-					moveOrder = !moveOrder;
-				}
-				else if (mousePos.x < 2 * buttonWidth)
-				{	
 					attackOrder = !attackOrder;
 				}
 				else if (mousePos.x > clientWidth - buttonWidth)
