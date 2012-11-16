@@ -8,6 +8,11 @@ var ISIS_engine = function()
 	var objCanvas = document.getElementById("myCanvas");
 	var objContext = objCanvas.getContext("2d");
 
+	// fleet view objects
+	var fleetView = ISIS_fleetView(objContext);
+	var playerFleetView;
+
+
 	// sprite objects
 	var sprite = ISIS_sprite(objContext);
 	var spriteManager = ISIS_spriteManager()();
@@ -98,7 +103,14 @@ var ISIS_engine = function()
 			enemy.name = "Terran Cruiser";
 			enemy.moveTo(900, 300);
 			enemy.rotate(3/4 * Math.TAU);
+
+			playerFleetView = fleetView(images["spaceTile"]);
+			playerFleetView.move(0, 0);
+			playerFleetView.resize(1000, 600);
+
 			funUpdate();
+
+
 		}
 	}
 
@@ -251,7 +263,8 @@ var ISIS_engine = function()
 		spriteManager.update();
 
 		// draw  backdrop
-		funDrawBackground();
+		//funDrawBackground();
+		playerFleetView.draw();
 		drawGrid();
 
 		// draw sprites
