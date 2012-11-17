@@ -92,11 +92,27 @@ var ISIS_unit = function(context)
 		// carry out orders function
 		carryOut : function()
 		{
+			var roll;
+			var target;
 			var attack = this.orders.attack;
 			// attack order
 			if (attack)
 			{
-				attack.target.takeDamage(this.damage);
+				target = attack.target;
+				// do attack roll
+				roll = Math.floor(Math.random() * 100);
+				if (roll + this.attackBonus > target.dodge) 
+				{
+					console.log(this.name + " hits(" + roll + ") " + 
+						target.name + " for " + this.damage +
+						" points of damage");
+					target.takeDamage(this.damage);
+				}
+				else
+				{
+					console.log(this.name + " misses(" + roll + ") " + 
+						target.name);
+				}
 			}
 			this.orders.attack = null;
 		},
@@ -154,10 +170,10 @@ var ISIS_unit = function(context)
 
 		// default combat stats;
 		new_unit["hullMax"] = 5;
-		new_unit["hullCurrent"] = 1;
+		new_unit["hullCurrent"] = 5;
 		new_unit["attackBonus"] = 0;
 		new_unit["damage"] = 1;
-		new_unit["dodge"] = 0.2;
+		new_unit["dodge"] = 50;
 
 		new_unit["destroyed"] = false;
 
