@@ -217,8 +217,6 @@ var ISIS_engine = function()
 					if (enemy.collide(mousePos))
 					{
 						player.registerOrder(orders.attack(player, enemy));
-						console.log("attack on " + mousePos.x + ", " + 
-							mousePos.y);
 					}
 					else
 						player.clearOrder("attack");
