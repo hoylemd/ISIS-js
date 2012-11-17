@@ -247,7 +247,7 @@ var ISIS_engine = function()
 	// Expose objects
 	return {
 		context : objContext,
-		images : images,
+		images : images
 	};	
 
 };
