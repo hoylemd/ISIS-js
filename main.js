@@ -5,5 +5,5 @@
 window.onload = function()
 {
 	//initialize game object
-	var ISIS = ISIS_engine();
+	ISIS = ISIS_engine();
 }
