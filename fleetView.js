@@ -47,7 +47,6 @@ var ISIS_fleetView = function(context)
 	// function to draw the grid lines
 	var funDrawGrid = function()
 	{
-		console.log("grid");
 		// set up for grid drawing
 		context.reset();
 		context.translate(this.position.x, this.position.y);
@@ -95,8 +94,6 @@ var ISIS_fleetView = function(context)
 
 	var funMove = function(x, y)
 	{
-		console.log("move to " + x + "," + y + " from " +
-			this.position.x + "," + this.position.y);
 		this.position.x = x;
 		this.position.y = y;
 	};
