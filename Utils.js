@@ -6,6 +6,19 @@ var ISIS_IO = function()
 	// Add the Tau constant to Math
 	Math.TAU = 2 * Math.PI;
 
+	// add the dx function to Math
+	Math.dx = function(x)
+	{
+		var res = Math.floor(Math.random() * x);
+		return res;
+	}
+
+	// Add the d100 function to Math
+	Math.d100 = function()
+	{
+		return Math.dx(100);
+	}
+
 	/* Function to load an image from a path and return an image object
 	 * strPath: a String containing the relative path to the image
 	 * returns: an Image object mapped to the provided path */
