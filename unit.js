@@ -24,17 +24,6 @@ var ISIS_unit = function(context)
 	// Unit class prototype (hidden)
 	var unit_prototype =
 	{
-		// unit data
-		position: {x:0, y:0},
-		name : "Unnamed Unit",
-		
-		// sprite drawing data
-		offset : 0,
-
-		// combat data
-		hp : 10,
-		maxHp : 10,
-
 		// movement function
 		moveTo : function(intX, intY)
 		{
@@ -103,11 +92,25 @@ var ISIS_unit = function(context)
 		// carry out orders function
 		carryOut : function()
 		{
+			var attack = this.orders.attack;
 			// attack order
-			if (this.orders.attack)
-				this.orders.attack.hp -= 1;
-
+			if (attack)
+			{
+				attack.target.takeDamage(this.damage);
+			}
 			this.orders.attack = null;
+		},
+
+		// damage ship
+		takeDamage : function(amount)
+		{
+			this["hullCurrent"] -= amount;
+
+			if (this["hullCurrent"] <= 0)
+			{
+				console.log("Unit " + this["name"] + " destroyed!");
+				this.sprite.destruct();
+			}
 		},
 
 		// point collision function
@@ -136,14 +139,24 @@ var ISIS_unit = function(context)
 			__proto__ : unit_prototype
 		};
 
+		// add the name
+		new_unit["name"] = "Unnamed Unit";
+
 		// add the sprite if it exists
 		new_unit["sprite"] = sprite;
 
 		// instantiate a new position
-		new_unit.position = {x: 0, y:0};
+		new_unit["position"] = {x: 0, y:0};
 
 		// add the orders object
-		new_unit.orders = {};
+		new_unit["orders"] = {};
+
+		// default combat stats;
+		new_unit["hullMax"] = 5;
+		new_unit["hullCurrent"] = 1;
+		new_unit["attackBonus"] = 0;
+		new_unit["damage"] = 1;
+		new_unit["dodge"] = 0.2;
 
 		// return the new unit
 		return new_unit;
