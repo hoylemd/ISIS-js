@@ -70,7 +70,6 @@ var ISIS_sprite = function(context)
 			if (this.image)
 			{
 				context.reset();
-				console.log(this.position.x, this.position.y);
 				context.translate(this.position.x + 0.5 * this.frameDims.x,
 					   	this.position.y + 0.5 * this.frameDims.y);
 				context.rotate(this.rotation);
@@ -89,8 +88,18 @@ var ISIS_sprite = function(context)
 		'moveTo' : function(coords)
 		{	
 			this.position = {x:coords.x, y:coords.y};
-		}
+		},
 
+		'register' : function(man)
+		{
+			this.manager = man;
+		},
+
+		'destruct' : function()
+	{
+			if (this.manager)
+				this.manager.removeSprite(this);
+		}
 	};
 
 	// constructor
