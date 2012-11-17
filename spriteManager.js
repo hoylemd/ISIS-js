@@ -18,6 +18,7 @@ function ISIS_spriteManager()
 					this.spriteList[id] = sprite;
 				this.spriteList[newId] = sprite;
 				this.numSprites += 1;
+				sprite.register(this);
 			}
 		},
 
