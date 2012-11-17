@@ -93,6 +93,7 @@ var ISIS_unit = function(context)
 		carryOut : function()
 		{
 			var roll;
+			var dodge;
 			var target;
 			var attack = this.orders.attack;
 			// attack order
@@ -100,18 +101,19 @@ var ISIS_unit = function(context)
 			{
 				target = attack.target;
 				// do attack roll
-				roll = Math.floor(Math.random() * 100);
-				if (roll + this.attackBonus > target.dodge) 
+				roll = Math.d100();
+				dodge = target.dodge();
+				if (roll + this.attackBonus > 50 + dodge) 
 				{
-					console.log(this.name + " hits(" + roll + ") " + 
-						target.name + " for " + this.damage +
-						" points of damage");
+					console.log(this.name + " hits(" + roll + "/" 
+						+ (50 + dodge) + ") " + target.name + " for " 
+						+ this.damage +" points of damage");
 					target.takeDamage(this.damage);
 				}
 				else
 				{
-					console.log(this.name + " misses(" + roll + ") " + 
-						target.name);
+					console.log(this.name + " misses(" + roll + "/" + 
+						(50 + dodge) + ") " + target.name);
 				}
 			}
 			this.orders.attack = null;
@@ -128,6 +130,11 @@ var ISIS_unit = function(context)
 				this.sprite.destruct();
 				this.destroyed = true;
 			}
+		},
+
+		dodge : function()
+		{
+			return Math.dx(this.dodgeBonus);
 		},
 
 		// point collision function
@@ -173,7 +180,7 @@ var ISIS_unit = function(context)
 		new_unit["hullCurrent"] = 5;
 		new_unit["attackBonus"] = 0;
 		new_unit["damage"] = 1;
-		new_unit["dodge"] = 50;
+		new_unit["dodgeBonus"] = 10;
 
 		new_unit["destroyed"] = false;
 
