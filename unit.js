@@ -110,6 +110,7 @@ var ISIS_unit = function(context)
 			{
 				console.log("Unit " + this["name"] + " destroyed!");
 				this.sprite.destruct();
+				this.destroyed = true;
 			}
 		},
 
@@ -120,7 +121,7 @@ var ISIS_unit = function(context)
 			var dy = point.y - this.position.y;
 
 			return ((dx > 0 && dx < tileSize) &&
-				(dy > 0 && dy < tileSize));
+				(dy > 0 && dy < tileSize)) && !this.destroyed;
 		
 		},
 
@@ -157,6 +158,8 @@ var ISIS_unit = function(context)
 		new_unit["attackBonus"] = 0;
 		new_unit["damage"] = 1;
 		new_unit["dodge"] = 0.2;
+
+		new_unit["destroyed"] = false;
 
 		// return the new unit
 		return new_unit;
