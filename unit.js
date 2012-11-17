@@ -49,10 +49,7 @@ var ISIS_unit = function(context)
 			this.position.y = newY;
 
 			// move the sprite
-			if (this.sprite)
-			{
-				this.sprite.moveTo(this.position);
-			}
+			this.sprite.moveTo(this.position);
 
 		},
 
@@ -138,7 +135,7 @@ var ISIS_unit = function(context)
 		var new_unit =  {
 			__proto__ : unit_prototype
 		};
-		
+
 		// add the sprite if it exists
 		new_unit["sprite"] = sprite;
 

@@ -70,7 +70,7 @@ var ISIS_sprite = function(context)
 			if (this.image)
 			{
 				context.reset();
-
+				console.log(this.position.x, this.position.y);
 				context.translate(this.position.x + 0.5 * this.frameDims.x,
 					   	this.position.y + 0.5 * this.frameDims.y);
 				context.rotate(this.rotation);
@@ -88,12 +88,7 @@ var ISIS_sprite = function(context)
 
 		'moveTo' : function(coords)
 		{	
-			
-			this.rotation = Math.calculateLineAngle(this.position.x,
-				this.position.y, coords.x, coords.y);
-
 			this.position = {x:coords.x, y:coords.y};
-	
 		}
 
 	};

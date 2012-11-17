@@ -5,8 +5,8 @@ fleets interface
 	- add grids - done
 	- remove movement - done
 	- move ships - done
-	- adding ships to fleet view
-	- auto-position ship sprites
+	- adding ships to fleet view - done
+	- auto-position ship sprites - done
 pause
 ship obhect
 animate attacks

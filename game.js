@@ -15,7 +15,8 @@ var ISIS_engine = function()
 
 	// sprite objects
 	var sprite = ISIS_sprite(objContext);
-	var spriteManager = ISIS_spriteManager()();
+	var SpriteManager = ISIS_spriteManager();
+	var spriteManager = SpriteManager();
 
 	// I/O object
 	var io = ISIS_IO();
@@ -89,26 +90,24 @@ var ISIS_engine = function()
 		{
 					
 			newSprite = sprite(images["ArkadianCruiser"], {x:1, y:1}, 0);
-			spriteManager.addSprite(newSprite, "player");
 			player = unit(newSprite);
 			player.name = "Arkadian Cruiser";
-			player.moveTo(300, 200);
-			player.rotate(1/4 * Math.TAU);
 
 			newSprite = sprite(images["TerranCruiser"], {x:1, y:1}, 0);
-			spriteManager.addSprite(newSprite, "enemy");
 			enemy = unit(newSprite);
 			enemy.name = "Terran Cruiser";
-			enemy.moveTo(700, 200);
-			enemy.rotate(3/4 * Math.TAU);
 
-			playerFleetView = fleetView(images["spaceTile"]);
+			playerFleetView = fleetView(images["spaceTile"], SpriteManager());
 			playerFleetView.move(0, 0);
+			playerFleetView.facing = 1/4 * Math.TAU;
 			playerFleetView.resize(500, 600);
+			playerFleetView.addShip(player);
 
-			enemyFleetView = fleetView(images["spaceTile"]);
+			enemyFleetView = fleetView(images["spaceTile"], SpriteManager());
 			enemyFleetView.move(600, 0);
+			enemyFleetView.facing = 3/4 * Math.TAU;
 			enemyFleetView.resize(500, 600);
+			enemyFleetView.addShip(enemy);
 
 			funUpdate();
 		}
@@ -187,12 +186,11 @@ var ISIS_engine = function()
 
 		spriteManager.update();
 
-		// draw  backdrop
-		//funDrawBackground();
+		// draw Fleet views
 		playerFleetView.draw();
 		enemyFleetView.draw();		
 
-		// draw sprites
+		// draw other sprites
 		spriteManager.draw();
 
 		// draw order lines

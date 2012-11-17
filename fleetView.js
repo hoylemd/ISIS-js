@@ -9,6 +9,8 @@ var ISIS_fleetView = function(context)
 		var i = 0;
 		var j = 0;
 		var xMoved = 0;
+		
+		context.reset();
 
 		// clear the screen
 		context.clearRect(this.position.x, this.position.y, 
@@ -21,10 +23,8 @@ var ISIS_fleetView = function(context)
 		context.translate(this.tileOffset.x, this.tileOffset.y);
 
 		// move to the view position
-		console.log("adjusting to " + this.position.x + "," + this.position.y);
 		context.translate(this.position.x, this.position.y);
-
-		// draw rows
+		//draw rows
 		for (i = 0; i < this.tiles.y; i++)
 		{
 			xMoved = 0;
@@ -101,6 +101,18 @@ var ISIS_fleetView = function(context)
 		this.position.y = y;
 	};
 
+	var funAddShip = function(ship)
+	{
+		var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x 
+		var posy = Math.floor(this.tiles.y / 2) * this.tileDimensions.y
+		posx += this.position.x;
+		posy += this.position.y;
+
+		ship.rotate(this.facing);
+		ship.moveTo(posx, posy);
+		this.shipList.addSprite(ship.sprite);
+	};
+
 	var fleetView_prototype =
 	{
 
@@ -112,18 +124,19 @@ var ISIS_fleetView = function(context)
 		{
 			this.drawBackground();
 			this.drawGrid();
-			//funDrawSprites();
+			this.shipList.draw();
 		},
+		addShip : funAddShip,
 		resize: funResize,
 		move: funMove
 	};
 
 	// constructor
-	return function(tileImage)
+	return function(tileImage, manager)
 	{
 		var ix = tileImage.width;
 		var iy = tileImage.height;
-
+		
 		// build the proto
 		var new_fv = {
 			__proto__ : fleetView_prototype,
@@ -131,7 +144,11 @@ var ISIS_fleetView = function(context)
 			// overall drawing data
 			position : {x:0, y:0},
 			dimensions : {x:0, y:0},
-			
+			facing : 0,
+
+			// sprites
+			shipList: manager,
+
 			// tile data
 			tiles : {x:0, y:0},
 			tileDimensions : {x:ix, y:iy},
