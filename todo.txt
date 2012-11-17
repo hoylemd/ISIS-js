@@ -1,21 +1,12 @@
-frame loop
-fleets interface
-    - fleetview object - done
-	- separate fleet views - done
-	- add grids - done
-	- remove movement - done
-	- move ships - done
-	- adding ships to fleet view - done
-	- auto-position ship sprites - done
-pause
-ship obhect
-animate attacks
-hit and dodge rolls with end of attack anim
-weapon recycle times
+fleets interface - done
 hit rolls
 dodge rolls
 victory state
 defeat state
-ship destruction
+ship destruction - done
 combat ai
-
+frame loop
+hit and dodge rolls with end of attack anim
+animate attacks
+weapon recycle times
+pause
