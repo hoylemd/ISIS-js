@@ -62,10 +62,35 @@ var ISIS_engine = function()
 			path: "AttackButtonPressed.png", loaded: false}
 	};
 
+	// function to initialize the game
+	var funInitGame = function(){
+		newSprite = sprite(images["ArkadianCruiser"], {x:1, y:1}, 0);
+		player = unit(newSprite);
+		player.name = "Arkadian Cruiser";
+
+		newSprite = sprite(images["TerranCruiser"], {x:1, y:1}, 0);
+		enemy = unit(newSprite);
+		enemy.name = "Terran Cruiser";
+
+		playerFleetView = fleetView(images["spaceTile"], SpriteManager());
+		playerFleetView.move(0, 0);
+		playerFleetView.facing = 1/4 * Math.TAU;
+		playerFleetView.resize(500, 600);
+		playerFleetView.addShip(player);
+
+		enemyFleetView = fleetView(images["spaceTile"], SpriteManager());
+		enemyFleetView.move(600, 0);
+		enemyFleetView.facing = 3/4 * Math.TAU;
+		enemyFleetView.resize(500, 600);
+		enemyFleetView.addShip(enemy);
+
+		window.requestAnimationFrame( funUpdate );
+		funUpdate();
+	};
+
 	// function to update the manifest of loaded images
 	// id: the id of the image that's finsihed loading
-	var funImageLoaded = function(id)
-	{
+	var funImageLoaded = function(id){
 		var newSprite = null;
 
 		// assume done until proven otherwise
@@ -75,8 +100,7 @@ var ISIS_engine = function()
 		objImageManifest[id].loaded = true;
 
 		// look over the manifest looking for unleaded images
-		for (var ent in objImageManifest)
-		{
+		for (var ent in objImageManifest) {
 			// set done flag to done if some are unloaded
 			if (objImageManifest[ent].loaded == false)
 			{
@@ -86,30 +110,8 @@ var ISIS_engine = function()
 		}	
 
 		// if done, initialize game.
-		if (blnDone) 
-		{
-					
-			newSprite = sprite(images["ArkadianCruiser"], {x:1, y:1}, 0);
-			player = unit(newSprite);
-			player.name = "Arkadian Cruiser";
-
-			newSprite = sprite(images["TerranCruiser"], {x:1, y:1}, 0);
-			enemy = unit(newSprite);
-			enemy.name = "Terran Cruiser";
-
-			playerFleetView = fleetView(images["spaceTile"], SpriteManager());
-			playerFleetView.move(0, 0);
-			playerFleetView.facing = 1/4 * Math.TAU;
-			playerFleetView.resize(500, 600);
-			playerFleetView.addShip(player);
-
-			enemyFleetView = fleetView(images["spaceTile"], SpriteManager());
-			enemyFleetView.move(600, 0);
-			enemyFleetView.facing = 3/4 * Math.TAU;
-			enemyFleetView.resize(500, 600);
-			enemyFleetView.addShip(enemy);
-
-			funUpdate();
+		if (blnDone) {
+			funInitGame();
 		}
 	}
 
@@ -165,6 +167,7 @@ var ISIS_engine = function()
 	// function to update the screen
 	var funUpdate = function()
 	{
+		console.log("updating");
 		// reset the window size
 		clientWidth = $(window).width();
 
@@ -241,6 +244,8 @@ var ISIS_engine = function()
 			funUpdate();
 		}
 	);	
+
+
 
 	// Expose objects
 	return {
