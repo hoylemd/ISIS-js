@@ -12,7 +12,6 @@ var ISIS_engine = function()
 	var fleetView = ISIS_fleetView(objContext);
 	var playerFleetView;
 
-
 	// sprite objects
 	var sprite = ISIS_sprite(objContext);
 	var SpriteManager = ISIS_spriteManager();
@@ -43,6 +42,14 @@ var ISIS_engine = function()
 	var mapHeight;
 	var clientWidth;
 	var clientHeight;
+
+	// Add animFrame jig
+	var animFrame = window.requestAnimationFrame ||
+		window.webkit.RequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		null ;
 
 	// image manifest
 	var objImageManifest = {
@@ -83,9 +90,13 @@ var ISIS_engine = function()
 		enemyFleetView.facing = 3/4 * Math.TAU;
 		enemyFleetView.resize(500, 600);
 		enemyFleetView.addShip(enemy);
+		
+		var mainLoop = function() {
+			funUpdate();
+			animFrame(mainLoop);
+		};
 
-		window.requestAnimationFrame( funUpdate );
-		funUpdate();
+		animFrame(mainLoop);
 	};
 
 	// function to update the manifest of loaded images
@@ -241,7 +252,7 @@ var ISIS_engine = function()
 			}
 			
 			// Update the screen
-			funUpdate();
+			//funUpdate();
 		}
 	);	
 
