@@ -4,12 +4,12 @@ function ISIS_spriteManager()
 {
 	var spriteManager_prototype =
 	{
-		"spriteList" : null,
-		"numSprites" : 0,
-		"msBetweenFrames" : 0,
-		"msSinceLastFrame" : 0,
+		spriteList : null,
+		numSprites : 0,
+		msBetweenFrames : 0,
+		msSinceLastFrame : 0,
 
-		"addSprite" : function(sprite, id)
+		addSprite : function(sprite, id)
 		{
 			var newId = this.numSprites;
 			if (sprite && this.spriteList)
@@ -22,7 +22,7 @@ function ISIS_spriteManager()
 			}
 		},
 
-		"removeSprite" : function(sprite)
+		removeSprite : function(sprite)
 		{
 			var index = "";
 
@@ -39,7 +39,7 @@ function ISIS_spriteManager()
 		// function called by the global update whenever it gets around to it
 		// msElapsed: the number of milliseconds since the last time this
 		//  method was called.
-		'update_handler' : function(msElapsed)
+		update_handler : function(msElapsed)
 		{
 			msSinceLastFrame += msElapsed;
 		
@@ -50,18 +50,17 @@ function ISIS_spriteManager()
 			}	
 		},
 
-		// internal update logic. Replace this for custom functionality
-		'update' : function()
+		update : function()
 		{
 			var index = "";
 			for (index in this.spriteList)
-				this.spriteList[index].update();//_handler();
+				this.spriteList[index].update();
 		},
 
 		// function called by the global draw whenever it gets around to it
 		// msElapsed: the number of milliseconds since the last time this
 		//  method was called.
-		'draw_handler' : function(msElapsed)
+		draw_handler : function(msElapsed)
 		{
 			msSinceLastFrame += msElapsed;
 		
@@ -72,12 +71,12 @@ function ISIS_spriteManager()
 			}	
 		},
 	
-		'draw' : function()
+		draw : function()
 		{
 			var index = "";
 			for (index in this.spriteList)
-				this.spriteList[index].draw();//_handler();
-		},	
+				this.spriteList[index].draw();
+		}	
 	}
 
 	return function()
