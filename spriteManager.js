@@ -42,12 +42,12 @@ function ISIS_spriteManager()
 		update_handler : function(msElapsed)
 		{
 			msSinceLastFrame += msElapsed;
-		
+
 			if (msSinceLastFrame > msBetweenFrames)
 			{
 				this.update();
 				msSinceLastFrame = 0;
-			}	
+			}
 		},
 
 		update : function()
@@ -63,20 +63,20 @@ function ISIS_spriteManager()
 		draw_handler : function(msElapsed)
 		{
 			msSinceLastFrame += msElapsed;
-		
+
 			if (msSinceLastFrame > msBetweenFrames)
 			{
 				this.draw();
 				msSinceLastFrame = 0;
-			}	
+			}
 		},
-	
+
 		draw : function()
 		{
 			var index = "";
 			for (index in this.spriteList)
 				this.spriteList[index].draw();
-		}	
+		}
 	}
 
 	return function()
