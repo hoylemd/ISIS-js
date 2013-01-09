@@ -32,7 +32,7 @@ var ISIS_unit = function(context)
 
 			// canculate new sprite position
 			var newX = snapCoords.x;
-			var newY = snapCoords.y;		
+			var newY = snapCoords.y;
 
 			this.position.x = newX;
 			this.position.y = newY;
@@ -51,7 +51,7 @@ var ISIS_unit = function(context)
 		{
 			// calculate tile offset
 			tileOffset = tileSize / 2;
-			
+
 			// draw the order lines if they exist
 			for (var order in this.orders)
 			{
@@ -65,7 +65,7 @@ var ISIS_unit = function(context)
 					context.strokeStyle = this.orders[order].colour;
 
 					// draw the line
-					context.moveTo(this.position.x + tileOffset, 
+					context.moveTo(this.position.x + tileOffset,
 							this.position.y + tileOffset);
 					context.lineTo(this.orders[order].position.x + tileOffset,
 							this.orders[order].position.y + tileOffset);
@@ -89,32 +89,42 @@ var ISIS_unit = function(context)
 			}
 		},
 
-		// carry out orders function
-		carryOut : function()
-		{
+		// fire weapon
+		fire : function (attack) {
 			var roll;
 			var dodge;
 			var target;
+			target = attack.target;
+
+			// do attack roll
+			roll = Math.d100();
+			dodge = target.dodge();
+
+			// damage, if applicable
+			if (roll + this.attackBonus > 50 + dodge)
+			{
+				console.log(this.name + " hits(" + roll + "/"
+					+ (50 + dodge) + ") " + target.name + " for "
+					+ this.damage +" points of damage");
+				target.takeDamage(this.damage);
+			}
+			else
+			{
+				console.log(this.name + " misses(" + roll + "/" +
+					(50 + dodge) + ") " + target.name);
+			}
+
+			// play animation
+		},
+
+		// carry out orders function
+		carryOut : function()
+		{
 			var attack = this.orders.attack;
 			// attack order
 			if (attack)
 			{
-				target = attack.target;
-				// do attack roll
-				roll = Math.d100();
-				dodge = target.dodge();
-				if (roll + this.attackBonus > 50 + dodge) 
-				{
-					console.log(this.name + " hits(" + roll + "/" 
-						+ (50 + dodge) + ") " + target.name + " for " 
-						+ this.damage +" points of damage");
-					target.takeDamage(this.damage);
-				}
-				else
-				{
-					console.log(this.name + " misses(" + roll + "/" + 
-						(50 + dodge) + ") " + target.name);
-				}
+				this.fire(attack);
 			}
 			this.orders.attack = null;
 		},
@@ -145,7 +155,7 @@ var ISIS_unit = function(context)
 
 			return ((dx > 0 && dx < tileSize) &&
 				(dy > 0 && dy < tileSize)) && !this.destroyed;
-		
+
 		},
 
 		// order cancelling function
