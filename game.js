@@ -8,6 +8,9 @@ var ISIS_engine = function()
 	var objCanvas = document.getElementById("myCanvas");
 	var objContext = objCanvas.getContext("2d");
 
+	// content assets
+	var images = {};
+
 	// fleet view objects
 	var fleetView = ISIS_fleetView(objContext);
 	var playerFleetView;
@@ -20,8 +23,8 @@ var ISIS_engine = function()
 	// I/O object
 	var io = ISIS_IO();
 
-	// unit objects	
-	var unit = ISIS_unit(objContext);
+	// unit objects
+	var unit = ISIS_unit(objContext, images);
 	var player = null;
 	var enemy = null;
 
@@ -60,13 +63,14 @@ var ISIS_engine = function()
 			loaded: false},
 		"MoveButton" : {id: "MoveButton", path: "MoveButton.png",
 			loaded: false},
-		"MoveButtonPressed" : {id: "MoveButtonPressed", 
+		"MoveButtonPressed" : {id: "MoveButtonPressed",
 			path: "MoveButtonPressed.png", loaded: false},
 		"GoButton" : {id: "GoButton", path: "GoButton.png", loaded: false},
-		"AttackButton" : {id: "AttackButton", path: "AttackButton.png", 
+		"AttackButton" : {id: "AttackButton", path: "AttackButton.png",
 			loaded: false},
-		"AttackButtonPressed" : {id: "AttackButtonPressed", 
-			path: "AttackButtonPressed.png", loaded: false}
+		"AttackButtonPressed" : {id: "AttackButtonPressed",
+			path: "AttackButtonPressed.png", loaded: false},
+		"bullet" : {id: "bullet", path: "bullet.png", loaded: false}
 	};
 
 	// function to initialize the game
@@ -90,7 +94,7 @@ var ISIS_engine = function()
 		enemyFleetView.facing = 3/4 * Math.TAU;
 		enemyFleetView.resize(500, 600);
 		enemyFleetView.addShip(enemy);
-		
+
 		var mainLoop = function() {
 			funUpdate();
 			animFrame(mainLoop);
@@ -118,31 +122,23 @@ var ISIS_engine = function()
 				blnDone = false;
 				break;
 			}
-		}	
+		}
 
 		// if done, initialize game.
 		if (blnDone) {
 			funInitGame();
 		}
-	}
+	};
 
 	// Load up all neccesary content
-	var images = function(){
-		var theImages = {}
-
-		// Load the images in the manifest
-		for ( i in objImageManifest )
-		{
-			theImages[i] = io.loadImage(objImageManifest[i], funImageLoaded);
-		}
-
-		return theImages;
-	}();
+	for ( i in objImageManifest ) {
+		images[i] = io.loadImage(objImageManifest[i], funImageLoaded);
+	}
 
 	// augment the context with a reset function
 	objContext.reset = function()
-	{	
-		this.setTransform(1, 0, 0, 1, 0, 0);	
+	{
+		this.setTransform(1, 0, 0, 1, 0, 0);
 	};
 
 	// function to draw the bottom orders bar
@@ -154,10 +150,10 @@ var ISIS_engine = function()
 
 		// calculate position
 		var barTop = clientHeight - barHeight;
-		
+
 		// draw the bar background
 		objContext.fillRect(0, barTop, clientWidth, barHeight);
-		
+
 		// prepare to draw buttons
 		objContext.reset();
 		objContext.translate(0, barTop);
@@ -187,14 +183,14 @@ var ISIS_engine = function()
 		// resize the canvas
 		objCanvas.width = clientWidth;
 		objCanvas.height = clientHeight;
-			
+
 		// recalculate map dimensions
 		tilesX = Math.floor(clientWidth / 100);
 		tilesY = Math.floor((clientHeight - barHeight) / 100);
 		mapWidth = tilesX * 100;
 		mapHeight = tilesY * 100;
-		
-		// Prepare for next round of drawing			
+
+		// Prepare for next round of drawing
 		objContext.clearRect(0, 0, clientWidth, clientHeight);
 		objContext.reset();
 
@@ -202,7 +198,7 @@ var ISIS_engine = function()
 
 		// draw Fleet views
 		playerFleetView.draw();
-		enemyFleetView.draw();		
+		enemyFleetView.draw();
 
 		// draw other sprites
 		spriteManager.draw();
@@ -216,13 +212,13 @@ var ISIS_engine = function()
 	};
 
 	// Add an event listener for mouse clicks
-	objCanvas.addEventListener('click', 
+	objCanvas.addEventListener('click',
 		function(evt)
 		{
 			// get the mouse position
 			var mousePos = io.getMousePos(objCanvas, evt);
-			
-			// clip to the section of the screen	
+
+			// clip to the section of the screen
 			if (mousePos.x < mapWidth && mousePos.y < mapHeight)
 	   		{
 				if (attackOrder)
@@ -238,7 +234,7 @@ var ISIS_engine = function()
 				attackOrder = false;
 			}
 			if (mousePos.y > (clientHeight - barHeight))
-			{	
+			{
 				// click on a button
 				if (mousePos.x < buttonWidth)
 				{
@@ -250,11 +246,11 @@ var ISIS_engine = function()
 					player.carryOut();
 				}
 			}
-			
+
 			// Update the screen
 			//funUpdate();
 		}
-	);	
+	);
 
 
 
@@ -262,6 +258,6 @@ var ISIS_engine = function()
 	return {
 		context : objContext,
 		images : images
-	};	
+	};
 
 };
