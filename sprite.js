@@ -4,20 +4,10 @@ var ISIS_sprite = function(context)
 {
 	var sprite_prototype =
 	{
-		'image' : null,
-		'frameDims' : {x:0, y:0},
-		'mapDims' : {x:0, y:0},
-		'msBetweenFrames' : 0,
-		'currentFrame' : {x:0, y:0},
-		'msSinceLastFrame' : 0,
-		'position' : {x:0, y:0},
-		'rotation' : 0,
-
-
 		// function called by the global update whenever it gets around to it
 		// msElapsed: the number of milliseconds since the last time this
 		//  method was called.
-		'update_handler' : function(msElapsed)
+		update_handler : function(msElapsed)
 		{
 			msSinceLastFrame += msElapsed;
 
@@ -29,7 +19,7 @@ var ISIS_sprite = function(context)
 		},
 
 		// internal update logic. Replace this for custom functionality
-		'update' : function()
+		update : function()
 		{
 			var x = 0;
 			var y = 0;
@@ -51,21 +41,7 @@ var ISIS_sprite = function(context)
 			}
 		},
 
-		// function called by the global draw whenever it gets around to it
-		// msElapsed: the number of milliseconds since the last time this
-		//  method was called.
-		'draw_handler' : function(msElapsed)
-		{
-			msSinceLastFrame += msElapsed;
-
-			if (msSinceLastFrame > msBetweenFrames)
-			{
-				this.draw();
-				msSinceLastFrame = 0;
-			}
-		},
-
-		'draw' : function()
+		draw : function()
 		{
 			if (this.image)
 			{
@@ -80,23 +56,28 @@ var ISIS_sprite = function(context)
 
 		},
 
-		'rotate' : function(rads)
+		rotate : function(rads)
 		{
 			this.rotation = rads;
 		},
 
-		'moveTo' : function(coords)
+		moveTo : function(coords)
 		{
 			this.position = {x:coords.x, y:coords.y};
 		},
 
-		'register' : function(man)
+		move : function (displacement) {
+			this.position.x += displacement.x;
+			this.position.y += displacement.y;
+		},
+
+		register : function(man)
 		{
 			this.manager = man;
 		},
 
-		'destruct' : function()
-	{
+		destruct : function()
+		{
 			if (this.manager)
 				this.manager.removeSprite(this);
 		}
@@ -111,12 +92,18 @@ var ISIS_sprite = function(context)
 
 		if (image && mapDims)
 		{
+			new_sprite.position = {x:0, y:0};
+			new_sprite.rotation = 0;
+
 			new_sprite.image = image;
 			new_sprite.mapDims = mapDims;
 			new_sprite.msBetweenFrames = msBetweenFrames;
+			new_sprite.msSinceLastFrame = 0;
 
+			new_sprite.frameDims = {};
 			new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
 			new_sprite.frameDims.y = Math.floor(image.height / mapDims.y);
+			new_sprite.currentFrame = {x:0, y:0};
 
 		}
 		else
