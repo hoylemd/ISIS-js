@@ -24,7 +24,7 @@ var ISIS_engine = function()
 	var io = ISIS_IO();
 
 	// weapon objects
-	var Weapon = ISIS_weapon();
+	var Weapon = ISIS_weapon(spriteManager);
 
 	// unit objects
 	var unit = ISIS_unit(objContext, images, spriteManager);
@@ -199,6 +199,10 @@ var ISIS_engine = function()
 		objContext.clearRect(0, 0, clientWidth, clientHeight);
 		objContext.reset();
 
+		// update units
+		player.update();
+		enemy.update();
+
 		spriteManager.update();
 
 		// draw Fleet views
@@ -211,6 +215,7 @@ var ISIS_engine = function()
 		// draw order lines
 		player.drawLines();
 		enemy.drawLines();
+
 
 		// draw the UI
 		drawBar();
