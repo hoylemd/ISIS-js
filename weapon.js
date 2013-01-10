@@ -31,7 +31,11 @@ var ISIS_weapon = function (spriteManager) {
 				var proj = spriteManager.newSprite(
 					this.proj_texture, {x: 10, y:5}, 33);
 				proj.centerOn(this.owner.position);
-				proj.disp = {x: this.proj_speed, y: 0.25};
+				var vector = Math.calcVector(proj.position, target.position);
+				proj.disp = {x: vector.x * this.proj_speed,
+					y: vector.y * this.proj_speed};
+				proj.rotation =
+					Math.calculateLineAngle(proj.position, target.position);
 				proj.target = target;
 				proj.hit = hit;
 				this.projectile = proj;
