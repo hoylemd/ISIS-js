@@ -99,6 +99,7 @@ var ISIS_engine = function()
 		enemyFleetView.facing = 3/4 * Math.TAU;
 		enemyFleetView.resize(500, 600);
 		enemyFleetView.addShip(enemy);
+		enemy.moveTo(850, 350);
 
 		var mainLoop = function() {
 			funUpdate();
