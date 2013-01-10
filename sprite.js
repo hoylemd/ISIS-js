@@ -2,7 +2,7 @@
 
 var ISIS_sprite = function(context)
 {
-	var sprite_prototype = 
+	var sprite_prototype =
 	{
 		'image' : null,
 		'frameDims' : {x:0, y:0},
@@ -13,19 +13,19 @@ var ISIS_sprite = function(context)
 		'position' : {x:0, y:0},
 		'rotation' : 0,
 
-		
+
 		// function called by the global update whenever it gets around to it
 		// msElapsed: the number of milliseconds since the last time this
 		//  method was called.
 		'update_handler' : function(msElapsed)
 		{
 			msSinceLastFrame += msElapsed;
-		
+
 			if (msSinceLastFrame > msBetweenFrames)
 			{
 				this.update();
 				msSinceLastFrame = 0;
-			}	
+			}
 		},
 
 		// internal update logic. Replace this for custom functionality
@@ -33,7 +33,7 @@ var ISIS_sprite = function(context)
 		{
 			var x = 0;
 			var y = 0;
-					
+
 			if (this.image && this.msBetweenFrames > 0)
 			{
 				if (this.mapDims.x > 1 || this.mapDims.y > 1)
@@ -46,7 +46,7 @@ var ISIS_sprite = function(context)
 						y = this.currentFrame.y + 1;
 						this.currentFrame.y = y % this.mapDims.y;
 					}
-					
+
 				}
 			}
 		},
@@ -57,12 +57,12 @@ var ISIS_sprite = function(context)
 		'draw_handler' : function(msElapsed)
 		{
 			msSinceLastFrame += msElapsed;
-		
+
 			if (msSinceLastFrame > msBetweenFrames)
 			{
 				this.draw();
 				msSinceLastFrame = 0;
-			}	
+			}
 		},
 
 		'draw' : function()
@@ -77,7 +77,7 @@ var ISIS_sprite = function(context)
 				context.drawImage(this.image, -0.5 * this.frameDims.x,
 						-0.5 * this.frameDims.y);
 			}
-				
+
 		},
 
 		'rotate' : function(rads)
@@ -86,7 +86,7 @@ var ISIS_sprite = function(context)
 		},
 
 		'moveTo' : function(coords)
-		{	
+		{
 			this.position = {x:coords.x, y:coords.y};
 		},
 
@@ -109,12 +109,12 @@ var ISIS_sprite = function(context)
 			__proto__ : sprite_prototype
 		};
 
-		if (image && mapDims && msBetweenFrames >= 0)
+		if (image && mapDims)
 		{
 			new_sprite.image = image;
 			new_sprite.mapDims = mapDims;
 			new_sprite.msBetweenFrames = msBetweenFrames;
-			
+
 			new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
 			new_sprite.frameDims.y = Math.floor(image.height / mapDims.y);
 
