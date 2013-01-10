@@ -80,9 +80,13 @@ var ISIS_engine = function()
 	var funInitGame = function(){
 		player = unit("ArkadianCruiser", {x:1, y:1}, 0);
 		player.name = "Arkadian Cruiser";
+		player.setHull(100);
+		player.addWeapon(Weapon("Arkadian Railgun", 10, 25, 15, images["bullet"], 25));
 
 		enemy = unit("TerranCruiser", {x:1, y:1}, 0);
 		enemy.name = "Terran Cruiser";
+		enemy.setHull(150);
+		enemy.addWeapon(Weapon("Terran Mass Driver", 25, 10, 30, images["bullet"], 20));
 
 		playerFleetView = fleetView(images["spaceTile"], SpriteManager());
 		playerFleetView.move(0, 0);
