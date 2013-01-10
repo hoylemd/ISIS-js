@@ -66,6 +66,13 @@ var ISIS_sprite = function(context)
 			this.position = {x:coords.x, y:coords.y};
 		},
 
+		centerOn : function (coords) {
+			var new_pos = {x: 0, y: 0};
+			new_pos.x = coords.x - (this.frameDims.x / 2);
+			new_pos.y = coords.y - (this.frameDims.y / 2);
+			this.moveTo(new_pos);
+		},
+
 		move : function (displacement) {
 			this.position.x += displacement.x;
 			this.position.y += displacement.y;
