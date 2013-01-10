@@ -78,9 +78,14 @@ var ISIS_unit = function(context, content, spriteManager)
 		},
 
 		// weapon registration
-		addWeapon : function (weapon)
-		{
+		addWeapon : function (weapon) {
 			this.weapon = weapon;
+		},
+
+		// Hull manipulation
+		setHull : function (hull) {
+			this.hullMax = hull;
+			this.hullCurrent = hull;
 		},
 
 		// order registration
