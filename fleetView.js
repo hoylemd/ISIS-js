@@ -9,11 +9,11 @@ var ISIS_fleetView = function(context)
 		var i = 0;
 		var j = 0;
 		var xMoved = 0;
-		
+
 		context.reset();
 
 		// clear the screen
-		context.clearRect(this.position.x, this.position.y, 
+		context.clearRect(this.position.x, this.position.y,
 			this.dimensions.x, this.dimensions.y);
 		context.fillStyle = "#000000";
 		context.fillRect(this.position.x, this.position.y,
@@ -36,14 +36,14 @@ var ISIS_fleetView = function(context)
 				context.translate(this.tileDimensions.x, 0);
 				xMoved += this.tileDimensions.x;
 			}
-		
+
 			context.translate(-xMoved, this. tileDimensions.y);
 		}
 
 		// reset the context
 		context.reset();
 	};
-	
+
 	// function to draw the grid lines
 	var funDrawGrid = function()
 	{
@@ -90,7 +90,7 @@ var ISIS_fleetView = function(context)
 
 		this.tiles.x = Math.floor(x / this.tileDimensions.x);
 		this.tiles.y = Math.floor(y / this.tileDimensions.y);
-	};		
+	};
 
 	var funMove = function(x, y)
 	{
@@ -100,14 +100,14 @@ var ISIS_fleetView = function(context)
 
 	var funAddShip = function(ship)
 	{
-		var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x 
+		var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x
 		var posy = Math.floor(this.tiles.y / 2) * this.tileDimensions.y
 		posx += this.position.x;
 		posy += this.position.y;
 
 		ship.rotate(this.facing);
 		ship.moveTo(posx, posy);
-		this.shipList.addSprite(ship.sprite);
+		this.shipList.push(ship);
 	};
 
 	var fleetView_prototype =
@@ -121,7 +121,6 @@ var ISIS_fleetView = function(context)
 		{
 			this.drawBackground();
 			this.drawGrid();
-			this.shipList.draw();
 		},
 		addShip : funAddShip,
 		resize: funResize,
@@ -129,11 +128,11 @@ var ISIS_fleetView = function(context)
 	};
 
 	// constructor
-	return function(tileImage, manager)
+	return function(tileImage)
 	{
 		var ix = tileImage.width;
 		var iy = tileImage.height;
-		
+
 		// build the proto
 		var new_fv = {
 			__proto__ : fleetView_prototype,
@@ -144,7 +143,7 @@ var ISIS_fleetView = function(context)
 			facing : 0,
 
 			// sprites
-			shipList: manager,
+			shipList: [],
 
 			// tile data
 			tiles : {x:0, y:0},
@@ -152,7 +151,7 @@ var ISIS_fleetView = function(context)
 			tileOffset : {x : ix / 2, y:iy / 2},
 			tileImage : tileImage
 		};
-				
+
 
 		return new_fv;
 	}
