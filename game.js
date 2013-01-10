@@ -18,7 +18,7 @@ var ISIS_engine = function()
 	// sprite objects
 	var Sprite = ISIS_sprite(objContext);
 	var SpriteManager = ISIS_spriteManager(Sprite);
-	var spriteManager = SpriteManager();
+	var spriteManager = SpriteManager(objCanvas);
 
 	// I/O object
 	var io = ISIS_IO();
@@ -182,7 +182,6 @@ var ISIS_engine = function()
 		console.log("updating");
 		// reset the window size
 		clientWidth = $(window).width();
-
 		clientHeight = $(window).height();
 
 		// resize the canvas
