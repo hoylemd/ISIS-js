@@ -79,7 +79,10 @@ var ISIS_unit = function(context, content, spriteManager)
 
 		// weapon registration
 		addWeapon : function (weapon) {
-			this.weapon = weapon;
+			if (weapon) {
+				this.weapon = weapon;
+				weapon.registerOwner(this);
+			}
 		},
 
 		// Hull manipulation
@@ -149,6 +152,12 @@ var ISIS_unit = function(context, content, spriteManager)
 		clearOrder : function(order)
 		{
 			this.orders[order] = null;
+		},
+
+		// update function
+		update : function (elapsed_ms) {
+			// update children
+			this.weapon.update(elapsed_ms);
 		}
 	}
 
