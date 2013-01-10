@@ -2,7 +2,7 @@
 // author: hoylemd
 
 // Main setup function
-var ISIS_unit = function(context)
+var ISIS_unit = function(context, content, spriteManager)
 {
 	// tile constant
 	var tileSize = 100;
@@ -115,6 +115,9 @@ var ISIS_unit = function(context)
 			}
 
 			// play animation
+			if (this.bullet === null) {
+
+			}
 		},
 
 		// carry out orders function
@@ -166,7 +169,7 @@ var ISIS_unit = function(context)
 	}
 
 	// builder function for unit
-	return function(sprite)
+	return function(texture, mapDims, msBetweenFrames)
 	{
 		// build the prototyoe
 		var new_unit =  {
@@ -177,7 +180,8 @@ var ISIS_unit = function(context)
 		new_unit["name"] = "Unnamed Unit";
 
 		// add the sprite if it exists
-		new_unit["sprite"] = sprite;
+		new_unit["sprite"] = spriteManager.newSprite(
+			(content[texture]), mapDims, msBetweenFrames);
 
 		// instantiate a new position
 		new_unit["position"] = {x: 0, y:0};
