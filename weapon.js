@@ -1,6 +1,6 @@
 // Weapon object
 
-var ISIS_weapon = function () {
+var ISIS_weapon = function (spriteManager) {
 	// prototype
 	var weapon_prototype = {
 		fire : function (target) {
@@ -27,10 +27,32 @@ var ISIS_weapon = function () {
 
 			// play animation
 			if (this.proj_texture != null) {
-
+				var proj = spriteManager.newSprite(
+					this.proj_texture, {x: 10, y:5}, 33);
+				proj.moveTo(this.owner.position);
+				proj.disp = {x: this.proj_speed, y: 0.25};
+				proj.target = target;
+				this.projectile = proj;
 			}
-		}
+		},
 
+		registerOwner : function (owner) {
+			this.owner = owner;
+		},
+
+		update : function (elapsed_ms) {
+			// update projectile
+			var proj = this.projectile;
+			if (proj) {
+				if (proj.target.collide(proj)) {
+					proj.destruct();
+					this.projectile = null;
+				} else {
+					proj.move(this.projectile.disp);
+				}
+			}
+
+		}
 	};
 
 	// constructor
@@ -49,6 +71,9 @@ var ISIS_weapon = function () {
 
 			new_weapon.proj_texture = texture;
 			new_weapon.proj_speed = speed;
+
+			new_weapon.owner = null;
+			new_weapon.projectile = null;
 
 		} else {
 			new_weapon = null;
