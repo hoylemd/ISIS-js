@@ -19,6 +19,27 @@ var ISIS_IO = function()
 		return Math.dx(100);
 	}
 
+	// Add the calcVector function to Math
+	Math.calcVector = function(p1, p2) {
+		var x = p2.x - p1.x;
+		var y = p2.y - p1.y;
+		var theta = Math.atan(x / y);
+		var vector = {x: 0, y: 0};
+		vector.x = Math.abs(Math.sin(theta));
+		vector.y = Math.abs(Math.cos(theta));
+
+		if (p1.x > p2.x){
+			vector.x *= -1;
+		}
+
+		if (p1.y > p2.y) {
+			vector.y *= -1;
+		}
+
+		return vector;
+
+	};
+
 	/* Function to load an image from a path and return an image object
 	 * strPath: a String containing the relative path to the image
 	 * returns: an Image object mapped to the provided path */
@@ -32,11 +53,11 @@ var ISIS_IO = function()
 
 		return objImage;
 	}
-	
+
 	/* Function to get the mouse position
 	 * objContext: a canvas context object to get the mouse position relative to
 	 * evt: The mouse click event
-	 * returns: an {x, y} object representing the mouse click's coordinates 
+	 * returns: an {x, y} object representing the mouse click's coordinates
 	 * 	relative to the top - left of the canvas.*/
 	var funGetMousePos = function(objContext, evt)
 	{
@@ -71,12 +92,12 @@ var ISIS_IO = function()
 // y1: the y coordinate of the first point
 // x2: the x coordinate of the second point
 // y2: the y coordinate of the second point
-Math.calculateLineAngle = function(x1, y1, x2, y2)
+Math.calculateLineAngle = function(p1, p2)
 {
 
 	// calculate deltas
-	var dx = x2 - x1;
-	var dy = y2 - y1;
+	var dx = p2.x - p1.x;
+	var dy = p2.y - p1.y;
 
 	// initialize rotation
 	var rotation = 0;
@@ -107,10 +128,10 @@ Math.calculateLineAngle = function(x1, y1, x2, y2)
 
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
- 
+
 // requestAnimationFrame polyfill by Erik Möller
 // fixes from Paul Irish and Tino Zijdel
- 
+
 (function() {
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
@@ -119,7 +140,7 @@ Math.calculateLineAngle = function(x1, y1, x2, y2)
         window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
                                    || window[vendors[x]+'CancelRequestAnimationFrame'];
     }
- 
+
     if (!window.requestAnimationFrame)
         window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
@@ -129,7 +150,7 @@ Math.calculateLineAngle = function(x1, y1, x2, y2)
             lastTime = currTime + timeToCall;
             return id;
         };
- 
+
     if (!window.cancelAnimationFrame)
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);
