@@ -77,6 +77,12 @@ var ISIS_unit = function(context, content, spriteManager)
 			}
 		},
 
+		// weapon registration
+		addWeapon : function (weapon)
+		{
+			this.weapon = weapon;
+		}
+
 		// order registration
 		registerOrder : function(order)
 		{
@@ -135,11 +141,11 @@ var ISIS_unit = function(context, content, spriteManager)
 		// damage ship
 		takeDamage : function(amount)
 		{
-			this["hullCurrent"] -= amount;
+			this.hullCurrent -= amount;
 
-			if (this["hullCurrent"] <= 0)
+			if (this.hullCurrent <= 0)
 			{
-				console.log("Unit " + this["name"] + " destroyed!");
+				console.log("Unit " + this.name + " destroyed!");
 				this.sprite.destruct();
 				this.destroyed = true;
 			}
@@ -177,26 +183,27 @@ var ISIS_unit = function(context, content, spriteManager)
 		};
 
 		// add the name
-		new_unit["name"] = "Unnamed Unit";
+		new_unit.name = "Unnamed Unit";
 
 		// add the sprite if it exists
-		new_unit["sprite"] = spriteManager.newSprite(
+		new_unit.sprite = spriteManager.newSprite(
 			(content[texture]), mapDims, msBetweenFrames);
 
 		// instantiate a new position
-		new_unit["position"] = {x: 0, y:0};
+		new_unit.position = {x: 0, y:0};
 
 		// add the orders object
-		new_unit["orders"] = {};
+		new_unit.orders = {};
 
 		// default combat stats;
-		new_unit["hullMax"] = 5;
-		new_unit["hullCurrent"] = 5;
-		new_unit["attackBonus"] = 0;
-		new_unit["damage"] = 1;
-		new_unit["dodgeBonus"] = 10;
+		new_unit.hullMax = 5;
+		new_unit.hullCurrent = 5;
+		new_unit.dodgeBonus = 10;
 
-		new_unit["destroyed"] = false;
+		// default weapon
+		new_unit.weapon = null;
+
+		new_unit.destroyed = false;
 
 		// return the new unit
 		return new_unit;
