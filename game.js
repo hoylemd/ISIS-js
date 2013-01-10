@@ -23,6 +23,9 @@ var ISIS_engine = function()
 	// I/O object
 	var io = ISIS_IO();
 
+	// weapon objects
+	var Weapon = ISIS_weapon();
+
 	// unit objects
 	var unit = ISIS_unit(objContext, images, spriteManager);
 	var player = null;
