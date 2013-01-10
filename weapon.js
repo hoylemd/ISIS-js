@@ -6,13 +6,14 @@ var ISIS_weapon = function (spriteManager) {
 		fire : function (target) {
 			var roll;
 			var dodge;
-
+			var hit;
 			// do attack roll
 			roll = Math.d100();
 			dodge = target.dodge();
+			hit = roll + this.hit_bonus > 50 + dodge;
 
 			// damage, if applicable
-			if (roll + this.hit_bonus > 50 + dodge)
+			if (hit)
 			{
 				console.log(this.name + " hits(" + roll + "/"
 					+ (50 + dodge) + ") " + target.name + " for "
@@ -32,6 +33,7 @@ var ISIS_weapon = function (spriteManager) {
 				proj.centerOn(this.owner.position);
 				proj.disp = {x: this.proj_speed, y: 0.25};
 				proj.target = target;
+				proj.hit = hit;
 				this.projectile = proj;
 			}
 		},
@@ -44,7 +46,7 @@ var ISIS_weapon = function (spriteManager) {
 			// update projectile
 			var proj = this.projectile;
 			if (proj) {
-				if (proj.target.collide(proj.position)) {
+				if (proj.target.collide(proj.position) && proj.hit) {
 					proj.destruct();
 					this.projectile = null;
 				} else {
