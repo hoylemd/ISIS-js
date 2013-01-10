@@ -81,7 +81,7 @@ var ISIS_unit = function(context, content, spriteManager)
 		addWeapon : function (weapon)
 		{
 			this.weapon = weapon;
-		}
+		},
 
 		// order registration
 		registerOrder : function(order)
@@ -95,37 +95,6 @@ var ISIS_unit = function(context, content, spriteManager)
 			}
 		},
 
-		// fire weapon
-		fire : function (attack) {
-			var roll;
-			var dodge;
-			var target;
-			target = attack.target;
-
-			// do attack roll
-			roll = Math.d100();
-			dodge = target.dodge();
-
-			// damage, if applicable
-			if (roll + this.attackBonus > 50 + dodge)
-			{
-				console.log(this.name + " hits(" + roll + "/"
-					+ (50 + dodge) + ") " + target.name + " for "
-					+ this.damage +" points of damage");
-				target.takeDamage(this.damage);
-			}
-			else
-			{
-				console.log(this.name + " misses(" + roll + "/" +
-					(50 + dodge) + ") " + target.name);
-			}
-
-			// play animation
-			if (this.bullet === null) {
-
-			}
-		},
-
 		// carry out orders function
 		carryOut : function()
 		{
@@ -133,7 +102,11 @@ var ISIS_unit = function(context, content, spriteManager)
 			// attack order
 			if (attack)
 			{
-				this.fire(attack);
+				if (this.weapon) {
+					this.weapon.fire(attack.target);
+				} else {
+					console.log(this.name + " has no weapon! It cannot attack!");
+				}
 			}
 			this.orders.attack = null;
 		},
