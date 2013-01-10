@@ -16,8 +16,8 @@ var ISIS_unit = function(context, content, spriteManager)
 
 		// return new coords
 		return {
-			x: xIn - xOff,
-			y: yIn - yOff
+			x: xIn - xOff + (tileSize / 2),
+			y: yIn - yOff + (tileSize / 2)
 		};
 	}
 
@@ -38,7 +38,7 @@ var ISIS_unit = function(context, content, spriteManager)
 			this.position.y = newY;
 
 			// move the sprite
-			this.sprite.moveTo(this.position);
+			this.sprite.centerOn(this.position);
 
 		},
 
@@ -65,10 +65,9 @@ var ISIS_unit = function(context, content, spriteManager)
 					context.strokeStyle = this.orders[order].colour;
 
 					// draw the line
-					context.moveTo(this.position.x + tileOffset,
-							this.position.y + tileOffset);
-					context.lineTo(this.orders[order].position.x + tileOffset,
-							this.orders[order].position.y + tileOffset);
+					context.moveTo(this.position.x ,this.position.y);
+					context.lineTo(this.orders[order].position.x,
+							this.orders[order].position.y);
 					context.stroke();
 
 					// reset
@@ -140,8 +139,8 @@ var ISIS_unit = function(context, content, spriteManager)
 		// point collision function
 		collide : function(point)
 		{
-			var dx = point.x - this.position.x;
-			var dy = point.y - this.position.y;
+			var dx = point.x - (this.position.x - (tileSize / 2));
+			var dy = point.y - (this.position.y - (tileSize / 2));
 
 			return ((dx > 0 && dx < tileSize) &&
 				(dy > 0 && dy < tileSize)) && !this.destroyed;
