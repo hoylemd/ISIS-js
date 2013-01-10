@@ -29,7 +29,7 @@ var ISIS_weapon = function (spriteManager) {
 			if (this.proj_texture != null) {
 				var proj = spriteManager.newSprite(
 					this.proj_texture, {x: 10, y:5}, 33);
-				proj.moveTo(this.owner.position);
+				proj.centerOn(this.owner.position);
 				proj.disp = {x: this.proj_speed, y: 0.25};
 				proj.target = target;
 				this.projectile = proj;
