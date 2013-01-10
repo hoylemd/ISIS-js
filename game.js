@@ -16,15 +16,15 @@ var ISIS_engine = function()
 	var playerFleetView;
 
 	// sprite objects
-	var sprite = ISIS_sprite(objContext);
-	var SpriteManager = ISIS_spriteManager();
+	var Sprite = ISIS_sprite(objContext);
+	var SpriteManager = ISIS_spriteManager(Sprite);
 	var spriteManager = SpriteManager();
 
 	// I/O object
 	var io = ISIS_IO();
 
 	// unit objects
-	var unit = ISIS_unit(objContext, images);
+	var unit = ISIS_unit(objContext, images, spriteManager);
 	var player = null;
 	var enemy = null;
 
@@ -75,12 +75,10 @@ var ISIS_engine = function()
 
 	// function to initialize the game
 	var funInitGame = function(){
-		newSprite = sprite(images["ArkadianCruiser"], {x:1, y:1}, 0);
-		player = unit(newSprite);
+		player = unit("ArkadianCruiser", {x:1, y:1}, 0);
 		player.name = "Arkadian Cruiser";
 
-		newSprite = sprite(images["TerranCruiser"], {x:1, y:1}, 0);
-		enemy = unit(newSprite);
+		enemy = unit("TerranCruiser", {x:1, y:1}, 0);
 		enemy.name = "Terran Cruiser";
 
 		playerFleetView = fleetView(images["spaceTile"], SpriteManager());
