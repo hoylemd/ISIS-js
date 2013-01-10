@@ -1,6 +1,6 @@
 // Sprite manager object
 
-function ISIS_spriteManager()
+function ISIS_spriteManager(Sprite)
 {
 	var spriteManager_prototype =
 	{
@@ -9,17 +9,24 @@ function ISIS_spriteManager()
 		msBetweenFrames : 0,
 		msSinceLastFrame : 0,
 
-		addSprite : function(sprite, id)
-		{
+		addSprite : function(sprite, id) {
 			var newId = this.numSprites;
-			if (sprite && this.spriteList)
-			{
+			if (sprite && this.spriteList) {
 				if (id)
 					this.spriteList[id] = sprite;
 				this.spriteList[newId] = sprite;
 				this.numSprites += 1;
 				sprite.register(this);
+				return sprite;
 			}
+			else {
+				return null;
+			}
+		},
+
+		newSprite : function(image, mapDims, msBetweenFrames, id) {
+			var new_sprite = Sprite(image, mapDims, msBetweenFrames);
+			return this.addSprite(new_sprite);
 		},
 
 		removeSprite : function(sprite)
