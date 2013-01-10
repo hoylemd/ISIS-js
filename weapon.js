@@ -44,7 +44,7 @@ var ISIS_weapon = function (spriteManager) {
 			// update projectile
 			var proj = this.projectile;
 			if (proj) {
-				if (proj.target.collide(proj)) {
+				if (proj.target.collide(proj.position)) {
 					proj.destruct();
 					this.projectile = null;
 				} else {
