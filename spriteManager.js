@@ -1,6 +1,6 @@
 // Sprite manager object
 
-function ISIS_spriteManager(Sprite)
+function ISIS_spriteManager(Sprite, canvas)
 {
 	var spriteManager_prototype =
 	{
@@ -37,8 +37,10 @@ function ISIS_spriteManager(Sprite)
 			{
 				for (index in this.spriteList)
 				{
-					if (this.spriteList[index] === sprite)
+					if (this.spriteList[index] === sprite){
 						delete this.spriteList[index];
+						this.numSprites -= 1;
+					}
 				}
 			}
 		},
@@ -60,8 +62,21 @@ function ISIS_spriteManager(Sprite)
 		update : function()
 		{
 			var index = "";
-			for (index in this.spriteList)
-				this.spriteList[index].update();
+			var sprite = null;
+			for (index in this.spriteList){
+				sprite = this.spriteList[index];
+				if (sprite.position.x > this.canvas.width ||
+					sprite.position.x < 0 ||
+					sprite.position.y > this.canvas.height ||
+					sprite.position.y < 0) {
+					sprite.destruct();
+					sprite = null;
+				}
+
+				if (sprite) {
+					sprite.update();
+				}
+			}
 		},
 
 		draw : function()
@@ -74,12 +89,13 @@ function ISIS_spriteManager(Sprite)
 		}
 	}
 
-	return function()
+	return function ( canvas)
 	{
 		var new_spriteManager = {
 			__proto__: spriteManager_prototype
 		};
 
+		new_spriteManager.canvas = canvas;
 		new_spriteManager.spriteList = {};
 
 		return new_spriteManager;
