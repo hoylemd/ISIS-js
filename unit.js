@@ -115,7 +115,6 @@ var ISIS_unit = function(context, content, spriteManager)
 					console.log(this.name + " has no weapon! It cannot attack!");
 				}
 			}
-			this.orders.attack = null;
 		},
 
 		// damage ship
