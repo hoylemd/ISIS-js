@@ -4,9 +4,7 @@ var ISIS_weapon = function (spriteManager) {
 	// prototype
 	var weapon_prototype = {
 		setTarget : function (target) {
-			if (target) {
-				this.target = target;
-			}
+			this.target = target;
 		},
 
 		fire : function () {
@@ -57,6 +55,11 @@ var ISIS_weapon = function (spriteManager) {
 		update : function (elapsed_ms) {
 			// update projectile
 			var proj = this.projectile;
+
+			// check for target destroyed
+			if (this.target && this.target.destroyed) {
+				this.target = null;
+			}
 
 			if (this.target) {
 				this.current_charge += elapsed_ms;
