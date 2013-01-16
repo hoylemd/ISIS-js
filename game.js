@@ -49,6 +49,9 @@ var ISIS_engine = function()
 	var clientWidth;
 	var clientHeight;
 
+	// timing data
+	var lastTime;
+
 	// Add animFrame jig
 	var animFrame = window.requestAnimationFrame ||
 		window.webkit.RequestAnimationFrame ||
@@ -180,6 +183,15 @@ var ISIS_engine = function()
 	// function to update the screen
 	var funUpdate = function()
 	{
+		var now = new Date();
+		var elapsed = null;
+		var elapsedMS = 0;
+
+		if (lastTime != undefined) {
+			elapsed = now.getTime() - lastTime.getTime();
+		}
+		lastTime = now;
+
 		console.log("updating");
 		// reset the window size
 		clientWidth = $(window).width();
@@ -200,10 +212,10 @@ var ISIS_engine = function()
 		objContext.reset();
 
 		// update units
-		player.update();
-		enemy.update();
+		player.update(elapsed);
+		enemy.update(elapsed);
 
-		spriteManager.update();
+		spriteManager.update(elapsed);
 
 		// draw Fleet views
 		playerFleetView.draw();
@@ -215,7 +227,6 @@ var ISIS_engine = function()
 		// draw order lines
 		player.drawLines();
 		enemy.drawLines();
-
 
 		// draw the UI
 		drawBar();

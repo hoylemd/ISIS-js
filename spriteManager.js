@@ -45,21 +45,8 @@ function ISIS_spriteManager(Sprite, canvas)
 			}
 		},
 
-		// function called by the global update whenever it gets around to it
-		// msElapsed: the number of milliseconds since the last time this
-		//  method was called.
-		update_handler : function(msElapsed)
-		{
-			msSinceLastFrame += msElapsed;
 
-			if (msSinceLastFrame > msBetweenFrames)
-			{
-				this.update();
-				msSinceLastFrame = 0;
-			}
-		},
-
-		update : function()
+		update : function(elapsed)
 		{
 			var index = "";
 			var sprite = null;
@@ -74,7 +61,7 @@ function ISIS_spriteManager(Sprite, canvas)
 				}
 
 				if (sprite) {
-					sprite.update();
+					sprite.update(elapsed);
 				}
 			}
 		},
