@@ -6,11 +6,8 @@ var ISIS_order = function()
 
 	// Order class prototype (hidden)
 	var order_prototype =
-	{	
-		// generic members
-		name : "Unnamed Order", 
-		colour : "#EEEEEE"
-	}
+	{
+	};
 
 	// construct object
 	return {
@@ -38,7 +35,10 @@ var ISIS_order = function()
 			else
 				console.log("Attack order created without target.");
 
+			// set it as pending
+			new_order.pending = true;
+
 			return new_order;
-		}
+		};
 	}
 }
