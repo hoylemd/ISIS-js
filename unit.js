@@ -107,10 +107,11 @@ var ISIS_unit = function(context, content, spriteManager)
 		{
 			var attack = this.orders.attack;
 			// attack order
-			if (attack)
+			if (attack && attack.pending)
 			{
 				if (this.weapon) {
-					this.weapon.fire(attack.target);
+					this.weapon.setTarget(attack.target);
+					attack.pending = false;
 				} else {
 					console.log(this.name + " has no weapon! It cannot attack!");
 				}
