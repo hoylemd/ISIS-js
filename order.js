@@ -39,6 +39,6 @@ var ISIS_order = function()
 			new_order.pending = true;
 
 			return new_order;
-		};
-	}
-}
+		}
+	};
+};
