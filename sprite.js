@@ -4,39 +4,21 @@ var ISIS_sprite = function(context)
 {
 	var sprite_prototype =
 	{
-		// function called by the global update whenever it gets around to it
-		// msElapsed: the number of milliseconds since the last time this
-		//  method was called.
-		update_handler : function(msElapsed)
-		{
-			msSinceLastFrame += msElapsed;
-
-			if (msSinceLastFrame > msBetweenFrames)
-			{
-				this.update();
-				msSinceLastFrame = 0;
-			}
-		},
-
 		// internal update logic. Replace this for custom functionality
-		update : function()
+		update : function(elapsedMS)
 		{
 			var x = 0;
 			var y = 0;
 
-			if (this.image && this.msBetweenFrames > 0)
-			{
-				if (this.mapDims.x > 1 || this.mapDims.y > 1)
+			if (this.animated) {
+				this.msSinceLastFrame += elapsedMS;
+				x = this.currentFrame.x + 1;
+				this.currentFrame.x = x % this.mapDims.x;
+
+				if (x === 0)
 				{
-					x = this.currentFrame.x + 1;
-					this.currentFrame.x = x % this.mapDims.x;
-
-					if (x === 0)
-					{
-						y = this.currentFrame.y + 1;
-						this.currentFrame.y = y % this.mapDims.y;
-					}
-
+					y = this.currentFrame.y + 1;
+					this.currentFrame.y = y % this.mapDims.y;
 				}
 			}
 		},
@@ -90,6 +72,14 @@ var ISIS_sprite = function(context)
 		}
 	};
 
+	var checkAnimated = function (sprite) {
+		var animated;
+
+		animated = (sprite.image != null && sprite.image != undefined) &&
+			(sprite.msBetweenFrames > 0) &&
+			(sprite.mapDims.x > 1 || sprite.mapDims.y > 1);
+	};
+
 	// constructor
 	return function(image, mapDims, msBetweenFrames)
 	{
@@ -111,7 +101,7 @@ var ISIS_sprite = function(context)
 			new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
 			new_sprite.frameDims.y = Math.floor(image.height / mapDims.y);
 			new_sprite.currentFrame = {x:0, y:0};
-
+			new_sprite.animated = checkAnimated(new_sprite);
 		}
 		else
 			new_sprite = null;
