@@ -3,27 +3,33 @@
 var ISIS_weapon = function (spriteManager) {
 	// prototype
 	var weapon_prototype = {
-		fire : function (target) {
+		setTarget : function (target) {
+			if (target) {
+				this.target = target;
+			}
+		},
+
+		fire : function () {
 			var roll;
 			var dodge;
 			var hit;
 			// do attack roll
 			roll = Math.d100();
-			dodge = target.dodge();
+			dodge = this.target.dodge();
 			hit = roll + this.hit_bonus > 50 + dodge;
 
 			// damage, if applicable
 			if (hit)
 			{
 				console.log(this.name + " hits(" + roll + "/"
-					+ (50 + dodge) + ") " + target.name + " for "
+					+ (50 + dodge) + ") " + this.target.name + " for "
 					+ this.damage +" points of damage");
-				target.takeDamage(this.damage);
+				this.target.takeDamage(this.damage);
 			}
 			else
 			{
 				console.log(this.name + " misses(" + roll + "/" +
-					(50 + dodge) + ") " + target.name);
+					(50 + dodge) + ") " + this.target.name);
 			}
 
 			// play animation
@@ -31,12 +37,14 @@ var ISIS_weapon = function (spriteManager) {
 				var proj = spriteManager.newSprite(
 					this.proj_texture, {x: 10, y:5}, 33);
 				proj.centerOn(this.owner.position);
-				var vector = Math.calcVector(proj.position, target.position);
+				var vector =
+					Math.calcVector(proj.position, this.target.position);
 				proj.disp = {x: vector.x * this.proj_speed,
 					y: vector.y * this.proj_speed};
 				proj.rotation =
-					Math.calculateLineAngle(proj.position, target.position);
-				proj.target = target;
+					Math.calculateLineAngle(proj.position,
+						this.target.position);
+				proj.target = this.target;
 				proj.hit = hit;
 				this.projectile = proj;
 			}
@@ -49,6 +57,15 @@ var ISIS_weapon = function (spriteManager) {
 		update : function (elapsed_ms) {
 			// update projectile
 			var proj = this.projectile;
+
+			if (this.target) {
+				this.current_charge += elapsed_ms;
+
+				if (this.current_charge > this.recycle) {
+					this.fire();
+					this.current_charge = 0;
+				}
+			}
 			if (proj) {
 				if (proj.target.collide(proj.position) && proj.hit) {
 					proj.destruct();
@@ -74,6 +91,7 @@ var ISIS_weapon = function (spriteManager) {
 			new_weapon.damage = damage;
 			new_weapon.hit_bonus = hit_bonus;
 			new_weapon.recycle = recycle;
+			new_weapon.current_charge = 0;
 
 			new_weapon.proj_texture = texture;
 			new_weapon.proj_speed = speed;
