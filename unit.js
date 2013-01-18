@@ -130,7 +130,7 @@ var ISIS_unit = function(context, content, spriteManager)
 			if (this.hullCurrent <= 0)
 			{
 				console.log("Unit " + this.name + " destroyed!");
-				this.sprite.destruct();
+				this.sprite.dispose();
 				this.destroyed = true;
 			}
 		},
