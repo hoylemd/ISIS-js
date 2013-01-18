@@ -1,12 +1,8 @@
 // Sprite object
 
-var ISIS_sprite = function(context)
-{
-	var sprite_prototype =
-	{
-		// internal update logic. Replace this for custom functionality
-		update : function(elapsedMS)
-		{
+var ISIS_sprite = function( context) {
+	var sprite_prototype = {
+		update : function(elapsedMS) {
 			var x = 0;
 			var y = 0;
 
@@ -60,15 +56,14 @@ var ISIS_sprite = function(context)
 			this.position.y += displacement.y;
 		},
 
-		register : function(man)
-		{
-			this.manager = man;
+		register : function (manager) {
+			this.manager = manager;
 		},
 
-		destruct : function()
-		{
-			if (this.manager)
+		dispose : function () {
+			if (this.manager) {
 				this.manager.removeSprite(this);
+			}
 		}
 	};
 
