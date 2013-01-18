@@ -23,8 +23,12 @@ var ISIS_engine = function()
 	// I/O object
 	var io = ISIS_IO();
 
+	// Projectile objects
+	var Projectile = ISIS_Projectile(this);
+	var projectile_manager = ISIS_ProjectileManager(Projectile)();
+
 	// weapon objects
-	var Weapon = ISIS_weapon(spriteManager);
+	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
 
 	// unit objects
 	var unit = ISIS_unit(objContext, images, spriteManager);
@@ -192,7 +196,7 @@ var ISIS_engine = function()
 		}
 		lastTime = now;
 
-		console.log("updating");
+		//console.log("updating");
 		// reset the window size
 		clientWidth = $(window).width();
 		clientHeight = $(window).height();
@@ -215,6 +219,10 @@ var ISIS_engine = function()
 		player.update(elapsed);
 		enemy.update(elapsed);
 
+		// update projectiles
+		projectile_manager.update(elapsed);
+
+		// update sprites
 		spriteManager.update(elapsed);
 
 		// draw Fleet views
@@ -272,8 +280,6 @@ var ISIS_engine = function()
 			//funUpdate();
 		}
 	);
-
-
 
 	// Expose objects
 	return {
