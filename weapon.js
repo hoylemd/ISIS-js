@@ -1,6 +1,6 @@
 // Weapon object
 
-var ISIS_weapon = function (spriteManager) {
+var ISIS_weapon = function (spriteManager, projectile_manager) {
 	// prototype
 	var weapon_prototype = {
 		setTarget : function (target) {
@@ -16,36 +16,14 @@ var ISIS_weapon = function (spriteManager) {
 			dodge = this.target.dodge();
 			hit = roll + this.hit_bonus > 50 + dodge;
 
-			// damage, if applicable
-			if (hit)
-			{
-				console.log(this.name + " hits(" + roll + "/"
-					+ (50 + dodge) + ") " + this.target.name + " for "
-					+ this.damage +" points of damage");
-				this.target.takeDamage(this.damage);
-			}
-			else
-			{
-				console.log(this.name + " misses(" + roll + "/" +
-					(50 + dodge) + ") " + this.target.name);
-			}
+			// make projectile
+			var proj_sprite = spriteManager.newSprite(this.proj_texture,
+				{x: 1, y: 1}, 0);
+			var fire_point =
+				{x: this.owner.position.x, y: this.owner.position.y};
 
-			// play animation
-			if (this.proj_texture != null) {
-				var proj = spriteManager.newSprite(
-					this.proj_texture, {x: 10, y:5}, 33);
-				proj.centerOn(this.owner.position);
-				var vector =
-					Math.calcVector(proj.position, this.target.position);
-				proj.disp = {x: vector.x * this.proj_speed,
-					y: vector.y * this.proj_speed};
-				proj.rotation =
-					Math.calculateLineAngle(proj.position,
-						this.target.position);
-				proj.target = this.target;
-				proj.hit = hit;
-				this.projectile = proj;
-			}
+			projectile_manager.newProjectile(proj_sprite, fire_point,
+				this.target, hit, this);
 		},
 
 		registerOwner : function (owner) {
@@ -69,15 +47,6 @@ var ISIS_weapon = function (spriteManager) {
 					this.current_charge = 0;
 				}
 			}
-			if (proj) {
-				if (proj.target.collide(proj.position) && proj.hit) {
-					proj.destruct();
-					this.projectile = null;
-				} else {
-					proj.move(this.projectile.disp);
-				}
-			}
-
 		}
 	};
 
