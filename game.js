@@ -114,6 +114,11 @@ var ISIS_engine = function()
 		enemyFleetView.addShip(enemy);
 		enemy.moveTo(850, 350);
 
+		// test text sprites
+		var testSprite = spriteManager.newTextSprite("test", "12px Courier",
+			"red").centerOn({x: 150, y: 150});
+
+
 		var mainLoop = function() {
 			funUpdate();
 			animFrame(mainLoop);
