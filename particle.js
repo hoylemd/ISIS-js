@@ -3,15 +3,14 @@
 var ISIS_Particle = function() {
 	var particle_prototype = {
 		checkContinue : function (displacement) {
-			var dX = Math.abs(this.destination.x - this.position.x);
-			var dY = Math.abs(this.destination.y - this.position.y);
+			var dX = Math.abs(this.destination.x - this.sprite.position.x);
+			var dY = Math.abs(this.destination.y - this.sprite.position.y);
 
 			return (dX > Math.abs(displacement.x) &&
 				dY > Math.abs(displacement.y));
 		},
 
 		update : function (elapsed) {
-
 			if (!elapsed) {
 				return;
 			}
@@ -57,7 +56,6 @@ var ISIS_Particle = function() {
 			new_particle.time = time;
 
 			sprite.centerOn(origin);
-			new_particle.position = sprite.position;
 
 			new_particle.vector = {x: destination.x - origin.x,
 				y: destination.y - origin.y};
