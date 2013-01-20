@@ -99,10 +99,10 @@ var ISIS_sprite = function( context) {
 			var metrics = {};
 			var height = 0;
 			var re = /[\d]/;
-			var size_index = text.search(re);
+			var size_index = font.search(re);
 			var frameDims = {};
 
-			if (size_index < 0) {
+			if (size_index >= 0) {
 				context.font = font;
 				metrics = context.measureText(text);
 				frameDims.x = metrics.width;
