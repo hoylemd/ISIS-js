@@ -22,6 +22,11 @@ function ISIS_spriteManager (Sprite, canvas)
 			return this.addSprite(new_sprite);
 		},
 
+		newTextSprite : function (text, font, colour) {
+			var new_sprite = Sprite.text(text, font, colour);
+			return this.addSprite(new_sprite);
+		},
+
 		removeSprite : function (sprite) {
 			var index = "";
 
