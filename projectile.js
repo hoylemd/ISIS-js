@@ -1,6 +1,6 @@
 // code file for Projectile objects
 
-var ISIS_Projectile = function() {
+var ISIS_Projectile = function(particle_manager, sprite_manager) {
 	var projectile_prototype = {
 		update : function (elapsed) {
 			if (this.sprite === null) {
@@ -37,6 +37,12 @@ var ISIS_Projectile = function() {
 		},
 
 		spawnHitText : function () {
+			var hitText = "" + (this.hit ? this.weapon.damage : "Miss");
+			var sprite = sprite_manager.newTextSprite(hitText, "14pt Courier",
+				"#888888");
+			var destination = {x: this.position.x, y: this.position.y - 15};
+			particle_manager.newParticle(sprite, this.position, destination,
+				1500);
 		},
 
 		register : function (manager) {
