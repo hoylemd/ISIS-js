@@ -115,14 +115,14 @@ var ISIS_engine = function()
 		enemy.moveTo(850, 350);
 
 		// test text sprites
-		spriteManager.newTextSprite("test", "12px Courier",
-			"red").centerOn({x: 150, y: 150});
+		//spriteManager.newTextSprite("test", "12px Courier",
+		//	"red").centerOn({x: 150, y: 150});
 
 		// test particle
-		var part_sprite = spriteManager.newTextSprite("wheee!",
-			"16pt Calibri", "blue");
-		particle_manager.newParticle(part_sprite, {x: 50, y: 50},
-			{x: 550, y: 50}, 5000);
+		//var part_sprite = spriteManager.newTextSprite("wheee!",
+		//	"16pt Calibri", "blue");
+		//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
+		//	{x: 550, y: 50}, 5000);
 
 
 		var mainLoop = function() {
