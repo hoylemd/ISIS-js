@@ -38,7 +38,7 @@ var ISIS_sprite = function( context) {
 
 			if (this.text) {
 				context.font = this.font;
-				context.fillStyle = this.color;
+				context.fillStyle = this.colour;
 				context.textBaseline = "top";
 				context.fillText(this.text, 0, 0);
 			}
@@ -98,7 +98,8 @@ var ISIS_sprite = function( context) {
 	var getTextFrameDims = function (text, font) {
 			var metrics = {};
 			var height = 0;
-			var size_index = /[\d]/.search();
+			var re = /[\d]/;
+			var size_index = text.search(re);
 			var frameDims = {};
 
 			if (size_index < 0) {
@@ -140,7 +141,7 @@ var ISIS_sprite = function( context) {
 		text: function(text, font, colour) {
 			var new_sprite = newSprite();
 
-			if (text && font && size * colour) {
+			if (text && font && colour) {
 				new_sprite.text = text;
 				new_sprite.font = font;
 				new_sprite.colour = colour;
