@@ -56,6 +56,7 @@ var ISIS_Particle = function() {
 			new_particle.time = time;
 
 			sprite.centerOn(origin);
+			new_particle.position = sprite.position;
 
 			new_particle.vector = {x: destination.x - origin.x,
 				y: destination.y - origin.y};
