@@ -24,8 +24,12 @@ var ISIS_engine = function()
 	var io = ISIS_IO();
 
 	// Projectile objects
-	var Projectile = ISIS_Projectile(this);
+	var Projectile = ISIS_Projectile();
 	var projectile_manager = ISIS_ProjectileManager(Projectile)();
+
+	// Particle objects
+	var Particle = ISIS_Particle();
+	var particle_manager = ISIS_ParticleManager(Particle)();
 
 	// weapon objects
 	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
@@ -88,12 +92,14 @@ var ISIS_engine = function()
 		player = unit("ArkadianCruiser", {x:1, y:1}, 0);
 		player.name = "Arkadian Cruiser";
 		player.setHull(100);
-		player.addWeapon(Weapon("Arkadian Railgun", 10, 25, 1500, images["bullet"], 25));
+		player.addWeapon(Weapon("Arkadian Railgun", 10, 25, 1500,
+			images["bullet"], 25));
 
 		enemy = unit("TerranCruiser", {x:1, y:1}, 0);
 		enemy.name = "Terran Cruiser";
 		enemy.setHull(150);
-		enemy.addWeapon(Weapon("Terran Mass Driver", 25, 10, 3000, images["bullet"], 20));
+		enemy.addWeapon(Weapon("Terran Mass Driver", 25, 10, 3000,
+			images["bullet"], 20));
 
 		playerFleetView = fleetView(images["spaceTile"], SpriteManager());
 		playerFleetView.move(0, 0);
@@ -221,6 +227,9 @@ var ISIS_engine = function()
 
 		// update projectiles
 		projectile_manager.update(elapsed);
+
+		// update projectiles
+		particle_manager.update(elapsed);
 
 		// update sprites
 		spriteManager.update(elapsed);
