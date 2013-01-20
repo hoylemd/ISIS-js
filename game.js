@@ -205,12 +205,12 @@ var ISIS_engine = function()
 	var funUpdate = function()
 	{
 		var now = new Date();
-		var elapsed = null;
-		var elapsedMS = 0;
+		var elapsed = 0;
 
 		if (lastTime != undefined) {
 			elapsed = now.getTime() - lastTime.getTime();
 		}
+		//elapsed = 10;
 		lastTime = now;
 
 		//console.log("updating");
