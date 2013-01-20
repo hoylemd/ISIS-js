@@ -19,17 +19,28 @@ var ISIS_sprite = function( context) {
 			}
 		},
 
+		rotateContext : function () {
+			context.translate(0.5 * this.frameDims.x, 0.5 * this.frameDims.y);
+			context.rotate(this.rotation);
+			context.translate(
+				-0.5 * this.frameDims.x, -0.5 * this.frameDims.y);
+		},
+
 		draw : function()
 		{
+			context.reset();
+			context.translate(this.position.x, this.position.y);
+			this.rotateContext();
 			if (this.image)
 			{
-				context.reset();
-				context.translate(this.position.x + 0.5 * this.frameDims.x,
-					   	this.position.y + 0.5 * this.frameDims.y);
-				context.rotate(this.rotation);
+				context.drawImage(this.image, 0, 0);
+			}
 
-				context.drawImage(this.image, -0.5 * this.frameDims.x,
-						-0.5 * this.frameDims.y);
+			if (this.text) {
+				context.font = this.font;
+				context.fillStyle = this.color;
+				context.textBaseline = "top";
+				context.fillText(this.text, 0, 0);
 			}
 
 		},
@@ -75,33 +86,72 @@ var ISIS_sprite = function( context) {
 			(sprite.mapDims.x > 1 || sprite.mapDims.y > 1);
 	};
 
-	// constructor
-	return function(image, mapDims, msBetweenFrames)
-	{
-		var new_sprite = {
-			__proto__ : sprite_prototype
-		};
-
-		if (image && mapDims)
-		{
-			new_sprite.position = {x:0, y:0};
-			new_sprite.rotation = 0;
-
-			new_sprite.image = image;
-			new_sprite.mapDims = mapDims;
-			new_sprite.msBetweenFrames = msBetweenFrames;
-			new_sprite.msSinceLastFrame = 0;
-
-			new_sprite.frameDims = {};
-			new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
-			new_sprite.frameDims.y = Math.floor(image.height / mapDims.y);
-			new_sprite.currentFrame = {x:0, y:0};
-			new_sprite.animated = checkAnimated(new_sprite);
+	var newSprite = function () {
+		return {
+			__proto__ : sprite_prototype,
+			position : {x:0, y:0},
+			rotation : 0,
+			animated : false
 		}
-		else
-			new_sprite = null;
+	};
 
-		return new_sprite;
+	var getTextFrameDims = function (text, font) {
+			var metrics = {};
+			var height = 0;
+			var size_index = /[\d]/.search();
+			var frameDims = {};
+
+			if (size_index < 0) {
+				context.font = font;
+				metrics = context.measureText(text);
+				frameDims.x = metrics.width;
+				frameDims.y = parseFloat(font.substring(size_index));
+			} else {
+				frameDims = null;
+				console.log(
+					"invalid font string passed. cannot calulate frameDims.");
+			}
+
+			return frameDims;
+	};
+
+	// constructor
+	return {
+		standard: function(image, mapDims, msBetweenFrames) {
+			var new_sprite = newSprite();
+
+			if (image && mapDims) {
+				new_sprite.image = image;
+				new_sprite.mapDims = mapDims;
+				new_sprite.msBetweenFrames = msBetweenFrames;
+				new_sprite.msSinceLastFrame = 0;
+
+				new_sprite.frameDims = {};
+				new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
+				new_sprite.frameDims.y = Math.floor(image.height / mapDims.y);
+				new_sprite.currentFrame = {x:0, y:0};
+				new_sprite.animated = checkAnimated(new_sprite);
+			} else {
+				new_sprite = null;
+			}
+			return new_sprite;
+		},
+
+		text: function(text, font, colour) {
+			var new_sprite = newSprite();
+
+			if (text && font && size * colour) {
+				new_sprite.text = text;
+				new_sprite.font = font;
+				new_sprite.colour = colour;
+
+				new_sprite.frameDims = getTextFrameDims(text, font);
+			} else {
+				new_sprite = null;
+			}
+
+			return new_sprite;
+		}
 	}
 
 };
