@@ -18,7 +18,7 @@ function ISIS_spriteManager (Sprite, canvas)
 		},
 
 		newSprite : function (image, mapDims, msBetweenFrames) {
-			var new_sprite = Sprite(image, mapDims, msBetweenFrames);
+			var new_sprite = Sprite.standard(image, mapDims, msBetweenFrames);
 			return this.addSprite(new_sprite);
 		},
 
