@@ -23,13 +23,13 @@ var ISIS_engine = function()
 	// I/O object
 	var io = ISIS_IO();
 
-	// Projectile objects
-	var Projectile = ISIS_Projectile();
-	var projectile_manager = ISIS_ProjectileManager(Projectile)();
-
 	// Particle objects
 	var Particle = ISIS_Particle();
 	var particle_manager = ISIS_ParticleManager(Particle)();
+
+	// Projectile objects
+	var Projectile = ISIS_Projectile(particle_manager, spriteManager);
+	var projectile_manager = ISIS_ProjectileManager(Projectile)();
 
 	// weapon objects
 	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
