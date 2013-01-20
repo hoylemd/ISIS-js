@@ -6,13 +6,18 @@ var ISIS_Particle = function() {
 			var dX = Math.abs(this.destination.x - this.position.x);
 			var dY = Math.abs(this.destination.y - this.position.y);
 
-			return (dX > Math.abs(displacement.x) ||
+			return (dX > Math.abs(displacement.x) &&
 				dY > Math.abs(displacement.y));
 		},
 
 		update : function (elapsed) {
+
+			if (!elapsed) {
+				return;
+			}
+
 			var speed = elapsed / this.time;
-			var displacement = {x: this.vector.y * speed,
+			var displacement = {x: this.vector.x * speed,
 				y: this.vector.y * speed};
 
 			if (this.sprite === null || this.done) {
@@ -20,7 +25,7 @@ var ISIS_Particle = function() {
 				return;
 			}
 
-			this.done = this.checkContinue(displacement);
+			this.done = !this.checkContinue(displacement);
 
 			this.sprite.move(displacement);
 		},
@@ -41,7 +46,6 @@ var ISIS_Particle = function() {
 
 	return function (sprite, origin, destination, time)
 	{
-		var vector = {x: 0, y: 0};
 		var new_particle = {
 			__proto__ : particle_prototype
 		}
@@ -50,12 +54,13 @@ var ISIS_Particle = function() {
 			new_particle.sprite = sprite;
 			new_particle.destination = destination;
 			new_particle.done = false;
+			new_particle.time = time;
 
 			sprite.centerOn(origin);
 			new_particle.position = sprite.position;
 
-			vector = Math.calcVector(origin, destination);
-			new_particle.vector = vector;
+			new_particle.vector = {x: destination.x - origin.x,
+				y: destination.y - origin.y};
 
 		} else {
 			console.log("particle is missing some arguments");
