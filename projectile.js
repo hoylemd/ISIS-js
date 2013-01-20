@@ -1,6 +1,6 @@
 // code file for Projectile objects
 
-var ISIS_Projectile = function(game) {
+var ISIS_Projectile = function() {
 	var projectile_prototype = {
 		update : function (elapsed) {
 			if (this.sprite === null) {
@@ -14,6 +14,7 @@ var ISIS_Projectile = function(game) {
 
 			if (this.target.collide(this.position) && !this.done) {
 				this.done = true;
+				this.spawnHitText();
 				if (this.hit) {
 					console.log(this.weapon.name  +" hits " +
 						this.target.name + " for " + this.weapon.damage +
@@ -33,6 +34,9 @@ var ISIS_Projectile = function(game) {
 			if (!this.done || !this.hit) {
 				this.sprite.move(this.displacement);
 			}
+		},
+
+		spawnHitText : function () {
 		},
 
 		register : function (manager) {
