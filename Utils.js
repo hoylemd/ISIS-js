@@ -25,8 +25,12 @@ var ISIS_IO = function()
 		var y = p2.y - p1.y;
 		var theta = Math.atan(x / y);
 		var vector = {x: 0, y: 0};
-		vector.x = Math.abs(Math.sin(theta));
-		vector.y = Math.abs(Math.cos(theta));
+		if (x != 0) {
+			vector.x = Math.abs(Math.sin(theta));
+		}
+		if (y != 0) {
+			vector.y = Math.abs(Math.cos(theta));
+		}
 
 		if (p1.x > p2.x){
 			vector.x *= -1;
