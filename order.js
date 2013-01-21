@@ -1,18 +1,14 @@
 // Orders object file
 
 // Builder function for orders factory object
-var ISIS_order = function()
-{
-
+var ISIS_order = function(){
 	// Order class prototype (hidden)
-	var order_prototype =
-	{
+	var order_prototype = {
 	};
 
 	// construct object
 	return {
-		attack: function(source, target)
-		{
+		attack: function(source, target) {
 			// build the prototype
 			var new_order = {
 				__proto__ : order_prototype
