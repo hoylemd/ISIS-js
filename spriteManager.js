@@ -27,6 +27,11 @@ function ISIS_spriteManager (Sprite, canvas)
 			return this.addSprite(new_sprite);
 		},
 
+		newBarSprite : function (dimensions, full_colour, empty_colour) {
+			var new_sprite = Sprite.bar(dimensions, full_colour, empty_colour);
+			return this.addSprite(new_sprite);
+		},
+
 		removeSprite : function (sprite) {
 			var index = "";
 
