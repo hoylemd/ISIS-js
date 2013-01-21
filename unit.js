@@ -39,7 +39,8 @@ var ISIS_unit = function(context, content, spriteManager)
 
 			// move the sprite
 			this.sprite.centerOn(this.position);
-
+			var health_bar_y = (newY + 0.5 * this.sprite.frameDims.y) - 15;
+			this.health_bar.centerOn({x: newX, y: health_bar_y });
 		},
 
 		rotate: function(rads)
@@ -131,6 +132,7 @@ var ISIS_unit = function(context, content, spriteManager)
 			{
 				console.log("Unit " + this.name + " destroyed!");
 				this.sprite.dispose();
+				this.health_bar.dispose();
 				this.destroyed = true;
 			}
 		},
@@ -161,6 +163,14 @@ var ISIS_unit = function(context, content, spriteManager)
 		update : function (elapsed_ms) {
 			// update children
 			this.weapon.update(elapsed_ms);
+			this.health_bar.value = this.hullCurrent / this.hullMax;
+
+			// check if attack order is still valid
+			if (this.orders.attack) {
+				if (this.orders.attack.target.destroyed) {
+					this.orders.attack = null;
+				}
+			}
 		}
 	}
 
@@ -178,6 +188,9 @@ var ISIS_unit = function(context, content, spriteManager)
 		// add the sprite if it exists
 		new_unit.sprite = spriteManager.newSprite(
 			(content[texture]), mapDims, msBetweenFrames);
+		var health_bar_dims = {x: new_unit.sprite.frameDims.x * 0.8, y: 10};
+		new_unit.health_bar = spriteManager.newBarSprite(health_bar_dims,
+			"green", "red");
 
 		// instantiate a new position
 		new_unit.position = {x: 0, y:0};
@@ -192,7 +205,6 @@ var ISIS_unit = function(context, content, spriteManager)
 
 		// default weapon
 		new_unit.weapon = null;
-
 		new_unit.destroyed = false;
 
 		// return the new unit
