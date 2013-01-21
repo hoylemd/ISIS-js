@@ -43,6 +43,14 @@ var ISIS_sprite = function( context) {
 				context.fillText(this.text, 0, 0);
 			}
 
+			if (this.value) {
+				context.fillStyle = this.empty_colour;
+				context.fillRect(0, 0, this.frameDims.x, this.frameDims.y);
+				context.fillStyle = this.full_colour;
+				context.fillRect(0, 0, this.frameDims.x * this.value,
+					this.frameDims.y);
+			}
+
 		},
 
 		rotate : function(rads)
@@ -134,6 +142,7 @@ var ISIS_sprite = function( context) {
 				new_sprite.animated = checkAnimated(new_sprite);
 			} else {
 				new_sprite = null;
+				console.log("invalid Sprite parameters.");
 			}
 			return new_sprite;
 		},
@@ -149,6 +158,23 @@ var ISIS_sprite = function( context) {
 				new_sprite.frameDims = getTextFrameDims(text, font);
 			} else {
 				new_sprite = null;
+				console.log("invalid TextSprite parameters.");
+			}
+
+			return new_sprite;
+		},
+
+		bar: function (dimensions, full_colour, empty_colour) {
+			var new_sprite = newSprite();
+
+			if (dimensions && full_colour && empty_colour) {
+				new_sprite.frameDims = dimensions;
+				new_sprite.full_colour = full_colour;
+				new_sprite.empty_colour = empty_colour;
+				new_sprite.value = 1;
+			} else {
+				new_sprite = null;
+				console.log("invalid BarSprite parameters.");
 			}
 
 			return new_sprite;
