@@ -92,8 +92,7 @@ var ISIS_unit = function(context, content, spriteManager)
 		},
 
 		// order registration
-		registerOrder : function(order)
-		{
+		registerOrder : function (order) {
 			if (order.name === "attack")
 			{
 				order.x = order.target.x;
@@ -104,8 +103,7 @@ var ISIS_unit = function(context, content, spriteManager)
 		},
 
 		// carry out orders function
-		carryOut : function()
-		{
+		carryOut : function () {
 			var attack = this.orders.attack;
 			// attack order
 			if (attack) {
@@ -123,6 +121,15 @@ var ISIS_unit = function(context, content, spriteManager)
 			}
 		},
 
+		wreck: function () {
+			console.log("Unit " + this.name + " destroyed!");
+			this.sprite.dispose();
+			this.health_bar.dispose();
+			this.destroyed = true;
+			this.orders.attack = null;
+			this.carryOut();
+		},
+
 		// damage ship
 		takeDamage : function(amount)
 		{
@@ -130,10 +137,7 @@ var ISIS_unit = function(context, content, spriteManager)
 
 			if (this.hullCurrent <= 0)
 			{
-				console.log("Unit " + this.name + " destroyed!");
-				this.sprite.dispose();
-				this.health_bar.dispose();
-				this.destroyed = true;
+				this.wreck();
 			}
 		},
 
