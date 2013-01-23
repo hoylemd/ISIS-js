@@ -98,7 +98,7 @@ var ISIS_engine = function()
 		enemy = unit("TerranCruiser", {x:1, y:1}, 0);
 		enemy.name = "Terran Cruiser";
 		enemy.setHull(150);
-		enemy.addWeapon(Weapon("Terran Mass Driver", 25, 10, 3000,
+		enemy.addWeapon(Weapon("Terran Mass Driver", 18, 10, 3000,
 			images["bullet"], 20));
 
 		playerFleetView = fleetView(images["spaceTile"], SpriteManager());
@@ -114,6 +114,8 @@ var ISIS_engine = function()
 		enemyFleetView.addShip(enemy);
 		enemy.moveTo(850, 350);
 
+		enemy.registerOrder(orders.attack(enemy, player));
+		enemy.carryOut();
 		// test text sprites
 		//spriteManager.newTextSprite("test", "12px Courier",
 		//	"red").centerOn({x: 150, y: 150});
