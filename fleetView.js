@@ -2,10 +2,8 @@
 // author: hoylemd
 
 // main setup function
-var ISIS_fleetView = function(context)
-{
-	var funDrawBackground = function()
-	{
+var ISIS_fleetView = function (context) {
+	var funDrawBackground = function () {
 		var i = 0;
 		var j = 0;
 		var xMoved = 0;
@@ -25,12 +23,10 @@ var ISIS_fleetView = function(context)
 		// move to the view position
 		context.translate(this.position.x, this.position.y);
 		//draw rows
-		for (i = 0; i < this.tiles.y; i++)
-		{
+		for (i = 0; i < this.tiles.y; i++) {
 			xMoved = 0;
 			// draw each tile
-			for(j = 0; j < this.tiles.x; j++)
-			{
+			for (j = 0; j < this.tiles.x; j++) {
 				context.drawImage(this.tileImage, -this.tileOffset.x,
 					-this.tileOffset.y);
 				context.translate(this.tileDimensions.x, 0);
@@ -45,8 +41,7 @@ var ISIS_fleetView = function(context)
 	};
 
 	// function to draw the grid lines
-	var funDrawGrid = function()
-	{
+	var funDrawGrid = function() {
 		// set up for grid drawing
 		context.reset();
 		context.translate(this.position.x, this.position.y);
@@ -59,8 +54,7 @@ var ISIS_fleetView = function(context)
 		var currY = -0.5;
 
 		// draw vertical lines
-		for(var i = 1; i < this.tiles.x; i++)
-		{
+		for(var i = 1; i < this.tiles.x; i++) {
 			currX += this.tileDimensions.x;
 			context.moveTo(currX, currY);
 			context.lineTo(currX, currY + this.dimensions.y + 1);
@@ -71,8 +65,7 @@ var ISIS_fleetView = function(context)
 		var currY = -0.5;
 
 		// draw horizontal lines
-		for(var i = 1; i < this.tiles.y; i++)
-		{
+		for (var i = 1; i < this.tiles.y; i++) {
 			currY += 100;
 			context.moveTo(currX, currY);
 			context.lineTo(currX + this.dimensions.x + 1, currY);
@@ -83,8 +76,7 @@ var ISIS_fleetView = function(context)
 		context.reset();
 	}
 
-	var funResize = function(x, y)
-	{
+	var funResize = function (x, y) {
 		this.dimensions.x = x;
 		this.dimensions.y = y;
 
@@ -92,14 +84,12 @@ var ISIS_fleetView = function(context)
 		this.tiles.y = Math.floor(y / this.tileDimensions.y);
 	};
 
-	var funMove = function(x, y)
-	{
+	var funMove = function(x, y) {
 		this.position.x = x;
 		this.position.y = y;
 	};
 
-	var funAddShip = function(ship)
-	{
+	var funAddShip = function(ship) {
 		var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x
 		var posy = Math.floor(this.tiles.y / 2) * this.tileDimensions.y
 		posx += this.position.x;
@@ -110,9 +100,7 @@ var ISIS_fleetView = function(context)
 		this.shipList.push(ship);
 	};
 
-	var fleetView_prototype =
-	{
-
+	var fleetView_prototype = {
 		// sprite drawing data
 		spriteRotation: 0,
 		drawBackground: funDrawBackground,
@@ -128,8 +116,7 @@ var ISIS_fleetView = function(context)
 	};
 
 	// constructor
-	return function(tileImage)
-	{
+	return function (tileImage) {
 		var ix = tileImage.width;
 		var iy = tileImage.height;
 
@@ -151,7 +138,6 @@ var ISIS_fleetView = function(context)
 			tileOffset : {x : ix / 2, y:iy / 2},
 			tileImage : tileImage
 		};
-
 
 		return new_fv;
 	}
