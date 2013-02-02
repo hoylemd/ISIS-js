@@ -19,7 +19,7 @@ var ISIS_Projectile = function(particle_manager, sprite_manager) {
 					console.log(this.weapon.name  +" hits " +
 						this.target.name + " for " + this.weapon.damage +
 						" points of damage");
-					this.target.takeDamage(this.weapon.damage);
+					this.target.takeDamage(this.weapon.damage, this.position);
 					this.dispose();
 				} else {
 					console.log(this.weapon.name + " misses " +
