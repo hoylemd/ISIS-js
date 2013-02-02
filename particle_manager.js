@@ -15,9 +15,10 @@ function ISIS_ParticleManager (Particle) {
 			}
 		},
 
-		newParticle : function (sprite, origin, destination, time) {
+		newParticle :
+			function (sprite, origin, destination, time, rotation, fade) {
 			var new_particle =
-				Particle(sprite, origin, destination, time);
+				Particle(sprite, origin, destination, time, rotation, fade);
 			return this.addParticle(new_particle);
 		},
 
