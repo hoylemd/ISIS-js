@@ -35,7 +35,7 @@ var ISIS_engine = function()
 	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
 
 	// unit objects
-	var unit = ISIS_unit(objContext, images, spriteManager);
+	var unit = ISIS_unit(objContext, images, spriteManager, particle_manager);
 	var player = null;
 	var enemy = null;
 
