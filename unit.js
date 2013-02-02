@@ -2,7 +2,7 @@
 // author: hoylemd
 
 // Main setup function
-var ISIS_unit = function(context, content, spriteManager)
+var ISIS_unit = function(context, content, spriteManager, particle_manager)
 {
 	// tile constant
 	var tileSize = 100;
@@ -136,8 +136,17 @@ var ISIS_unit = function(context, content, spriteManager)
 
 			// spawn debris
 			// choose debris texture
-			// spawn debris particle
-			// set to rotate, move, fade
+			var which = Math.floor(Math.random() * 3);
+			var sprite = spriteManager.newSprite(this.debris[which],
+				{x: 1, y: 1}, 0);
+			// choose rotation & rate
+			sprite.setRotation = Math.random();
+			var rate = (Math.random() - 0.5) / 5;
+			// choose destination
+			var destination = {x: position.x + (Math.random() * 300) - 150,
+				y: position.y + (Math.random() * 300) - 150};
+			var debris_particle = particle_manager.newParticle(sprite,
+				position, destination, 1000, rate, true);
 
 			if (this.hullCurrent <= 0) {
 				this.wreck();
