@@ -53,13 +53,16 @@ var ISIS_sprite = function( context) {
 
 		},
 
-		rotate : function(rads)
-		{
-			this.rotation = rads;
+		rotate : function (rads) {
+			this.rotation = (this.rotation + rads) % Math.TAU;
 		},
 
-		moveTo : function(coords)
-		{
+		rotateTo : function (rads) {
+			console.log(rads + " " + Math.TAU);
+			this.rotation = rads % Math.TAU;
+		},
+
+		moveTo : function (coords) {
 			this.position = {x:coords.x, y:coords.y};
 		},
 
