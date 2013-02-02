@@ -26,6 +26,10 @@ var ISIS_Particle = function() {
 
 			this.done = !this.checkContinue(displacement);
 
+			if (this.rotation) {
+				this.sprite.rotate(this.rotation);
+			}
+
 			this.sprite.move(displacement);
 		},
 
@@ -43,8 +47,7 @@ var ISIS_Particle = function() {
 		}
 	};
 
-	return function (sprite, origin, destination, time)
-	{
+	return function (sprite, origin, destination, time, rotation, fade) {
 		var new_particle = {
 			__proto__ : particle_prototype
 		}
@@ -54,6 +57,8 @@ var ISIS_Particle = function() {
 			new_particle.destination = destination;
 			new_particle.done = false;
 			new_particle.time = time;
+			new_particle.rotation = rotation;
+			new_particle.fade = fade;
 
 			sprite.centerOn(origin);
 			new_particle.position = sprite.position;
