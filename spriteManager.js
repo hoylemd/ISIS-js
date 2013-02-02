@@ -1,9 +1,7 @@
 // Sprite manager object
 
-function ISIS_spriteManager (Sprite, canvas)
-{
-	var spriteManager_prototype =
-	{
+function ISIS_spriteManager (Sprite, canvas) {
+	var spriteManager_prototype = {
 		addSprite : function (sprite) {
 			var newId = this.numSprites;
 
