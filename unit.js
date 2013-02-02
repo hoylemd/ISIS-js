@@ -131,10 +131,13 @@ var ISIS_unit = function(context, content, spriteManager)
 		},
 
 		// damage ship
-		takeDamage : function(amount) {
+		takeDamage : function(amount, position) {
 			this.hullCurrent -= amount;
 
 			// spawn debris
+			// choose debris texture
+			// spawn debris particle
+			// set to rotate, move, fade
 
 			if (this.hullCurrent <= 0) {
 				this.wreck();
