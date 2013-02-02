@@ -43,9 +43,9 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			this.health_bar.centerOn({x: newX, y: health_bar_y });
 		},
 
-		rotate: function(rads)
+		rotateTo: function(rads)
 		{
-			this.sprite.rotate(rads);
+			this.sprite.rotateTo(rads);
 		},
 
 		drawLines: function()
