@@ -131,12 +131,12 @@ var ISIS_unit = function(context, content, spriteManager)
 		},
 
 		// damage ship
-		takeDamage : function(amount)
-		{
+		takeDamage : function(amount) {
 			this.hullCurrent -= amount;
 
-			if (this.hullCurrent <= 0)
-			{
+			// spawn debris
+
+			if (this.hullCurrent <= 0) {
 				this.wreck();
 			}
 		},
@@ -179,37 +179,32 @@ var ISIS_unit = function(context, content, spriteManager)
 	}
 
 	// builder function for unit
-	return function(texture, mapDims, msBetweenFrames)
-	{
-		// build the prototyoe
-		var new_unit =  {
-			__proto__ : unit_prototype
-		};
-
-		// add the name
-		new_unit.name = "Unnamed Unit";
-
-		// add the sprite if it exists
-		new_unit.sprite = spriteManager.newSprite(
+	return function(texture, mapDims, msBetweenFrames, debris) {
+		// prepare sprites
+		var sprite = spriteManager.newSprite(
 			(content[texture]), mapDims, msBetweenFrames);
-		var health_bar_dims = {x: new_unit.sprite.frameDims.x * 0.8, y: 10};
-		new_unit.health_bar = spriteManager.newBarSprite(health_bar_dims,
+		var health_bar_dims = {x: sprite.frameDims.x * 0.8, y: 10};
+		var health_bar = spriteManager.newBarSprite(health_bar_dims,
 			"green", "red");
 
-		// instantiate a new position
-		new_unit.position = {x: 0, y:0};
-
-		// add the orders object
-		new_unit.orders = {};
-
-		// default combat stats;
-		new_unit.hullMax = 5;
-		new_unit.hullCurrent = 5;
-		new_unit.dodgeBonus = 10;
-
-		// default weapon
-		new_unit.weapon = null;
-		new_unit.destroyed = false;
+		// build the object
+		var new_unit =  {
+			__proto__ : unit_prototype,
+			// sprites
+			debris: debris,
+			sprite: sprite,
+			health_bar : health_bar,
+			// general stuff
+			name: "Unnamed Unit",
+			position : {x: 0, y:0},
+			// combat stats
+			orders : {},
+			hullMax : 5,
+			hullCurrent : 5,
+			dodgeBonus : 10,
+			weapon : null,
+			destroyed : false
+		};
 
 		// return the new unit
 		return new_unit;
