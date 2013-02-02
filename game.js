@@ -84,18 +84,25 @@ var ISIS_engine = function()
 			loaded: false},
 		"AttackButtonPressed" : {id: "AttackButtonPressed",
 			path: "AttackButtonPressed.png", loaded: false},
-		"bullet" : {id: "bullet", path: "bullet.png", loaded: false}
+		"bullet" : {id: "bullet", path: "bullet.png", loaded: false},
+		"debris1" : {id: "debris1", path: "debris1.png", loaded: false},
+		"debris2" : {id: "debris2", path: "debris2.png", loaded: false},
+		"debris3" : {id: "debris3", path: "debris3.png", loaded: false}
 	};
 
 	// function to initialize the game
 	var funInitGame = function(){
-		player = unit("ArkadianCruiser", {x:1, y:1}, 0);
+		// initialize the debris libraries
+		var debris_library = [images["debris1"], images["debris2"],
+			images["debris3"]];
+
+		player = unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
 		player.name = "Arkadian Cruiser";
 		player.setHull(100);
 		player.addWeapon(Weapon("Arkadian Railgun", 10, 25, 1500,
 			images["bullet"], 25));
 
-		enemy = unit("TerranCruiser", {x:1, y:1}, 0);
+		enemy = unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
 		enemy.name = "Terran Cruiser";
 		enemy.setHull(150);
 		enemy.addWeapon(Weapon("Terran Mass Driver", 18, 10, 3000,
