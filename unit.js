@@ -187,6 +187,10 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 					this.orders.attack = null;
 				}
 			}
+		},
+
+		registerView : function (fleetView) {
+			this.fleetView = fleetView;
 		}
 	}
 
@@ -209,6 +213,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			// general stuff
 			name: "Unnamed Unit",
 			position : sprite.position,
+			fleetView : null,
 			// combat stats
 			orders : {},
 			hullMax : 5,
