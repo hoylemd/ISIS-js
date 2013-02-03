@@ -25,8 +25,10 @@ function ISIS_spriteManager (Sprite, canvas) {
 			return this.addSprite(new_sprite);
 		},
 
-		newBarSprite : function (dimensions, full_colour, empty_colour) {
-			var new_sprite = Sprite.bar(dimensions, full_colour, empty_colour);
+		newBarSprite : function (dimensions, full_colour, empty_colour,
+			critical_colour, critical_threshold) {
+			var new_sprite = Sprite.bar(dimensions, full_colour,
+				empty_colour, critical_colour, critical_threshold);
 			return this.addSprite(new_sprite);
 		},
 
