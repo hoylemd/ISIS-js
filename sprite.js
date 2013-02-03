@@ -28,6 +28,10 @@ var ISIS_sprite = function( context) {
 
 		draw : function()
 		{
+			if (this.hidden) {
+				return;
+			}
+
 			context.reset();
 			context.translate(this.position.x, this.position.y);
 			this.rotateContext();
@@ -113,7 +117,8 @@ var ISIS_sprite = function( context) {
 			position : {x:0, y:0},
 			rotation : 0,
 			animated : false,
-			alpha : 1
+			alpha : 1,
+			hidden : false
 		}
 	};
 
