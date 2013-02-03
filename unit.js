@@ -58,21 +58,24 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			{
 				if (this.orders[order])
 				{
+					var ord = this.orders[order];
 					context.reset();
+
 					context.beginPath();
 
 					// set up line drawing
 					context.lineWidth = 1;
-					context.strokeStyle = this.orders[order].colour;
+					context.strokeStyle = ord.colour;
 
 					// draw the line
-					context.moveTo(this.position.x ,this.position.y);
-					context.lineTo(this.orders[order].position.x,
-							this.orders[order].position.y);
+					if (ord.pending ) {
+						context.dashedLineTo(this.position, ord.position,
+							[20, 20]);
+					} else {
+						context.moveTo(this.position.x ,this.position.y);
+						context.lineTo(ord.position.x, ord.position.y);
+					}
 					context.stroke();
-
-					// reset
-					context.reset();
 				}
 			}
 		},
