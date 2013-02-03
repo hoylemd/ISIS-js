@@ -178,6 +178,7 @@ var ISIS_engine = function()
 	objContext.reset = function()
 	{
 		this.setTransform(1, 0, 0, 1, 0, 0);
+		this.globalAlpha = 1;
 	};
 
 	// function to draw the bottom orders bar
