@@ -65,28 +65,24 @@ Math.d100 = function() {
 	return Math.dx(100);
 }
 
-// Add the calcVector function to Math
+// Add the calcVector functions to Math
 Math.calcVector = function(p1, p2) {
 	var x = p2.x - p1.x;
 	var y = p2.y - p1.y;
-	var theta = Math.atan(x / y);
-	var vector = {x: 0, y: 0};
-	if (x != 0) {
-		vector.x = Math.abs(Math.sin(theta));
-	}
-	if (y != 0) {
-		vector.y = Math.abs(Math.cos(theta));
-	}
 
-	if (p1.x > p2.x){
-		vector.x *= -1;
-	}
+	return Math.calcUnitVector({x: x, y: y});
+};
 
-	if (p1.y > p2.y) {
-		vector.y *= -1;
-	}
+Math.calcUnitVector = function (delta) {
+	var theta = Math.atan2(delta.x, delta.y);
+	return Math.calcAngleVector(theta);
+};
 
-	return vector;
+Math.calcAngleVector = function (theta) {
+	return {
+		x: Math.sin(theta),
+		y: Math.cos(theta)
+	};
 };
 
 // Function to get the angle in radians between two points
