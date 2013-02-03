@@ -194,7 +194,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			(content[texture]), mapDims, msBetweenFrames);
 		var health_bar_dims = {x: sprite.frameDims.x * 0.8, y: 10};
 		var health_bar = spriteManager.newBarSprite(health_bar_dims,
-			"green", "red");
+			"green", "red", "yellow", 0.2);
 
 		// build the object
 		var new_unit =  {
