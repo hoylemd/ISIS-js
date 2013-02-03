@@ -123,7 +123,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 
 		wreck: function () {
 			console.log("Unit " + this.name + " destroyed!");
-			this.sprite.dispose();
+			var wreck_sprite = particle_manager.newDebris(this.sprite);
 			this.health_bar.dispose();
 			this.destroyed = true;
 			this.orders.attack = null;
@@ -141,12 +141,9 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 				{x: 1, y: 1}, 0);
 			// choose rotation & rate
 			sprite.setRotation = Math.random();
-			var rate = (Math.random() - 0.5) / 5;
-			// choose destination
-			var destination = {x: position.x + (Math.random() * 300) - 150,
-				y: position.y + (Math.random() * 300) - 150};
-			var debris_particle = particle_manager.newParticle(sprite,
-				position, destination, 1000, rate, true);
+			sprite.centerOn(position);
+
+			particle_manager.newDebris(sprite);
 
 			if (this.hullCurrent <= 0) {
 				this.wreck();
