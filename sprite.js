@@ -59,12 +59,16 @@ var ISIS_sprite = function( context) {
 		},
 
 		rotateTo : function (rads) {
-			console.log(rads + " " + Math.TAU);
 			this.rotation = rads % Math.TAU;
 		},
 
 		moveTo : function (coords) {
 			this.position = {x:coords.x, y:coords.y};
+		},
+
+		center : function () {
+			return {x: this.position.x + this.frameDims.x / 2,
+				y: this.position.y + this.frameDims.y / 2 };
 		},
 
 		centerOn : function (coords) {
@@ -77,6 +81,10 @@ var ISIS_sprite = function( context) {
 		move : function (displacement) {
 			this.position.x += displacement.x;
 			this.position.y += displacement.y;
+		},
+
+		setAlpha : function (alpha) {
+			this.alpha = alpha > 0 ? alpha : 0;
 		},
 
 		register : function (manager) {
@@ -103,7 +111,8 @@ var ISIS_sprite = function( context) {
 			__proto__ : sprite_prototype,
 			position : {x:0, y:0},
 			rotation : 0,
-			animated : false
+			animated : false,
+			alpha : 1
 		}
 	};
 
@@ -138,7 +147,6 @@ var ISIS_sprite = function( context) {
 				new_sprite.mapDims = mapDims;
 				new_sprite.msBetweenFrames = msBetweenFrames;
 				new_sprite.msSinceLastFrame = 0;
-				new_sprite.alpha = 1;
 
 				new_sprite.frameDims = {};
 				new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
