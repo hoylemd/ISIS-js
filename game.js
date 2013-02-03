@@ -264,7 +264,7 @@ var ISIS_engine = function()
 
 		// draw order lines
 		player.drawLines();
-		enemy.drawLines();
+		//enemy.drawLines();
 
 		// draw the UI
 		drawBar();
