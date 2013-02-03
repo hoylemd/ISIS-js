@@ -3,6 +3,15 @@
 
 // main setup function
 var ISIS_fleetView = function (context) {
+	var boundSprite = function (sprite) {
+		return (this.position.x <= sprite.position.x &&
+			(this.position.x + this.dimensions.x >=
+				sprite.position.x + sprite.frameDims.x) &&
+			this.position.y <= sprite.position.y &&
+			(this.position.y + this.dimensions.y >=
+				sprite.position.y + sprite.frameDims.y));
+	}
+
 	var funDrawBackground = function () {
 		var i = 0;
 		var j = 0;
@@ -98,6 +107,7 @@ var ISIS_fleetView = function (context) {
 		ship.rotateTo(this.facing);
 		ship.moveTo(posx, posy);
 		this.shipList.push(ship);
+		ship.registerView(this);
 	};
 
 	var fleetView_prototype = {
@@ -112,7 +122,8 @@ var ISIS_fleetView = function (context) {
 		},
 		addShip : funAddShip,
 		resize: funResize,
-		move: funMove
+		move: funMove,
+		boundSprite: boundSprite
 	};
 
 	// constructor
