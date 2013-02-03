@@ -42,7 +42,7 @@ var ISIS_Projectile = function(particle_manager, sprite_manager) {
 				"#888888");
 			var destination = {x: this.position.x, y: this.position.y - 15};
 			particle_manager.newParticle(sprite, this.position, destination,
-				1500);
+				1500, 0, true);
 		},
 
 		register : function (manager) {
