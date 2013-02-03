@@ -166,3 +166,50 @@ Math.calculateLineAngle = function(p1, p2)
 		};
 	}
 }() );
+
+// adapted from
+// http://davidowens.wordpress.com/2010/09/07/html-5-canvas-and-dashed-lines/
+CanvasRenderingContext2D.prototype.dashedLineTo = function (p1, p2, pattern) {
+	var lt = function (a, b) {
+			return a <= b;
+		};
+	var gt = function (a, b) {
+			return a >= b;
+		};
+
+	var checkX = { thereYet: gt, cap: Math.min };
+	var checkY = { thereYet: gt, cap: Math.min };
+
+	if (p1.y - p2.y > 0) {
+		checkY.thereYet = lt;
+		checkY.cap = Math.max;
+	}
+	if (p1.x - p2.x > 0) {
+		checkX.thereYet = lt;
+		checkX.cap = Math.max;
+	}
+
+	this.moveTo(p1.x, p1.y);
+	var offsetX = p1.x;
+	var offsetY = p1.y;
+	var i = 0;
+	var dash = true;
+
+	while (!(checkX.thereYet(offsetX, p2.x) &&
+		checkY.thereYet(offsetY, p2.y))) {
+		var theta = Math.atan(p2.y - p1.y, p2.x - p1.x);
+		var len = pattern[i];
+
+		offsetX = checkX.cap(p2.x, offsetX + (Math.cos(theta) * len));
+		offsetY = checkY.cap(p2.y, offsetY + (Math.cos(theta) * len));
+
+		if (dash) {
+			this.lineTo(offsetX, offsetY);
+		} else {
+			this.moveTo(offsetX, offsetY);
+		};
+
+		i = (i + 1) % pattern.length;
+		dash = !dash;
+	}
+};
