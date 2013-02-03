@@ -3,27 +3,23 @@
 var ISIS_Particle = function() {
 	var particle_prototype = {
 		checkContinue : function (displacement) {
-			var dX = Math.abs(this.destination.x - this.sprite.position.x);
-			var dY = Math.abs(this.destination.y - this.sprite.position.y);
-
-			return (dX > Math.abs(displacement.x) &&
-				dY > Math.abs(displacement.y));
+			return this.remaining > 0;
 		},
 
 		update : function (elapsed) {
 			if (!elapsed) {
 				return;
 			}
-
-			this.remaining -= elapsed;
-			var speed = elapsed / this.time;
-			var displacement = {x: this.vector.x * speed,
-				y: this.vector.y * speed};
-
 			if (this.sprite === null || this.done) {
 				this.dispose();
 				return;
 			}
+
+			this.remaining = this.remaining - elapsed;
+			var speed = elapsed / this.time;
+			var displacement = {x: this.vector.x * speed,
+				y: this.vector.y * speed};
+
 
 			this.done = !this.checkContinue(displacement);
 
@@ -32,7 +28,7 @@ var ISIS_Particle = function() {
 			}
 
 			if (this.fade) {
-				this.sprite.alpha = this.remaining / this.time;
+				this.sprite.setAlpha(this.remaining / this.time);
 			}
 
 			this.sprite.move(displacement);
@@ -57,6 +53,7 @@ var ISIS_Particle = function() {
 			__proto__ : particle_prototype
 		}
 
+		console.log(time);
 		if (sprite && origin && destination && time) {
 			new_particle.sprite = sprite;
 			new_particle.destination = destination;
