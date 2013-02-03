@@ -47,7 +47,8 @@ var ISIS_sprite = function( context) {
 			if (this.value) {
 				context.fillStyle = this.empty_colour;
 				context.fillRect(0, 0, this.frameDims.x, this.frameDims.y);
-				context.fillStyle = this.full_colour;
+				context.fillStyle = this.value > this.critical_threshold ?
+					this.full_colour : this.critical_colour;
 				context.fillRect(0, 0, this.frameDims.x * this.value,
 					this.frameDims.y);
 			}
@@ -177,13 +178,16 @@ var ISIS_sprite = function( context) {
 			return new_sprite;
 		},
 
-		bar: function (dimensions, full_colour, empty_colour) {
+		bar: function (dimensions, full_colour, empty_colour,
+			critical_colour, critical_threshold) {
 			var new_sprite = newSprite();
 
 			if (dimensions && full_colour && empty_colour) {
 				new_sprite.frameDims = dimensions;
 				new_sprite.full_colour = full_colour;
 				new_sprite.empty_colour = empty_colour;
+				new_sprite.critical_colour = critical_colour;
+				new_sprite.critical_threshold = critical_threshold;
 				new_sprite.value = 1;
 			} else {
 				new_sprite = null;
