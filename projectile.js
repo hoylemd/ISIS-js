@@ -59,8 +59,7 @@ var ISIS_Projectile = function(particle_manager, sprite_manager) {
 		}
 	};
 
-	return function (sprite, origin, target, hit, weapon)
-	{
+	return function (sprite, origin, target, hit, weapon) {
 		var new_projectile = {
 			__proto__ : projectile_prototype
 		}
@@ -72,16 +71,17 @@ var ISIS_Projectile = function(particle_manager, sprite_manager) {
 			new_projectile.hit = hit;
 			new_projectile.done = false;
 			new_projectile.weapon = weapon;
+			new_projectile.owner = weapon.owner;
 
 			sprite.centerOn(origin);
 			new_projectile.position = sprite.position;
 
-			var vector = Math.calcVector(origin, target.position);
+			var vector = Math.calcAngleVector(weapon.owner.getRotation());
 			vector.x *= weapon.proj_speed;
 			vector.y *= weapon.proj_speed;
 			new_projectile.displacement = vector;
 
-			sprite.rotation = Math.calculateLineAngle(origin, target.position);
+			sprite.rotation = weapon.owner.getRotation();
 
 		} else {
 			console.log("projectile is missing some arguments");
