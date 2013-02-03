@@ -22,6 +22,16 @@ function ISIS_ParticleManager (Particle) {
 			return this.addParticle(new_particle);
 		},
 
+		newDebris : function(sprite) {
+			var position = sprite.center();
+			// choose rotation & rate
+			var rate = (Math.random() - 0.5) / 5;
+			// choose destination
+			var destination = {x: position.x + (Math.random() * 300) - 150,
+				y: position.y + (Math.random() * 300) - 150};
+			this.newParticle(sprite, position, destination, 1000, rate, true);
+		},
+
 		removeParticle : function (particle) {
 			var index = 0;
 
