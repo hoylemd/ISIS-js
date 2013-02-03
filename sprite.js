@@ -31,6 +31,7 @@ var ISIS_sprite = function( context) {
 			context.reset();
 			context.translate(this.position.x, this.position.y);
 			this.rotateContext();
+			context.globalAlpha = this.alpha;
 			if (this.image)
 			{
 				context.drawImage(this.image, 0, 0);
@@ -137,6 +138,7 @@ var ISIS_sprite = function( context) {
 				new_sprite.mapDims = mapDims;
 				new_sprite.msBetweenFrames = msBetweenFrames;
 				new_sprite.msSinceLastFrame = 0;
+				new_sprite.alpha = 1;
 
 				new_sprite.frameDims = {};
 				new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
