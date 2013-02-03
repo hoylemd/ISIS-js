@@ -85,6 +85,10 @@ Math.calcAngleVector = function (theta) {
 	};
 };
 
+Math.calcVectorAngle = function (vector) {
+	return Math.atan2( vector.x, -1 * vector.y);
+};
+
 // Function to get the angle in radians between two points
 Math.calculateLineAngle = function(p1, p2) {
 	// calculate deltas
