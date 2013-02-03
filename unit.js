@@ -165,8 +165,10 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			var dx = point.x - (this.position.x - (tileSize / 2));
 			var dy = point.y - (this.position.y - (tileSize / 2));
 
-			return ((dx > 0 && dx < tileSize) &&
+			var collision = ((dx > 0 && dx < tileSize) &&
 				(dy > 0 && dy < tileSize)) && !this.destroyed;
+
+			return collision;
 
 		},
 
