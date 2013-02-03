@@ -53,7 +53,6 @@ var ISIS_Particle = function() {
 			__proto__ : particle_prototype
 		}
 
-		console.log(time);
 		if (sprite && origin && destination && time) {
 			new_particle.sprite = sprite;
 			new_particle.destination = destination;
