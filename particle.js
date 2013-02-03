@@ -15,6 +15,7 @@ var ISIS_Particle = function() {
 				return;
 			}
 
+			this.remaining -= elapsed;
 			var speed = elapsed / this.time;
 			var displacement = {x: this.vector.x * speed,
 				y: this.vector.y * speed};
@@ -28,6 +29,10 @@ var ISIS_Particle = function() {
 
 			if (this.rotation) {
 				this.sprite.rotate(this.rotation);
+			}
+
+			if (this.fade) {
+				this.sprite.alpha = this.remaining / this.time;
 			}
 
 			this.sprite.move(displacement);
@@ -57,6 +62,7 @@ var ISIS_Particle = function() {
 			new_particle.destination = destination;
 			new_particle.done = false;
 			new_particle.time = time;
+			new_particle.remaining = time;
 			new_particle.rotation = rotation;
 			new_particle.fade = fade;
 
