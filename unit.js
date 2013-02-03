@@ -48,8 +48,11 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			this.sprite.rotateTo(rads);
 		},
 
-		drawLines: function()
-		{
+		getRotation : function () {
+			return this.sprite.rotation;
+		},
+
+		drawLines: function() {
 			// calculate tile offset
 			tileOffset = tileSize / 2;
 
@@ -153,14 +156,12 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			}
 		},
 
-		dodge : function()
-		{
+		dodge : function() {
 			return Math.dx(this.dodgeBonus);
 		},
 
 		// point collision function
-		collide : function(point)
-		{
+		collide : function(point) {
 			var dx = point.x - (this.position.x - (tileSize / 2));
 			var dy = point.y - (this.position.y - (tileSize / 2));
 
@@ -170,8 +171,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 		},
 
 		// order cancelling function
-		clearOrder : function(order)
-		{
+		clearOrder : function(order) {
 			this.orders[order] = null;
 		},
 
@@ -208,7 +208,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			health_bar : health_bar,
 			// general stuff
 			name: "Unnamed Unit",
-			position : {x: 0, y:0},
+			position : sprite.position,
 			// combat stats
 			orders : {},
 			hullMax : 5,
