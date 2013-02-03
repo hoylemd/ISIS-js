@@ -12,22 +12,28 @@ var ISIS_Projectile = function(particle_manager, sprite_manager) {
 				this.hit = false;
 			}
 
-			if (this.target.collide(this.position) && !this.done) {
-				this.done = true;
-				this.spawnHitText();
-				if (this.hit) {
-					console.log(this.weapon.name  +" hits " +
-						this.target.name + " for " + this.weapon.damage +
-						" points of damage");
-					this.target.takeDamage(this.weapon.damage, this.position);
-					this.dispose();
-				} else {
-					console.log(this.weapon.name + " misses " +
-						this.target.name);
+			var inView =  this.target.fleetView.boundSprite(this.sprite);
+			this.incoming = inView;
+			console.log(this.incoming);
+			if (this.incoming) {
+				if (this.target.collide(this.position) && !this.done) {
+					this.done = true;
+					this.spawnHitText();
+					if (this.hit) {
+						console.log(this.weapon.name  +" hits " +
+							this.target.name + " for " + this.weapon.damage +
+							" points of damage");
+						this.target.takeDamage(this.weapon.damage,
+							this.position);
+						this.dispose();
+					} else {
+						console.log(this.weapon.name + " misses " +
+							this.target.name);
+					}
 				}
 			}
 
-			if (this.position.x > 1100) {
+			if (this.incoming && !inView) {
 				this.dispose();
 			}
 
@@ -75,6 +81,7 @@ var ISIS_Projectile = function(particle_manager, sprite_manager) {
 
 			sprite.centerOn(origin);
 			new_projectile.position = sprite.position;
+			new_projectile.incoming = false;
 
 			var vector = Math.calcAngleVector(weapon.owner.getRotation());
 			vector.x *= weapon.proj_speed;
