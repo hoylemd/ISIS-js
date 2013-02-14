@@ -14,13 +14,11 @@ var ISIS_engine = function()
 	// game state
 	var paused = false;
 
-
 	// fleet view objects
 	var fleetView = ISIS_fleetView(objContext);
 	var playerFleetView;
 
 	// sprite objects
-	var Sprite = ISIS_sprite(objContext);
 	var SpriteManager = ISIS_sprite_manager(objCanvas);
 	var spriteManager = SpriteManager(objCanvas);
 
