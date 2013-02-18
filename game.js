@@ -13,6 +13,17 @@ var ISIS_engine = function () {
 	// content assets
 	var images = {};
 
+	// timing data
+	var lastTime;
+
+	// Add animFrame jig
+	var animFrame = window.requestAnimationFrame ||
+		window.webkit.RequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		null ;
+
 	// image manifest
 	var objImageManifest = {
 		"spaceTile" : {id: "spaceTile", path : "space.png", loaded: false},
@@ -88,7 +99,23 @@ var ISIS_engine = function () {
 
 	// function to update the screen
 	var funUpdate = function () {
-		current_state.update();
+		var now = new Date();
+		var elapsed = 0;
+
+		if (lastTime != undefined) {
+			elapsed = now.getTime() - lastTime.getTime();
+		}
+		lastTime = now;
+
+		// reset the window size
+		clientWidth = $(window).width();
+		clientHeight = $(window).height();
+
+		// resize the canvas
+		canvas.width = clientWidth;
+		canvas.height = clientHeight;
+
+		current_state.update(elapsed);
 	};
 
 	// Expose objects
