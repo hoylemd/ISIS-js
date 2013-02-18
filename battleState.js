@@ -95,52 +95,6 @@ var ISIS_battleState = function (canvas, content) {
 		//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
 		//	{x: 550, y: 50}, 5000);
 
-
-		var mainLoop = function() {
-			update();
-			animFrame(mainLoop);
-		};
-
-		animFrame(mainLoop);
-	};
-
-	// function to update the manifest of loaded images
-	// id: the id of the image that's finsihed loading
-	var funImageLoaded = function(id){
-		var newSprite = null;
-
-		// assume done until proven otherwise
-		var blnDone = true;
-
-		// set the specified image loaded flag to true
-		objImageManifest[id].loaded = true;
-
-		// look over the manifest looking for unleaded images
-		for (var ent in objImageManifest) {
-			// set done flag to done if some are unloaded
-			if (objImageManifest[ent].loaded == false)
-			{
-				blnDone = false;
-				break;
-			}
-		}
-
-		// if done, initialize game.
-		if (blnDone) {
-			funInitGame();
-		}
-	};
-
-	// Load up all neccesary content
-	for ( i in objImageManifest ) {
-		images[i] = io.loadImage(objImageManifest[i], funImageLoaded);
-	}
-
-	// augment the context with a reset function
-	context.reset = function()
-	{
-		this.setTransform(1, 0, 0, 1, 0, 0);
-		this.globalAlpha = 1;
 	};
 
 	// function to draw the bottom orders bar
@@ -174,31 +128,11 @@ var ISIS_battleState = function (canvas, content) {
 	};
 
 	// function to update the screen
-	var update = function()
-	{
-		var now = new Date();
-		var elapsed = 0;
+	var update = function (elapsed) {
 
-		if (lastTime != undefined) {
-			elapsed = now.getTime() - lastTime.getTime();
-		}
-		//elapsed = 10;
-		lastTime = now;
-
-		//console.log("updating");
 		// reset the window size
 		clientWidth = $(window).width();
 		clientHeight = $(window).height();
-
-		// resize the canvas
-		canvas.width = clientWidth;
-		canvas.height = clientHeight;
-
-		// recalculate map dimensions
-		tilesX = Math.floor(clientWidth / 100);
-		tilesY = Math.floor((clientHeight - barHeight) / 100);
-		mapWidth = tilesX * 100;
-		mapHeight = tilesY * 100;
 
 		// Prepare for next round of drawing
 		context.clearRect(0, 0, clientWidth, clientHeight);
@@ -234,41 +168,48 @@ var ISIS_battleState = function (canvas, content) {
 
 	// Add an event listener for mouse clicks
 	canvas.addEventListener('click',
-		function(evt)
-		{
+		function (evt) {
 			// get the mouse position
 			var mousePos = io.getMousePos(canvas, evt);
 
 			// clip to the section of the screen
-			if (mousePos.x < mapWidth && mousePos.y < mapHeight)
-	   		{
-				if (attackOrder)
-				{
+			if (mousePos.x < canvas.clientWidth &&
+				mousePos.y < canvas.clientHeight) {
+				if (attackOrder) {
 					// register an attack order if the attack order is active
-					if (enemy.collide(mousePos))
-					{
+					if (enemy.collide(mousePos)) {
 						player.registerOrder(orders.attack(player, enemy));
-					}
-					else
+					} else {
 						player.clearOrder("attack");
+					}
 				}
 				attackOrder = false;
 			}
-			if (mousePos.y > (clientHeight - barHeight))
-			{
+			if (mousePos.y > (canvas.clientHeight - barHeight)) {
 				// click on a button
-				if (mousePos.x < buttonWidth)
-				{
+				if (mousePos.x < buttonWidth) {
 					attackOrder = !attackOrder;
-				}
-				else if (mousePos.x > clientWidth - buttonWidth)
-				{
+				} else if (mousePos.x > canvas.clientWidth - buttonWidth) {
 					// Go button
 					player.carryOut();
 				}
 			}
-		}
-	);
+		});
+
+	canvas.addEventListener('onkeydown',
+		function(evt) {
+
+		});
+
+	canvas.addEventListener('onkeyup',
+		function(evt) {
+
+		});
+
+	canvas.addEventListener('onkeypress',
+		function(evt) {
+
+		});
 
 	return {
 		update : update,
