@@ -1,5 +1,5 @@
 // battle state object
-var ISIS_battleState = function (canvas, content) {
+var ISIS_battleState = function (game, canvas, content) {
 	// graphics objects
 	var context = canvas.getContext("2d");
 
@@ -8,6 +8,7 @@ var ISIS_battleState = function (canvas, content) {
 
 	// game state
 	var paused = false;
+	var initialized = false;
 
 	// fleet view objects
 	var fleetView = ISIS_fleetView(context);
@@ -61,7 +62,7 @@ var ISIS_battleState = function (canvas, content) {
 		player = unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
 		player.name = "Arkadian Cruiser";
 		player.setHull(100);
-		player.addWeapon(Weapon("Arkadian Railgun", 10, 25, 1500,
+		player.addWeapon(Weapon("Arkadian Railgun", 50, 25, 1500,
 			images["bullet"], 25));
 
 		enemy = unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
@@ -94,6 +95,7 @@ var ISIS_battleState = function (canvas, content) {
 		//	"16pt Calibri", "blue");
 		//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
 		//	{x: 550, y: 50}, 5000);
+		initialized = true;
 
 	};
 
@@ -137,6 +139,21 @@ var ISIS_battleState = function (canvas, content) {
 		// Prepare for next round of drawing
 		context.clearRect(0, 0, clientWidth, clientHeight);
 		context.reset();
+
+		if (!initialized) {
+			this.initialize();
+		}
+
+		// check for state changes
+		if (player.destroyed) {
+			alert("you lose!");
+			game.changeState(ISIS_battleState(game, canvas, content));
+			return;
+		} else if (enemy.destroyed) {
+			alert("you win!");
+			game.changeState(ISIS_battleState(game, canvas, content));
+			return;
+		}
 
 		// update units
 		player.update(elapsed);
