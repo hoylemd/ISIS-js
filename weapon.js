@@ -22,7 +22,7 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 			var fire_point =
 				{x: this.owner.position.x, y: this.owner.position.y};
 
-			projectile_manager.newProjectile(proj_sprite, fire_point,
+			projectile_manager.create(proj_sprite, fire_point,
 				this.target, hit, this);
 		},
 
