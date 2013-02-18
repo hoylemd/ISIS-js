@@ -150,15 +150,6 @@ function ISIS_sprite_manager (canvas) {
 	var sprite_manager_prototype = {
 		__proto__ : ISIS_manager(),
 		type_proto : sprite_prototype,
-		addSprite : function (sprite) {
-			if (sprite && this.object_list) {
-			this.object_list.push(sprite);
-				sprite.register(this);
-				return sprite;
-			} else {
-				return null;
-			}
-		},
 
 		newSprite : function (image, mapDims, msBetweenFrames) {
 			var new_sprite = partialSprite.apply(this);
