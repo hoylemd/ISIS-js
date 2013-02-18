@@ -5,9 +5,7 @@
 var ISIS_engine = function () {
 	var canvas = document.getElementById("myCanvas");
 	var context = canvas.getContext("2d");
-
 	var io = ISIS_IO();
-
 	var current_state = {};
 
 	// content assets
@@ -25,7 +23,7 @@ var ISIS_engine = function () {
 		null ;
 
 	// image manifest
-	var objImageManifest = {
+	var image_manifest = {
 		"spaceTile" : {id: "spaceTile", path : "space.png", loaded: false},
 		"ArkadianCruiser" : {id: "ArkadianCruiser", path: "ark-cru.png",
 			loaded: false},
@@ -46,49 +44,80 @@ var ISIS_engine = function () {
 		"debris3" : {id: "debris3", path: "debris3.png", loaded: false}
 	};
 
-	// function to initialize the game
-	var funInitGame = function(){
-		current_state = ISIS_battleState(canvas, {images : images});
-		current_state.initialize();
+	var engine = {
+		// function to initialize the game
+		initialize : function () {
+			current_state = ISIS_battleState(this, canvas, {images : images});
+			current_state.initialize();
 
-		var mainLoop = function() {
-			funUpdate();
+			var that = this;
+			var mainLoop = function() {
+				that.update();
+				animFrame(mainLoop);
+			};
+
 			animFrame(mainLoop);
-		};
+		},
 
-		animFrame(mainLoop);
+		// function to update the screen
+		update : function () {
+			var now = new Date();
+			var elapsed = 0;
+
+			if (lastTime != undefined) {
+				elapsed = now.getTime() - lastTime.getTime();
+			}
+			lastTime = now;
+
+			// reset the window size
+			clientWidth = $(window).width();
+			clientHeight = $(window).height();
+
+			// resize the canvas
+			canvas.width = clientWidth;
+			canvas.height = clientHeight;
+
+			current_state.update(elapsed);
+		},
+
+		changeState : function (new_state) {
+			current_state = new_state;
+		}
 	};
 
 	// function to update the manifest of loaded images
 	// id: the id of the image that's finsihed loading
-	var funImageLoaded = function(id){
-		var newSprite = null;
+	var imageLoaded = function () {
+		var that = engine;
+		return function(id){
+			var newSprite = null;
 
-		// assume done until proven otherwise
-		var blnDone = true;
+			// assume done until proven otherwise
+			var blnDone = true;
 
-		// set the specified image loaded flag to true
-		objImageManifest[id].loaded = true;
+			// set the specified image loaded flag to true
+			image_manifest[id].loaded = true;
 
-		// look over the manifest looking for unleaded images
-		for (var ent in objImageManifest) {
-			// set done flag to done if some are unloaded
-			if (objImageManifest[ent].loaded == false)
-			{
-				blnDone = false;
-				break;
+			// look over the manifest looking for unleaded images
+			for (var ent in image_manifest) {
+				// set done flag to done if some are unloaded
+				if (image_manifest[ent].loaded == false)
+				{
+					blnDone = false;
+					break;
+				}
 			}
-		}
 
-		// if done, initialize game.
-		if (blnDone) {
-			funInitGame();
-		}
-	};
+			// if done, initialize game.
+			if (blnDone) {
+				that.initialize();
+			}
+		};
+	}();
 
 	// Load up all neccesary content
-	for ( i in objImageManifest ) {
-		images[i] = io.loadImage(objImageManifest[i], funImageLoaded);
+	for ( i in image_manifest ) {
+		images[i] = io.loadImage(image_manifest[i], imageLoaded);
 	}
 
 	// augment the context with a reset function
@@ -97,31 +126,5 @@ var ISIS_engine = function () {
 		this.globalAlpha = 1;
 	};
 
-	// function to update the screen
-	var funUpdate = function () {
-		var now = new Date();
-		var elapsed = 0;
-
-		if (lastTime != undefined) {
-			elapsed = now.getTime() - lastTime.getTime();
-		}
-		lastTime = now;
-
-		// reset the window size
-		clientWidth = $(window).width();
-		clientHeight = $(window).height();
-
-		// resize the canvas
-		canvas.width = clientWidth;
-		canvas.height = clientHeight;
-
-		current_state.update(elapsed);
-	};
-
-	// Expose objects
-	return {
-		context : context,
-		images : images
-	};
-
+	return engine;
 };
