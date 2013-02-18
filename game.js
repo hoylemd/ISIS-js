@@ -19,19 +19,17 @@ var ISIS_engine = function()
 	var playerFleetView;
 
 	// sprite objects
-	var SpriteManager = ISIS_sprite_manager(objCanvas);
-	var spriteManager = SpriteManager(objCanvas);
+	var spriteManager = ISIS_sprite_manager(objCanvas)();
 
 	// I/O object
 	var io = ISIS_IO();
 
 	// Particle objects
-	var Particle = ISIS_Particle();
-	var particle_manager = ISIS_ParticleManager(Particle)();
+	var particle_manager = ISIS_ParticleManager()();
 
 	// Projectile objects
-	var Projectile = ISIS_Projectile(particle_manager, spriteManager);
-	var projectile_manager = ISIS_ProjectileManager(Projectile)();
+	var projectile_manager = ISIS_ProjectileManager(spriteManager,
+		particle_manager)();
 
 	// weapon objects
 	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
@@ -110,13 +108,13 @@ var ISIS_engine = function()
 		enemy.addWeapon(Weapon("Terran Mass Driver", 18, 10, 3000,
 			images["bullet"], 20));
 
-		playerFleetView = fleetView(images["spaceTile"], SpriteManager());
+		playerFleetView = fleetView(images["spaceTile"]);
 		playerFleetView.move(0, 0);
 		playerFleetView.facing = 1/4 * Math.TAU;
 		playerFleetView.resize(500, 600);
 		playerFleetView.addShip(player);
 
-		enemyFleetView = fleetView(images["spaceTile"], SpriteManager());
+		enemyFleetView = fleetView(images["spaceTile"]);
 		enemyFleetView.move(600, 0);
 		enemyFleetView.facing = 3/4 * Math.TAU;
 		enemyFleetView.resize(500, 600);
