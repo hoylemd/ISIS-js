@@ -1,0 +1,1 @@
+//victory state object
