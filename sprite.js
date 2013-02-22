@@ -2,7 +2,7 @@
 
 function ISIS_sprite_manager (canvas) {
 	var context = canvas.getContext("2d");
-	var manager_proto = ISIS_manager();
+	var manager_proto = new ISIS_manager();
 	var sprite_prototype = {
 		__proto__ : manager_proto.type_proto,
 		update : function(elapsedMS) {
@@ -148,7 +148,7 @@ function ISIS_sprite_manager (canvas) {
 	};
 
 	var sprite_manager_prototype = {
-		__proto__ : ISIS_manager(),
+		__proto__ : new ISIS_manager(),
 		type_proto : sprite_prototype,
 
 		newSprite : function (image, mapDims, msBetweenFrames) {
