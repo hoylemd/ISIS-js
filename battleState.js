@@ -10,15 +10,14 @@ var ISIS_battleState = function (game, canvas, content) {
 	var paused = false;
 	var initialized = false;
 
+	var io = new ISIS_IO();
+
 	// fleet view objects
 	var fleetView = ISIS_fleetView(context);
 	var playerFleetView;
 
 	// sprite objects
 	var spriteManager = ISIS_sprite_manager(canvas)();
-
-	// I/O object
-	var io = ISIS_IO();
 
 	// Particle objects
 	var particle_manager = ISIS_ParticleManager()();
