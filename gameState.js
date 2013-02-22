@@ -41,7 +41,7 @@ var ISIS_gameState = function (game, canvas, content) {
 			images : content.images,
 
 			// I/O object
-			io : ISIS_IO(),
+			io : new ISIS_IO(),
 
 			// state
 			initialized : false
