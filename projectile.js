@@ -1,7 +1,7 @@
 // code file for projectile managers
 
 function ISIS_ProjectileManager (sprite_manager, particle_manager) {
-	var manager_proto = ISIS_manager();
+	var manager_proto = new ISIS_manager();
 	var projectile_prototype = {
 		__proto__ : manager_proto.type_proto,
 		update : function (elapsed) {
