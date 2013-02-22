@@ -1,97 +1,74 @@
 // Utilities file
 // author: hoylemd
 
-var ISIS_IO = function()
-{
+var ISIS_IO = ( function () {
 	var IO_prototype = {
-		// Function to load an image from a path and return an image object
-		// strPath: a String containing the relative path to the image
-		// returns: an Image object mapped to the provided path
-		loadImage : function(entry, callback)
-		{
-			// construct and initialize the object
-			var objImage = new Image();
-			var blnDoneLoading = false
-			objImage.onload = function(){callback(entry.id);};
-			objImage.src = entry.path;
+		loadImage : function (manifest_entry, callback) {
+			var image = new Image();
+			image.onload = function () {
+				callback(manifest_entry.id);
+			};
+			image.src = manifest_entry.path;
 
-			return objImage;
+			return image;
 		},
 
-		// Function to get the mouse position
-		// objContext: a canvas context object to get the mouse position
-		//	relative to
-		// evt: The mouse click event
-		// returns: an {x, y} object representing the mouse
-		//	click's coordinates relative to the top - left of the canvas.
-		getMousePos : function(objContext, evt)
-		{
+		getMousePos : function (context, evt) {
 			// get canvas position
-			var dblTop = 0;
-			var dblLeft = 0;
-			while (objContext && objContext.tagName != 'BODY') {
-				dblTop += objContext.offsetTop;
-				dblLeft += objContext.offsetLeft;
-				objContext = objContext.offsetParent;
+			var context_top = 0;
+			var context_left = 0;
+			while (context && context.tagName != 'BODY') {
+				context_top += context.offsetTop;
+				context_left += context.offsetLeft;
+				context = context.offsetParent;
 			}
 			// return relative mouse position
-			var dblX = evt.clientX - dblLeft + window.pageXOffset;
-			var dblY = evt.clientY - dblTop + window.pageYOffset;
 			return {
-				x: dblX,
-				y: dblY
+				x: evt.clientX - context_left + window.pageXOffset,
+				y: evt.clientY - context_top + window.pageYOffset
 			};
 		}
 	};
-
-	return {
-		__proto__ : IO_prototype
+	return function () {
+		this.__proto__ = IO_prototype;
 	};
-}
+}() );
 
 // Modify Math object
-
-// Add the Tau constant to Math
 Math.TAU = 2 * Math.PI;
 
-// add the dx function to Math
-Math.dx = function(x) {
+// dx function : generate random integer between 0 and x
+Math.dx = function (x) {
 	var res = Math.floor(Math.random() * x);
 	return res;
-}
-
-// Add the d100 function to Math
-Math.d100 = function() {
+};
+Math.d100 = function () {
 	return Math.dx(100);
-}
-
-// Add the calcVector functions to Math
-Math.calcVector = function(p1, p2) {
-	var x = p2.x - p1.x;
-	var y = p2.y - p1.y;
-
-	return Math.calcUnitVector({x: x, y: y});
 };
 
-Math.calcUnitVector = function (delta) {
-	var theta = Math.atan2(delta.x, delta.y);
-	return Math.calcAngleVector(theta);
-};
-
+// Vector math wooo
 Math.calcAngleVector = function (theta) {
 	return {
 		x: Math.sin(theta),
 		y: Math.cos(theta)
 	};
 };
-
+Math.calcUnitVector = function (delta) {
+	var theta = Math.atan2(delta.x, delta.y);
+	return Math.calcAngleVector(theta);
+};
+Math.calcVector = function (p1, p2) {
+	return Math.calcUnitVector({
+		x: p2.x - p1.x,
+		y: p2.y - p1.y
+	});
+};
 Math.calcVectorAngle = function (vector) {
-	return Math.atan2( vector.x, -1 * vector.y);
+	return Math.atan2(vector.x, -1 * vector.y);
 };
 
 // Function to get the angle in radians between two points
-Math.calculateLineAngle = function(p1, p2) {
-	// calculate deltas
+Math.calculateLineAngle = function (p1, p2) {
 	var dx = p2.x - p1.x;
 	var dy = p2.y - p1.y;
 
