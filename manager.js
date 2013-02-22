@@ -1,9 +1,6 @@
 // Manager prototype / factory
-ISIS_manager = function () {
-	// closure - define the prototype
+ISIS_manager = ( function () {
 	var manager_prototype = {
-
-		// update all managed objects
 		update : function (elapsed) {
 			var obj = null;
 			for (index in this.object_list) {
@@ -14,15 +11,11 @@ ISIS_manager = function () {
 			}
 		},
 
-		// add the object to the list,
-		// return the object for cascading calls
 		add : function (obj) {
 			this.object_list.push(obj);
 			return obj
 		},
 
-		// remove an object
-		// returns this manager for cascading calls
 		remove : function (obj) {
 			var index = null;
 			if (obj) {
@@ -39,8 +32,6 @@ ISIS_manager = function () {
 			manager : this
 		},
 
-		// create a basic managed object with link to this manager
-		// automatically manages the object
 		create : function () {
 			var new_object = {
 				__proto__ : this.type_proto,
@@ -49,13 +40,10 @@ ISIS_manager = function () {
 
 			return this.add(new_object);
 		},
-
 	};
 
 	return function () {
-		return new_manager = {
-			__proto__ : manager_prototype,
-			object_list : []
-		};
+		this.__proto__ = manager_prototype;
+		this.object_list = [];
 	};
-}();
+}() );
