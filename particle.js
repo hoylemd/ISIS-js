@@ -1,7 +1,7 @@
 // code file for particle managers
 
 function ISIS_ParticleManager () {
-	var manager_proto = ISIS_manager();
+	var manager_proto = new ISIS_manager();
 	var particle_prototype = {
 		__proto__ : manager_proto.type_proto,
 		checkContinue : function (displacement) {
