@@ -5,7 +5,7 @@
 var ISIS_engine = function () {
 	var canvas = document.getElementById("myCanvas");
 	var context = canvas.getContext("2d");
-	var io = ISIS_IO();
+	var io = new ISIS_IO();
 	var current_state = {};
 
 	// content assets
