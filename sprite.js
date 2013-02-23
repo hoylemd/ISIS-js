@@ -3,6 +3,7 @@
 function ISIS_sprite_manager (canvas) {
 	var context = canvas.getContext("2d");
 	var manager_proto = new ISIS_manager();
+
 	var sprite_prototype = {
 		__proto__ : manager_proto.type_proto,
 		update : function(elapsedMS) {
@@ -29,8 +30,7 @@ function ISIS_sprite_manager (canvas) {
 				-0.5 * this.frameDims.x, -0.5 * this.frameDims.y);
 		},
 
-		draw : function()
-		{
+		draw : function () {
 			if (this.hidden) {
 				return;
 			}
@@ -39,8 +39,7 @@ function ISIS_sprite_manager (canvas) {
 			context.translate(this.position.x, this.position.y);
 			this.rotateContext();
 			context.globalAlpha = this.alpha;
-			if (this.image)
-			{
+			if (this.image) {
 				context.drawImage(this.image, 0, 0);
 			}
 
@@ -112,18 +111,18 @@ function ISIS_sprite_manager (canvas) {
 		animated = (sprite.image != null && sprite.image != undefined) &&
 			(sprite.msBetweenFrames > 0) &&
 			(sprite.mapDims.x > 1 || sprite.mapDims.y > 1);
+
+		return animated;
 	};
 
-	var partialSprite = function () {
-		return {
-			__proto__ : sprite_prototype,
-			position : {x:0, y:0},
-			rotation : 0,
-			animated : false,
-			alpha : 1,
-			hidden : false,
-			manager : this
-		}
+	var partialSprite = function (manager) {
+		this.__proto__ = sprite_prototype;
+		this.position = { x:0, y:0 };
+		this.rotation = 0;
+		this.animated = false;
+		this.alpha = 1;
+		this.hidden = false;
+		this.manager = manager;
 	};
 
 	var getTextFrameDims = function (text, font) {
@@ -141,7 +140,7 @@ function ISIS_sprite_manager (canvas) {
 		} else {
 			frameDims = null;
 			console.log(
-				"invalid font string passed. cannot calulate frameDims.");
+				"invalid font string passed. cannot calculate frameDims.");
 		}
 
 		return frameDims;
@@ -152,7 +151,7 @@ function ISIS_sprite_manager (canvas) {
 		type_proto : sprite_prototype,
 
 		newSprite : function (image, mapDims, msBetweenFrames) {
-			var new_sprite = partialSprite.apply(this);
+			var new_sprite = new partialSprite(this);
 
 			if (image && mapDims) {
 				new_sprite.image = image;
@@ -173,7 +172,7 @@ function ISIS_sprite_manager (canvas) {
 		},
 
 		newTextSprite : function (text, font, colour) {
-			var new_sprite = partialSprite.apply(this);
+			var new_sprite = new partialSprite(this);
 
 			if (text && font && colour) {
 				new_sprite.text = text;
@@ -191,7 +190,7 @@ function ISIS_sprite_manager (canvas) {
 
 		newBarSprite : function (dimensions, full_colour, empty_colour,
 			critical_colour, critical_threshold) {
-			var new_sprite = partialSprite.apply(this);
+			var new_sprite = new partialSprite(this);
 
 			if (dimensions && full_colour && empty_colour) {
 				new_sprite.frameDims = dimensions;
@@ -236,10 +235,5 @@ function ISIS_sprite_manager (canvas) {
 		}
 	}
 
-	return function () {
-		return {
-			__proto__: sprite_manager_prototype
-		};
-	}
-
+	this.__proto__ = sprite_manager_prototype;
 }
