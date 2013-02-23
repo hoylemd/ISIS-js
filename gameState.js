@@ -25,7 +25,7 @@ var ISIS_gameState = function (game, canvas, content) {
 	};
 
 	return function () {
-		var sprite_manager = ISIS_sprite_manager(canvas)()
+		var sprite_manager = new ISIS_sprite_manager(canvas)()
 		var new_state = {
 			__proto__ : game_state_prototype,
 
