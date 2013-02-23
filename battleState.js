@@ -17,7 +17,7 @@ var ISIS_battleState = function (game, canvas, content) {
 	var playerFleetView;
 
 	// sprite objects
-	var spriteManager = ISIS_sprite_manager(canvas)();
+	var spriteManager = new ISIS_sprite_manager(canvas);
 
 	// Particle objects
 	var particle_manager = ISIS_ParticleManager()();
