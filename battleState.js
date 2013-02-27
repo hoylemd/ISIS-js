@@ -23,8 +23,8 @@ var ISIS_battleState = function (game, canvas, content) {
 	var particle_manager = ISIS_ParticleManager()();
 
 	// Projectile objects
-	var projectile_manager = ISIS_ProjectileManager(spriteManager,
-		particle_manager)();
+	var projectile_manager = new (ISIS_ProjectileManager(spriteManager,
+		particle_manager))();
 
 	// weapon objects
 	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
