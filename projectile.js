@@ -2,107 +2,118 @@
 
 function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 	var manager_proto = new ISIS_manager();
+
+	// function to spawn the hit text sprite
+	var spawnHitText = function (that) {
+		var hitText = "" + (that.hit ? that.weapon.damage : "Miss");
+		var sprite = sprite_manager.newTextSprite(hitText, "14pt Courier",
+			"#888888");
+		var destination = {x: that.position.x, y: that.position.y - 15};
+		particle_manager.create(sprite, that.position, destination,
+			1500, 0, true);
+	};
+
+	// update function for missed projectules
+	var updateMissed = function (that) {
+		that.sprite.move(that.displacement);
+		that.position = that.sprite.position;
+
+		if (that.target.fleetView.boundSprite(that.sprite)) {
+			return updateMissed;
+		} else {
+			that.dispose();
+			return null;
+		}
+	};
+
+	// transition function for when the projectile collides with it's target
+	var transitionCollision = function (that) {
+		spawnHitText(that);
+		if (that.hit) {
+			console.log(that.weapon.name  +" hits " + that.target.name +
+				" for " + that.weapon.damage + " points of damage");
+			that.target.takeDamage(that.weapon.damage, that.position);
+			that.dispose();
+			return null;
+		} else {
+			console.log(that.weapon.name + " misses " + that.target.name);
+			return updateMissed;
+		}
+	};
+
+	// update function for incoming projectiles
+	var updateIncoming = function (that) {
+		that.sprite.move(that.displacement);
+		that.position = that.sprite.position;
+
+		if (that.target.collide(that.position)) {
+			return transitionCollision(that);
+		} else {
+			return updateIncoming;
+		}
+	};
+
+	// prepare the transition from in-transit to incoming
+	var transitionIncoming = function (that) {
+		var randY = that.targetView.position.y +
+			Math.random() * that.targetView.dimensions.y;
+		var initX = that.targetView.position.x;
+		var spawn_point = null;
+		var vector = null;
+
+		if (that.displacement.x < 0) {
+			initX += that.targetView.dimensions.x;
+		}
+
+		spawn_point = {x: initX, y: randY};
+
+		that.sprite.hidden = false;
+		that.sprite.moveTo(spawn_point);
+
+		vector = Math.calcVector(spawn_point, that.target.position);
+
+		vector.x *= that.weapon.proj_speed;
+		vector.y *= that.weapon.proj_speed;
+		that.displacement = vector;
+
+		that.sprite.rotation = Math.calcVectorAngle(vector);
+
+		return updateIncoming;
+	};
+
+	// update function for when the projectile is in transit between fleets
+	var updateInTransit = function (that) {
+		that.distance -= that.weapon.proj_speed;
+
+		if (that.distance > 0) {
+			return updateInTransit;
+		} else {
+			return transitionIncoming(that);
+		}
+	};
+
+	// update function for when the projectile is leaving it's parent
+	var updateOutgoing = function (that) {
+		that.sprite.move(that.displacement);
+		that.position = that.sprite.position;
+
+		if (that.owner.fleetView.boundSprite(that.sprite)) {
+			return updateOutgoing;
+		} else {
+			that.sprite.hidden = true;
+			return updateInTransit;
+		}
+	};
+
+	// encapsulated prototype
 	var projectile_prototype = {
 		__proto__ : manager_proto.type_proto,
+		currentUpdate : updateOutgoing,
 		update : function (elapsed) {
-			if (this.sprite === null) {
-				this.dispose();
-				return;
+			if (this.currentUpdate) {
+				this.currentUpdate = this.currentUpdate(this);
 			}
-
-			if (this.target.destroyed) {
-				this.hit = false;
-				this.done = true;
-			}
-
-			var ownView = this.owner.fleetView;
-			var targetView = this.target.fleetView;
-			var inOwn = ownView.boundSprite(this.sprite);
-			var inView = targetView.boundSprite(this.sprite);
-
-			if (!inOwn) {
-				if (inView) {
-					this.visible = true;
-				} else {
-					this.visible = false;
-				}
-			}
-
-			if (!inOwn && !inView) {
-
-				if (this.done) {
-					this.dispose();
-					return;
-				} else if (this.distance > 0) {
-					this.distance -= this.weapon.proj_speed;
-				} else {
-					this.visible = true;
-					var randY = targetView.position.y +
-						Math.random() * targetView.dimensions.y;
-					var initX = targetView.position.x;
-
-					if (this.displacement.x < 0) {
-						initX += targetView.dimensions.x;
-					}
-
-					var spawnPoint = {x: initX, y: randY};
-					this.sprite.moveTo(spawnPoint);
-					var vector =
-						Math.calcVector(spawnPoint, this.target.position);
-
-					vector.x *= this.weapon.proj_speed;
-					vector.y *= this.weapon.proj_speed;
-					this.displacement = vector;
-
-					this.sprite.rotation = Math.calcVectorAngle(vector);
-
-					console.log (this.sprite.rotation);
-
-					this.incoming = true;
-					inView = true;
-				}
-			}
-
-			this.sprite.hidden = !this.visible
-
-			if (this.incoming) {
-				if (this.target.collide(this.position) && !this.done) {
-					this.done = true;
-					this.spawnHitText();
-					if (this.hit) {
-						console.log(this.weapon.name  +" hits " +
-							this.target.name + " for " + this.weapon.damage +
-							" points of damage");
-						this.target.takeDamage(this.weapon.damage,
-							this.position);
-						this.dispose();
-					} else {
-						console.log(this.weapon.name + " misses " +
-							this.target.name);
-					}
-				}
-			}
-
-			if (this.incoming && !inView) {
-				this.dispose();
-			}
-
-			if ((!this.done || !this.hit) && this.visible) {
-				this.sprite.move(this.displacement);
-				this.position = this.sprite.position;
-			}
-
 		},
-
-		spawnHitText : function () {
-			var hitText = "" + (this.hit ? this.weapon.damage : "Miss");
-			var sprite = sprite_manager.newTextSprite(hitText, "14pt Courier",
-				"#888888");
-			var destination = {x: this.position.x, y: this.position.y - 15};
-			particle_manager.create(sprite, this.position, destination,
-				1500, 0, true);
-		},
-
 		register : function (manager) {
 			this.manager = manager;
 		},
@@ -117,6 +128,7 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 		}
 	};
 
+	// manager prototype
 	var projectileManager_prototype = {
 		__proto__ : manager_proto,
 		type_proto : projectile_prototype,
@@ -132,15 +144,13 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 				new_projectile.sprite = sprite;
 				new_projectile.target = target;
 				new_projectile.hit = hit;
-				new_projectile.done = false;
 				new_projectile.weapon = weapon;
 				new_projectile.owner = weapon.owner;
 
 				sprite.centerOn(origin);
 				new_projectile.position = sprite.position;
-				new_projectile.incoming = false;
-				new_projectile.visible = true;
 				new_projectile.distance = 3000;
+				new_projectile.targetView = target.fleetView;
 
 				var vector = Math.calcAngleVector(weapon.owner.getRotation());
 				vector.x *= weapon.proj_speed;
@@ -155,29 +165,12 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 			}
 
 			return this.add(new_projectile);
-
 		},
-
-		update : function (elapsed) {
-			var index = "";
-			var projectile = null;
-			for (index in this.object_list){
-				projectile = this.object_list[index];
-
-				if (projectile) {
-					projectile.update(elapsed);
-				}
-			}
-		}
 	}
 
+	// manager constructor
 	return function () {
-		var new_projectileManager = {
-			__proto__: projectileManager_prototype
-		};
-
-		new_projectileManager.object_list = [];
-
-		return new_projectileManager;
+		this.__proto__ = projectileManager_prototype;
+		this.object_list = [];
 	}
 }
