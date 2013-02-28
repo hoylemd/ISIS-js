@@ -87,7 +87,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 		addWeapon : function (weapon) {
 			if (weapon) {
 				this.weapon = weapon;
-				weapon.registerOwner(this);
+				weapon.install(this);
 			}
 		},
 
