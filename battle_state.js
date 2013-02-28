@@ -61,13 +61,13 @@ var ISIS_battleState = function (game, canvas, content) {
 		player = unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
 		player.name = "Arkadian Cruiser";
 		player.setHull(100);
-		player.addWeapon(Weapon("Arkadian Railgun", 50, 25, 1500,
+		player.addWeapon(new Weapon("Arkadian Railgun", 50, 25, 1500,
 			images["bullet"], 25));
 
 		enemy = unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
 		enemy.name = "Terran Cruiser";
 		enemy.setHull(150);
-		enemy.addWeapon(Weapon("Terran Mass Driver", 18, 10, 3000,
+		enemy.addWeapon(new Weapon("Terran Mass Driver", 18, 10, 3000,
 			images["bullet"], 20));
 
 		playerFleetView = fleetView(images["spaceTile"]);
