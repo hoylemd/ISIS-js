@@ -152,12 +152,12 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 				new_projectile.distance = 3000;
 				new_projectile.targetView = target.fleetView;
 
-				var vector = Math.calcAngleVector(weapon.owner.getRotation());
+				var vector = Math.calcAngleVector(weapon.owner.rotation);
 				vector.x *= weapon.proj_speed;
 				vector.y *= weapon.proj_speed;
 				new_projectile.displacement = vector;
 
-				sprite.rotation = weapon.owner.getRotation();
+				sprite.rotation = weapon.owner.rotation;
 
 			} else {
 				console.log("projectile is missing some arguments");
