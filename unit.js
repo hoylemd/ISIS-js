@@ -1,85 +1,83 @@
-// Unit object source file
-// author: hoylemd
-
-// Main setup function
+// Unit object (unmanaged)
 var ISIS_unit = function(context, content, spriteManager, particle_manager)
 {
 	// tile constant
 	var tileSize = 100;
 
 	// function to snap coordinates to the grid
-	var snapToGrid = function(xIn, yIn)
-	{
+	var snapToGrid = function(position) {
 		// calculate offset
-		var xOff = xIn % tileSize;
-		var yOff = yIn % tileSize;
+		var xOff = position.x % tileSize;
+		var yOff = position.y % tileSize;
 
 		// return new coords
 		return {
-			x: xIn - xOff + (tileSize / 2),
-			y: yIn - yOff + (tileSize / 2)
+			x: position.x - xOff + (tileSize / 2),
+			y: position.y - yOff + (tileSize / 2)
 		};
 	}
 
-	// Unit class prototype (hidden)
-	var unit_prototype =
-	{
-		// movement function
-		moveTo : function(intX, intY)
-		{
-			// calculate snapped coordinates
-			var snapCoords = snapToGrid(intX, intY);
+	// function for when the unit is destroyed
+	var wreck =  function (that) {
+		// turn the ship sprite into debris
+		particle_manager.newDebris(that.sprite);
 
-			// canculate new sprite position
-			var newX = snapCoords.x;
-			var newY = snapCoords.y;
+		console.log("Unit " + that.name + " destroyed!");
 
-			this.position.x = newX;
-			this.position.y = newY;
+		// destroy stuff
+		that.health_bar.dispose();
+		that.destroyed = true;
 
-			// move the sprite
+		// clear orders
+		that.orders.attack = null;
+		that.carryOut();
+	};
+
+	// prototype
+	var unit_prototype = {
+		// arbitrary movement method
+		moveTo : function (position) {
+			var bar_y = 0;
+			// snap to the grid
+			this.position = snapToGrid(position);
+
+			// move the sprites
 			this.sprite.centerOn(this.position);
-			var health_bar_y = (newY + 0.5 * this.sprite.frameDims.y) - 15;
-			this.health_bar.centerOn({x: newX, y: health_bar_y });
+			bar_y = (this.position.y + 0.5 * this.sprite.frameDims.y) - 15;
+			this.health_bar.centerOn({x: this.position.x, y: bar_y });
 		},
 
-		rotateTo: function(rads)
-		{
+		// arbtrary rotation function
+		rotateTo: function(rads) {
 			this.sprite.rotateTo(rads);
 		},
 
-		getRotation : function () {
-			return this.sprite.rotation;
-		},
-
+		// order line drawing method
 		drawLines: function() {
 			// calculate tile offset
-			tileOffset = tileSize / 2;
+			var tileOffset = tileSize / 2;
+			var index = 0;
+			var order = null;
 
 			// draw the order lines if they exist
-			for (var order in this.orders)
-			{
-				if (this.orders[order])
-				{
-					var ord = this.orders[order];
-					context.reset();
+			for (index in this.orders) {
+				order = this.orders[index];
+				context.reset();
 
-					context.beginPath();
+				// set up line drawing
+				context.beginPath();
+				context.lineWidth = 1;
+				context.strokeStyle = order.colour;
 
-					// set up line drawing
-					context.lineWidth = 1;
-					context.strokeStyle = ord.colour;
-
-					// draw the line
-					if (ord.pending ) {
-						context.dashedLineTo(this.position, ord.position,
-							[20, 20]);
-					} else {
-						context.moveTo(this.position.x ,this.position.y);
-						context.lineTo(ord.position.x, ord.position.y);
-					}
-					context.stroke();
+				// draw the line
+				if (order.pending ) {
+					context.dashedLineTo(this.position, order.position,
+						[20, 20]);
+				} else {
+					context.moveTo(this.position.x ,this.position.y);
+					context.lineTo(order.position.x, order.position.y);
 				}
+				context.stroke();
 			}
 		},
 
@@ -88,6 +86,8 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			if (weapon) {
 				this.weapon = weapon;
 				weapon.install(this);
+			} else {
+				console.log("Cannot add a null weapon");
 			}
 		},
 
@@ -99,8 +99,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 
 		// order registration
 		registerOrder : function (order) {
-			if (order.name === "attack")
-			{
+			if (order.name === "attack") {
 				order.x = order.target.x;
 				order.y = order.target.y;
 				order.owner = this;
@@ -111,6 +110,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 		// carry out orders function
 		carryOut : function () {
 			var attack = this.orders.attack;
+
 			// attack order
 			if (attack) {
 				if (attack.pending) {
@@ -120,6 +120,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 					} else {
 						console.log(this.name +
 							" has no weapon! It cannot attack!");
+						this.orders.attack = null;
 					}
 				}
 			} else {
@@ -127,36 +128,32 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			}
 		},
 
-		wreck: function () {
-			console.log("Unit " + this.name + " destroyed!");
-			var wreck_sprite = particle_manager.newDebris(this.sprite);
-			this.health_bar.dispose();
-			this.destroyed = true;
-			this.orders.attack = null;
-			this.carryOut();
-		},
-
 		// damage ship
-		takeDamage : function(amount, position) {
+		takeDamage : function (amount, position) {
+			var which = 0;
+			var sprite = null;
 			this.hullCurrent -= amount;
 
 			// spawn debris
-			// choose debris texture
-			var which = Math.floor(Math.random() * 3);
-			var sprite = spriteManager.newSprite(this.debris[which],
-				{x: 1, y: 1}, 0);
-			// choose rotation & rate
+			which = Math.floor(Math.random() * 3);
+			sprite =
+				spriteManager.newSprite(this.debris[which], {x: 1, y: 1}, 0);
+
+			// positioning
 			sprite.setRotation = Math.random();
 			sprite.centerOn(position);
 
+			// spawn debris
 			particle_manager.newDebris(sprite);
 
+			// check if the unit is wrecked
 			if (this.hullCurrent <= 0) {
-				this.wreck();
+				wreck(this);
 			}
 		},
 
-		dodge : function() {
+		// function to get a units dodge roll
+		dodgeRoll : function () {
 			return Math.dx(this.dodgeBonus);
 		},
 
@@ -173,8 +170,8 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 		},
 
 		// order cancelling function
-		clearOrder : function(order) {
-			this.orders[order] = null;
+		clearOrder : function(key) {
+			this.orders[key] = null;
 		},
 
 		// update function
@@ -186,17 +183,22 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			// check if attack order is still valid
 			if (this.orders.attack) {
 				if (this.orders.attack.target.destroyed) {
-					this.orders.attack = null;
+					delete this.orders.attack;
 				}
 			}
+
+			// update positioning
+			this.position = this.sprite.center();
+			this.rotation = this.sprite.rotation;
 		},
 
+		// register the fleetView
 		registerView : function (fleetView) {
 			this.fleetView = fleetView;
 		}
 	}
 
-	// builder function for unit
+	// consctructor
 	return function(texture, mapDims, msBetweenFrames, debris) {
 		// prepare sprites
 		var sprite = spriteManager.newSprite(
@@ -206,26 +208,26 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			"green", "red", "yellow", 0.2);
 
 		// build the object
-		var new_unit =  {
-			__proto__ : unit_prototype,
-			// sprites
-			debris: debris,
-			sprite: sprite,
-			health_bar : health_bar,
-			// general stuff
-			name: "Unnamed Unit",
-			position : sprite.position,
-			fleetView : null,
-			// combat stats
-			orders : {},
-			hullMax : 5,
-			hullCurrent : 5,
-			dodgeBonus : 10,
-			weapon : null,
-			destroyed : false
-		};
+		this.__proto__ = unit_prototype;
 
-		// return the new unit
-		return new_unit;
+		// sprites
+		this.debris= debris;
+		this.sprite= sprite;
+		this.health_bar = health_bar;
+
+		// general stuff
+		this.name= "Unnamed Unit";
+		this.position = sprite.position;
+		this.rotation = sprite.rotation;
+		this.fleetView = null;
+
+		// combat stats
+		this.orders = {};
+		this.hullMax = 5;
+		this.hullCurrent = 5;
+		this.dodgeBonus = 10;
+		this.weapon = null;
+		this.destroyed = false
+
 	}
 }
