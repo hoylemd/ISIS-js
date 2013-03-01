@@ -10,7 +10,7 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 
 		// make attack rolls
 		roll = Math.d100();
-		dodge = that.target.dodge();
+		dodge = that.target.dodgeRoll();
 		hit = roll + that.hit_bonus > 50 + dodge;
 
 		// make projectile
