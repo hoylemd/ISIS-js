@@ -30,7 +30,7 @@ var ISIS_battleState = function (game, canvas, content) {
 	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
 
 	// unit objects
-	var unit = ISIS_unit(context, images, spriteManager, particle_manager);
+	var Unit = ISIS_unit(context, images, spriteManager, particle_manager);
 	var player = null;
 	var enemy = null;
 
@@ -58,16 +58,16 @@ var ISIS_battleState = function (game, canvas, content) {
 		var debris_library = [images["debris1"], images["debris2"],
 			images["debris3"]];
 
-		player = unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
+		player = new Unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
 		player.name = "Arkadian Cruiser";
 		player.setHull(100);
 		player.addWeapon(new Weapon("Arkadian Railgun", 50, 25, 1500,
 			images["bullet"], 25));
 
-		enemy = unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
+		enemy = new Unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
 		enemy.name = "Terran Cruiser";
 		enemy.setHull(150);
-		enemy.addWeapon(new Weapon("Terran Mass Driver", 18, 10, 3000,
+		enemy.addWeapon(new Weapon("Terran Mass Driver", 75, 100, 1000,
 			images["bullet"], 20));
 
 		playerFleetView = fleetView(images["spaceTile"]);
@@ -81,7 +81,6 @@ var ISIS_battleState = function (game, canvas, content) {
 		enemyFleetView.facing = 3/4 * Math.TAU;
 		enemyFleetView.resize(500, 600);
 		enemyFleetView.addShip(enemy);
-		enemy.moveTo(850, 350);
 
 		enemy.registerOrder(orders.attack(enemy, player));
 		enemy.carryOut();
@@ -145,11 +144,11 @@ var ISIS_battleState = function (game, canvas, content) {
 
 		// check for state changes
 		if (player.destroyed) {
-			alert("you lose!");
+			console.log("you lose!");
 			game.changeState(ISIS_battleState(game, canvas, content));
 			return;
 		} else if (enemy.destroyed) {
-			alert("you win!");
+			console.log("you win!");
 			game.changeState(ISIS_battleState(game, canvas, content));
 			return;
 		}
@@ -175,8 +174,11 @@ var ISIS_battleState = function (game, canvas, content) {
 		spriteManager.draw();
 
 		// draw order lines
-		player.drawLines();
+		if (!player.destroyed) {
+			player.drawLines();
+		}
 		//enemy.drawLines();
+
 
 		// draw the UI
 		drawBar();
