@@ -82,7 +82,7 @@ var ISIS_battleState = function (game, canvas, content) {
 		enemyFleetView.resize(500, 600);
 		enemyFleetView.addShip(enemy);
 
-		enemy.registerOrder(orders.attack(enemy, player));
+		enemy.registerOrder(new orders.Attack(enemy, player));
 		enemy.carryOut();
 		// test text sprites
 		//spriteManager.newTextSprite("test", "12px Courier",
@@ -196,7 +196,7 @@ var ISIS_battleState = function (game, canvas, content) {
 				if (attackOrder) {
 					// register an attack order if the attack order is active
 					if (enemy.collide(mousePos)) {
-						player.registerOrder(orders.attack(player, enemy));
+						player.registerOrder(new orders.Attack(player, enemy));
 					} else {
 						player.clearOrder("attack");
 					}
