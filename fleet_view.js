@@ -105,7 +105,7 @@ var ISIS_fleetView = function (context) {
 		posy += this.position.y;
 
 		ship.rotateTo(this.facing);
-		ship.moveTo(posx, posy);
+		ship.moveTo({x: posx, y: posy});
 		this.shipList.push(ship);
 		ship.registerView(this);
 	};
