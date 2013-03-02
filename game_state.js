@@ -1,7 +1,8 @@
-//victory state object
-
+// game state object
 var ISIS_gameState = function (game, canvas, content) {
+	// prototype
 	var game_state_prototype = {
+		// function to add a component
 		addComponent : function (component) {
 			this.components.push(component);
 			if (component.draw) {
@@ -9,47 +10,48 @@ var ISIS_gameState = function (game, canvas, content) {
 			}
 		},
 
+		// initializer
 		initialize : function () {
 			this.initialized = true;
 		},
 
+		// updater
 		update : function (elapsed) {
 			var i = 0;
+
+			// update all the child components
 			for (i in this.components) {
 				this.components[i].update(elapsed);
 			}
+
+			// draw all the drawable components
 			for (i in this.drawable_components) {
-				this.drawable_components[i].update(elapsed);
+				this.drawable_components[i].draw();
 			}
 		}
 	};
 
+	// return the constructor
 	return function () {
-		var sprite_manager = new ISIS_sprite_manager(canvas)()
-		var new_state = {
-			__proto__ : game_state_prototype,
+		this.__proto__ = game_state_prototype;
 
-			// component list
-			components : [],
-			drawable_components : [],
+		// component list
+		this.components = [];
+		this.drawable_components = [];
 
-			// graphics objects
-			context : canvas.getContext("2d"),
-			spriteManager : sprite_manager,
+		// graphics objects
+		this.context = canvas.getContext("2d");
+		this.sprite_manager = new ISIS_sprite_manager(canvas)();
 
-			// content assets
-			images : content.images,
+		// content assets
+		this.images = content.images;
 
-			// I/O object
-			io : new ISIS_IO(),
+		// I/O object
+		this.io = new ISIS_IO();
 
-			// state
-			initialized : false
-		}
+		// state
+		this.initialized = false;
 
-		new_state.addComponent(sprite_manager);
-
-		return new_state;
-
+		this.addComponent(sprite_manager);
 	};
 }
