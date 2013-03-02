@@ -1,48 +1,39 @@
-// Fleer view source file
-// author: hoylemd
-
-// main setup function
+// Fleet view
 var ISIS_fleetView = function (context) {
-	var boundSprite = function (sprite) {
-		return (this.position.x <= sprite.position.x &&
-			(this.position.x + this.dimensions.x >=
-				sprite.position.x + sprite.frameDims.x) &&
-			this.position.y <= sprite.position.y &&
-			(this.position.y + this.dimensions.y >=
-				sprite.position.y + sprite.frameDims.y));
-	}
+	var manager_proto = new ISIS_manager();
 
-	var funDrawBackground = function () {
+	// function to draw the background
+	var drawBackground = function (that) {
 		var i = 0;
 		var j = 0;
-		var xMoved = 0;
+		var x_moved = 0;
 
 		context.reset();
 
 		// clear the screen
-		context.clearRect(this.position.x, this.position.y,
-			this.dimensions.x, this.dimensions.y);
+		context.clearRect(that.position.x, that.position.y,
+			that.dimensions.x, that.dimensions.y);
 		context.fillStyle = "#000000";
-		context.fillRect(this.position.x, this.position.y,
-			this.dimensions.x, this.dimensions.y);
+		context.fillRect(that.position.x, that.position.y,
+			that.dimensions.x, that.dimensions.y);
 
 		// set the context to the tile offset
-		context.translate(this.tileOffset.x, this.tileOffset.y);
+		context.translate(that.tileOffset.x, that.tileOffset.y);
 
 		// move to the view position
-		context.translate(this.position.x, this.position.y);
+		context.translate(that.position.x, that.position.y);
+
 		//draw rows
-		for (i = 0; i < this.tiles.y; i++) {
-			xMoved = 0;
-			// draw each tile
-			for (j = 0; j < this.tiles.x; j++) {
-				context.drawImage(this.tileImage, -this.tileOffset.x,
-					-this.tileOffset.y);
-				context.translate(this.tileDimensions.x, 0);
-				xMoved += this.tileDimensions.x;
+		for (i = 0; i < that.tiles.y; i++) {
+			x_moved = 0;
+			for (j = 0; j < that.tiles.x; j++) {
+				context.drawImage(that.tileImage, -that.tileOffset.x,
+					-that.tileOffset.y);
+				context.translate(that.tileDimensions.x, 0);
+				x_moved += that.tileDimensions.x;
 			}
 
-			context.translate(-xMoved, this. tileDimensions.y);
+			context.translate(-x_moved, that. tileDimensions.y);
 		}
 
 		// reset the context
@@ -50,80 +41,105 @@ var ISIS_fleetView = function (context) {
 	};
 
 	// function to draw the grid lines
-	var funDrawGrid = function() {
+	var drawGrid = function (that) {
+		var i = 0;
+
+		// set initial pixel offset (makes lines draw sharp)
+		var curr_x = -0.5;
+		var curr_y = -0.5;
+
 		// set up for grid drawing
 		context.reset();
-		context.translate(this.position.x, this.position.y);
+		context.translate(that.position.x, that.position.y);
 		context.beginPath();
 		context.lineWidth = 1;
 		context.strokeStyle = "#440044";
 
-		// set initial pixel offset (makes lines draw sharp)
-		var currX = -0.5;
-		var currY = -0.5;
-
 		// draw vertical lines
-		for(var i = 1; i < this.tiles.x; i++) {
-			currX += this.tileDimensions.x;
-			context.moveTo(currX, currY);
-			context.lineTo(currX, currY + this.dimensions.y + 1);
+		for(i = 1; i < that.tiles.x; i++) {
+			curr_x += that.tileDimensions.x;
+			context.moveTo(curr_x, curr_y);
+			context.lineTo(curr_x, curr_y + that.dimensions.y + 1);
 		}
 
 		// reset initial pixel offset
-		var currX = -0.5;
-		var currY = -0.5;
+		curr_x = -0.5;
+		curr_y = -0.5;
 
 		// draw horizontal lines
-		for (var i = 1; i < this.tiles.y; i++) {
-			currY += 100;
-			context.moveTo(currX, currY);
-			context.lineTo(currX + this.dimensions.x + 1, currY);
+		for (i = 1; i < that.tiles.y; i++) {
+			curr_y += 100;
+			context.moveTo(curr_x, curr_y);
+			context.lineTo(curr_x + that.dimensions.x + 1, curr_y);
 		}
 
 		// draw the lines
 		context.stroke();
 		context.reset();
-	}
-
-	var funResize = function (x, y) {
-		this.dimensions.x = x;
-		this.dimensions.y = y;
-
-		this.tiles.x = Math.floor(x / this.tileDimensions.x);
-		this.tiles.y = Math.floor(y / this.tileDimensions.y);
 	};
 
-	var funMove = function(x, y) {
-		this.position.x = x;
-		this.position.y = y;
-	};
-
-	var funAddShip = function(ship) {
-		var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x
-		var posy = Math.floor(this.tiles.y / 2) * this.tileDimensions.y
-		posx += this.position.x;
-		posy += this.position.y;
-
-		ship.rotateTo(this.facing);
-		ship.moveTo({x: posx, y: posy});
-		this.shipList.push(ship);
-		ship.registerView(this);
-	};
-
+	// prototype
 	var fleetView_prototype = {
-		// sprite drawing data
-		spriteRotation: 0,
-		drawBackground: funDrawBackground,
-		drawGrid: funDrawGrid,
-		draw: function()
-		{
-			this.drawBackground();
-			this.drawGrid();
+		__proto__ : manager_proto,
+
+		// override the update function to do nothong
+		update: function () {
 		},
-		addShip : funAddShip,
-		resize: funResize,
-		move: funMove,
-		boundSprite: boundSprite
+
+		// draw function
+		draw: function() {
+			drawBackground(this);
+			drawGrid(this);
+		},
+
+		// method to register a ship
+		addShip : function(ship) {
+
+			// determine the middle-most tile
+			var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x
+			var posy = Math.floor(this.tiles.y / 2) * this.tileDimensions.y
+			posx += this.position.x;
+			posy += this.position.y;
+
+			// position the ship
+			ship.rotateTo(this.facing);
+			ship.moveTo({x: posx, y: posy});
+
+			// link the ship to this view
+			this.add(ship);
+			ship.registerView(this);
+		},
+
+		// resize function
+		resize: function (size) {
+			// adjust dimensions
+			this.dimensions.x = size.x;
+			this.dimensions.y = size.y;
+
+			// recalsulate tiles
+			this.tiles.x = size.x / this.tileDimensions.x;
+			this.tiles.y = size.y / this.tileDimensions.y;
+		},
+
+		// move function
+		moveTo : function (position) {
+			this.position.x = position.x;
+			this.position.y = position.y;
+		},
+
+		// method to check if a sprite is bound by this fleetView
+		boundSprite: function (sprite) {
+			// calculate side bounding
+			var left = this.position.x <= sprite.position.x;
+			var right = this.position.x + this.dimensions.x >=
+					sprite.position.x + sprite.frameDims.x;
+			var top_side = 	this.position.y <= sprite.position.y;
+			var bottom = this.position.y + this.dimensions.y >=
+					sprite.position.y + sprite.frameDims.y;
+
+			// calculate true or false for bounding
+			return left && right && top_side && bottom;
+		}
 	};
 
 	// constructor
@@ -131,25 +147,17 @@ var ISIS_fleetView = function (context) {
 		var ix = tileImage.width;
 		var iy = tileImage.height;
 
-		// build the proto
-		var new_fv = {
-			__proto__ : fleetView_prototype,
+		this.__proto__ = fleetView_prototype;
 
-			// overall drawing data
-			position : {x:0, y:0},
-			dimensions : {x:0, y:0},
-			facing : 0,
+		// overall drawing data
+		this.position = {x: 0, y: 0};
+		this.dimensions = {x: 0, y: 0};
+		this.facing = 0;
 
-			// sprites
-			shipList: [],
-
-			// tile data
-			tiles : {x:0, y:0},
-			tileDimensions : {x:ix, y:iy},
-			tileOffset : {x : ix / 2, y:iy / 2},
-			tileImage : tileImage
-		};
-
-		return new_fv;
-	}
-}
+		// tile data
+		this.tiles = {x: 0, y: 0};
+		this.tileDimensions = {x: ix, y: iy};
+		this.tileOffset = {x: ix / 2, y: iy / 2};
+		this.tileImage = tileImage;
+	};
+};
