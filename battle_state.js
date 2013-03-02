@@ -13,7 +13,7 @@ var ISIS_battleState = function (game, canvas, content) {
 	var io = new ISIS_IO();
 
 	// fleet view objects
-	var fleetView = ISIS_fleetView(context);
+	var FleetView = ISIS_fleetView(context);
 	var playerFleetView;
 
 	// sprite objects
@@ -70,16 +70,16 @@ var ISIS_battleState = function (game, canvas, content) {
 		enemy.addWeapon(new Weapon("Terran Mass Driver", 75, 100, 1000,
 			images["bullet"], 20));
 
-		playerFleetView = fleetView(images["spaceTile"]);
-		playerFleetView.move(0, 0);
+		playerFleetView = new FleetView(images["spaceTile"]);
+		playerFleetView.moveTo({x: 0, y: 0});
 		playerFleetView.facing = 1/4 * Math.TAU;
-		playerFleetView.resize(500, 600);
+		playerFleetView.resize({x: 500, y: 600});
 		playerFleetView.addShip(player);
 
-		enemyFleetView = fleetView(images["spaceTile"]);
-		enemyFleetView.move(600, 0);
+		enemyFleetView = new FleetView(images["spaceTile"]);
+		enemyFleetView.moveTo({x: 600, y: 0});
 		enemyFleetView.facing = 3/4 * Math.TAU;
-		enemyFleetView.resize(500, 600);
+		enemyFleetView.resize({x: 500, y: 600});
 		enemyFleetView.addShip(enemy);
 
 		enemy.registerOrder(new orders.Attack(enemy, player));
