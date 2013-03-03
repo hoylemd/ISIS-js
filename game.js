@@ -1,26 +1,15 @@
-// main game engine
-// author: hoylemd
-
-// ISIS main engine builder
-var ISIS_engine = function () {
-	var canvas = document.getElementById("myCanvas");
-	var context = canvas.getContext("2d");
-	var io = new ISIS_IO();
-	var current_state = {};
+// ISIS main engine
+var ISIS_Engine = function (canvas, io) {
+	// state pointer
+	var current_state = null;
 
 	// content assets
-	var images = {};
+	var content = {
+		images : {}
+	};
 
 	// timing data
 	var lastTime;
-
-	// Add animFrame jig
-	var animFrame = window.requestAnimationFrame ||
-		window.webkit.RequestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.oRequestAnimationFrame ||
-		window.msRequestAnimationFrame ||
-		null ;
 
 	// image manifest
 	var image_manifest = {
@@ -44,51 +33,50 @@ var ISIS_engine = function () {
 		"debris3" : {id: "debris3", path: "debris3.png", loaded: false}
 	};
 
-	var engine = {
-		// function to initialize the game
-		initialize : function () {
-			current_state = ISIS_battleState(this, canvas, {images : images});
-			current_state.initialize();
+	// function to initialize the game
+	this.initialize = function () {
+		current_state = ISIS_battleState(this, canvas, content);
+		current_state.initialize();
 
-			var that = this;
-			var mainLoop = function() {
-				that.update();
-				animFrame(mainLoop);
-			};
-
+		var that = this;
+		var mainLoop = function() {
+			that.update();
 			animFrame(mainLoop);
-		},
+		};
 
-		// function to update the screen
-		update : function () {
-			var now = new Date();
-			var elapsed = 0;
+		animFrame(mainLoop);
+	};
 
-			if (lastTime != undefined) {
-				elapsed = now.getTime() - lastTime.getTime();
-			}
-			lastTime = now;
+	// function to update the screen
+	this.update = function () {
+		var now = new Date();
+		var elapsed = 0;
 
-			// reset the window size
-			clientWidth = $(window).width();
-			clientHeight = $(window).height();
-
-			// resize the canvas
-			canvas.width = clientWidth;
-			canvas.height = clientHeight;
-
-			current_state.update(elapsed);
-		},
-
-		changeState : function (new_state) {
-			current_state = new_state;
+		if (lastTime != undefined) {
+			elapsed = now.getTime() - lastTime.getTime();
 		}
+		lastTime = now;
+
+		// reset the window size
+		clientWidth = $(window).width();
+		clientHeight = $(window).height();
+
+		// resize the canvas
+		canvas.width = clientWidth;
+		canvas.height = clientHeight;
+
+		current_state.update(elapsed);
+	};
+
+	// function to transition to a new state
+	this.changeState = function (new_state) {
+		current_state = new_state;
 	};
 
 	// function to update the manifest of loaded images
 	// id: the id of the image that's finsihed loading
-	var imageLoaded = function () {
-		var that = engine;
+	var imageLoaded = ( function () {
+		var that = this;
 		return function(id){
 			var newSprite = null;
 
@@ -113,15 +101,15 @@ var ISIS_engine = function () {
 				that.initialize();
 			}
 		};
-	}();
+	} )();
 
 	// Load up all neccesary content
 	for ( i in image_manifest ) {
-		images[i] = io.loadImage(image_manifest[i], imageLoaded);
+		content.images[i] = io.loadImage(image_manifest[i], imageLoaded);
 	}
 
 	// augment the context with a reset function
-	context.reset = function () {
+	canvas.getContext("2d").reset = function () {
 		this.setTransform(1, 0, 0, 1, 0, 0);
 		this.globalAlpha = 1;
 	};
