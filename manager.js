@@ -50,6 +50,15 @@ ISIS_Manager = function () {
 
 			return this.add(new_object);
 		},
+
+		// destructor
+		dispose : function () {
+			var i = 0;
+			for (i in this.object_list) {
+				this.object_list[i].dispose()
+				delete this.object_list[i]
+			}
+		}
 	};
 
 	// return the constructor
