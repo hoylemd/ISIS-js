@@ -1,11 +1,11 @@
 // Sprite manager object
 
-function ISIS_sprite_manager (canvas) {
+function ISIS_SpriteManager (canvas) {
+	// get the context and manager prototype
 	var context = canvas.getContext("2d");
-	var manager_proto = new ISIS_manager();
 
+	// Sprite prototype
 	var sprite_prototype = {
-		__proto__ : manager_proto.type_proto,
 		update : function(elapsedMS) {
 			var x = 0;
 			var y = 0;
@@ -147,7 +147,7 @@ function ISIS_sprite_manager (canvas) {
 	};
 
 	var sprite_manager_prototype = {
-		__proto__ : new ISIS_manager(),
+		__proto__ : new ISIS.Manager(),
 		type_proto : sprite_prototype,
 
 		newSprite : function (image, mapDims, msBetweenFrames) {
@@ -226,8 +226,7 @@ function ISIS_sprite_manager (canvas) {
 			}
 		},
 
-		draw : function()
-		{
+		draw : function() {
 			var index = "";
 			for (index in this.object_list) {
 				this.object_list[index].draw();
@@ -235,5 +234,7 @@ function ISIS_sprite_manager (canvas) {
 		}
 	}
 
-	this.__proto__ = sprite_manager_prototype;
+	return function () {
+		this.__proto__ = sprite_manager_prototype;
+	}
 }
