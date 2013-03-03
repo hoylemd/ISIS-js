@@ -1,8 +1,14 @@
-// Manager prototype / factory
-ISIS_manager = ( function () {
+// Manager class
+// holds a list of objects and manages them.
+// this is intended to be used as a prototype, and extended.
+ISIS_Manager = function () {
+	// prototype
 	var manager_prototype = {
+		// updater
 		update : function (elapsed) {
 			var obj = null;
+
+			// call all child objects update method if it exists
 			for (index in this.object_list) {
 				obj = this.object_list[index];
 				if (obj && obj.update) {
@@ -11,13 +17,19 @@ ISIS_manager = ( function () {
 			}
 		},
 
+		// function to add an object to the managed list
 		add : function (obj) {
 			this.object_list.push(obj);
+
+			// return it for cascading / external handling
 			return obj
 		},
 
+		// function to remove an object from managment
 		remove : function (obj) {
 			var index = null;
+
+			// find the object in the list
 			if (obj) {
 				for (index in this.object_list){
 					if (this.object_list[index] === obj) {
@@ -25,25 +37,24 @@ ISIS_manager = ( function () {
 					}
 				}
 			}
+
+			// return this for cascading calls
 			return this;
 		},
 
-		type_proto : {
-			manager : this
-		},
-
+		// function to create a new managed object
 		create : function () {
 			var new_object = {
-				__proto__ : this.type_proto,
-				manager : null
+				manager : this
 			};
 
 			return this.add(new_object);
 		},
 	};
 
+	// return the constructor
 	return function () {
 		this.__proto__ = manager_prototype;
 		this.object_list = [];
 	};
-}() );
+};
