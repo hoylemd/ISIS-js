@@ -85,11 +85,11 @@ var ISIS_battleState = function (game, canvas, content) {
 		enemy.registerOrder(new orders.Attack(enemy, player));
 		enemy.carryOut();
 		// test text sprites
-		//spriteManager.newTextSprite("test", "12px Courier",
+		//new spriteManager.TextSprite("test", "12px Courier",
 		//	"red").centerOn({x: 150, y: 150});
 
 		// test particle
-		//var part_sprite = spriteManager.newTextSprite("wheee!",
+		//var part_sprite = new spriteManager.TextSprite("wheee!",
 		//	"16pt Calibri", "blue");
 		//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
 		//	{x: 550, y: 50}, 5000);
