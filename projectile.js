@@ -1,7 +1,7 @@
 // code file for projectile managers
 
 function ISIS_ProjectileManager (sprite_manager, particle_manager) {
-	var manager_proto = new ISIS_manager();
+	var manager_proto = new ISIS.Manager();
 
 	// function to spawn the hit text sprite
 	var spawnHitText = function (that) {
