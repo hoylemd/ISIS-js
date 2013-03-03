@@ -192,13 +192,22 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			this.rotation = this.sprite.rotation;
 		},
 
-		// register the fleetView
+		// function to register the fleetView
 		registerView : function (fleetView) {
 			this.fleetView = fleetView;
+		},
+
+		// destructor
+		dispose : function () {
+			// clean up sprites
+			this.health_bar.dispose();
+			delete this.health_bar;
+			this.sprite.dispose();
+			delete this.sprite;
 		}
 	}
 
-	// consctructor
+	// constructor
 	return function(texture, mapDims, msBetweenFrames, debris) {
 		// prepare sprites
 		var sprite = spriteManager.newSprite(
