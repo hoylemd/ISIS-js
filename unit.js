@@ -130,14 +130,13 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 
 		// damage ship
 		takeDamage : function (amount, position) {
-			var which = 0;
+			var texture = null;
 			var sprite = null;
 			this.hullCurrent -= amount;
 
 			// spawn debris
-			which = Math.floor(Math.random() * 3);
-			sprite =
-				spriteManager.newSprite(this.debris[which], {x: 1, y: 1}, 0);
+			texture = this.debris[Math.floor(Math.random() * 3)];
+			sprite = new spriteManager.Sprite(texture, {x: 1, y: 1}, 0);
 
 			// positioning
 			sprite.setRotation = Math.random();
@@ -210,10 +209,10 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 	// constructor
 	return function(texture, mapDims, msBetweenFrames, debris) {
 		// prepare sprites
-		var sprite = spriteManager.newSprite(
+		var sprite = new spriteManager.Sprite(
 			(content[texture]), mapDims, msBetweenFrames);
 		var health_bar_dims = {x: sprite.frameDims.x * 0.8, y: 10};
-		var health_bar = spriteManager.newBarSprite(health_bar_dims,
+		var health_bar = new spriteManager.BarSprite(health_bar_dims,
 			"green", "red", "yellow", 0.2);
 
 		// build the object
