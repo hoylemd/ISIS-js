@@ -4,7 +4,6 @@ function ISIS_SpriteManager (canvas) {
 	// get the context and manager prototype
 	var context = canvas.getContext("2d");
 
-	// Sprite prototype
 	var sprite_prototype = {
 		update : function(elapsedMS) {
 			var x = 0;
@@ -146,11 +145,11 @@ function ISIS_SpriteManager (canvas) {
 		return frameDims;
 	};
 
-	var sprite_manager_prototype = {
-		__proto__ : new ISIS.Manager(),
-		type_proto : sprite_prototype,
+	return function () {
+		this.__proto__ = new ISIS.Manager();
+		this.type_proto = sprite_prototype;
 
-		newSprite : function (image, mapDims, msBetweenFrames) {
+		this.newSprite = function (image, mapDims, msBetweenFrames) {
 			var new_sprite = new partialSprite(this);
 
 			if (image && mapDims) {
@@ -169,9 +168,9 @@ function ISIS_SpriteManager (canvas) {
 				console.log("invalid Sprite parameters.");
 			}
 			return this.add(new_sprite);
-		},
+		};
 
-		newTextSprite : function (text, font, colour) {
+		this.newTextSprite = function (text, font, colour) {
 			var new_sprite = new partialSprite(this);
 
 			if (text && font && colour) {
@@ -186,9 +185,9 @@ function ISIS_SpriteManager (canvas) {
 			}
 
 			return this.add(new_sprite);
-		},
+		};
 
-		newBarSprite : function (dimensions, full_colour, empty_colour,
+		this.newBarSprite = function (dimensions, full_colour, empty_colour,
 			critical_colour, critical_threshold) {
 			var new_sprite = new partialSprite(this);
 
@@ -205,9 +204,9 @@ function ISIS_SpriteManager (canvas) {
 			}
 
 			return this.add(new_sprite);
-		},
+		};
 
-		update : function (elapsed) {
+		this.update = function (elapsed) {
 			var index = "";
 			var sprite = null;
 
@@ -224,17 +223,13 @@ function ISIS_SpriteManager (canvas) {
 					}
 				}
 			}
-		},
+		};
 
-		draw : function() {
+		this.draw = function() {
 			var index = "";
 			for (index in this.object_list) {
 				this.object_list[index].draw();
 			}
-		}
-	}
-
-	return function () {
-		this.__proto__ = sprite_manager_prototype;
-	}
+		};
+	};
 }
