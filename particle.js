@@ -1,11 +1,10 @@
 // code file for particle managers
 
 function ISIS_ParticleManager () {
-	var manager_proto = new ISIS_manager();
+	var manager_proto = new ISIS.Manager();
 
 	// particle object prototype
 	var particle_prototype = {
-		__proto__ : manager_proto.type_proto,
 		update : function (elapsed) {
 			// skip update if there's been no time between updates
 			if (!elapsed) {
