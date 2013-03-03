@@ -1,8 +1,17 @@
 // Utilities file
-// author: hoylemd
 
-var ISIS_IO = ( function () {
+// shim to make frame requests easy
+var animFrame = window.requestAnimationFrame ||
+	window.webkit.RequestAnimationFrame ||
+	window.mozRequestAnimationFrame ||
+	window.oRequestAnimationFrame ||
+	window.msRequestAnimationFrame ||
+	null;
+
+// Io object
+var ISIS_IO = function () {
 	var IO_prototype = {
+		// function to load an image from a content manifest entry
 		loadImage : function (manifest_entry, callback) {
 			var image = new Image();
 			image.onload = function () {
@@ -13,6 +22,7 @@ var ISIS_IO = ( function () {
 			return image;
 		},
 
+		// function to get the position of the mouse pointer
 		getMousePos : function (context, evt) {
 			// get canvas position
 			var context_top = 0;
@@ -22,17 +32,19 @@ var ISIS_IO = ( function () {
 				context_left += context.offsetLeft;
 				context = context.offsetParent;
 			}
+
 			// return relative mouse position
 			return {
 				x: evt.clientX - context_left + window.pageXOffset,
 				y: evt.clientY - context_top + window.pageYOffset
 			};
-		}
+		},
+
+
 	};
-	return function () {
-		this.__proto__ = IO_prototype;
-	};
-}() );
+
+	this.__proto__ = IO_prototype;
+};
 
 // Modify Math object
 Math.TAU = 2 * Math.PI;
