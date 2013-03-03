@@ -145,10 +145,12 @@ var ISIS_battleState = function (game, canvas, content) {
 		// check for state changes
 		if (player.destroyed) {
 			console.log("you lose!");
+			this.dispose();
 			game.changeState(ISIS_battleState(game, canvas, content));
 			return;
 		} else if (enemy.destroyed) {
 			console.log("you win!");
+			this.dispose();
 			game.changeState(ISIS_battleState(game, canvas, content));
 			return;
 		}
@@ -182,6 +184,16 @@ var ISIS_battleState = function (game, canvas, content) {
 
 		// draw the UI
 		drawBar();
+	};
+
+	var dispose = function () {
+		projectile_manager.dispose();
+		particle_manager.dispose();
+		spriteManager.dispose();
+		playerFleetView.dispose();
+		enemyFleetView.dispose();
+		player = null;
+		enemy = null;
 	};
 
 	// Add an event listener for mouse clicks
@@ -231,7 +243,8 @@ var ISIS_battleState = function (game, canvas, content) {
 
 	return {
 		update : update,
-		initialize : initialize
+		initialize : initialize,
+		dispose : dispose
 	};
 
 };
