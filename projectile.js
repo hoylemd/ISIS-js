@@ -6,7 +6,7 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 	// function to spawn the hit text sprite
 	var spawnHitText = function (that) {
 		var hitText = "" + (that.hit ? that.weapon.damage : "Miss");
-		var sprite = sprite_manager.newTextSprite(hitText, "14pt Courier",
+		var sprite = new sprite_manager.TextSprite(hitText, "14pt Courier",
 			"#888888");
 		var destination = {x: that.position.x, y: that.position.y - 15};
 		particle_manager.create(sprite, that.position, destination,
