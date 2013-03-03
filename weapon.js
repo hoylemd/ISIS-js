@@ -5,8 +5,9 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 		var roll = 0;
 		var dodge = 0;
 		var hit = 0;
-		var proj_sprite = null;
+		var sprite = null;
 		var fire_point = null;
+		var texture = that.proj_texture;
 
 		// make attack rolls
 		roll = Math.d100();
@@ -14,12 +15,9 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 		hit = roll + that.hit_bonus > 50 + dodge;
 
 		// make projectile
-		proj_sprite =
-			spriteManager.newSprite(that.proj_texture, {x: 1, y: 1}, 0);
-		fire_point =
-			{x: that.owner.position.x, y: that.owner.position.y};
-		projectile_manager.create(proj_sprite, fire_point, that.target, hit,
-			that);
+		sprite = new spriteManager.Sprite(texture, {x: 1, y: 1}, 0);
+		fire_point = {x: that.owner.position.x, y: that.owner.position.y};
+		projectile_manager.create(sprite, fire_point, that.target, hit, that);
 	};
 
 	// prototype
