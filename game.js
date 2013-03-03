@@ -113,6 +113,4 @@ var ISIS_Engine = function (canvas, io) {
 		this.setTransform(1, 0, 0, 1, 0, 0);
 		this.globalAlpha = 1;
 	};
-
-	return engine;
 };
