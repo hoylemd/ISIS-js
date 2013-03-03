@@ -78,8 +78,6 @@ var ISIS_Engine = function (canvas, io) {
 	var imageLoaded = ( function () {
 		var that = this;
 		return function(id){
-			var newSprite = null;
-
 			// assume done until proven otherwise
 			var blnDone = true;
 
