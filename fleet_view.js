@@ -1,6 +1,6 @@
 // Fleet view
 var ISIS_fleetView = function (context) {
-	var manager_proto = new ISIS_manager();
+	var manager_proto = new ISIS.Manager();
 
 	// function to draw the background
 	var drawBackground = function (that) {
