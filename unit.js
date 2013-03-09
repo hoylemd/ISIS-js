@@ -20,7 +20,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 	// function for when the unit is destroyed
 	var wreck =  function (that) {
 		// turn the ship sprite into debris
-		particle_manager.newDebris(that.sprite);
+		new particle_manager.Debris(that.sprite);
 
 		console.log("Unit " + that.name + " destroyed!");
 
@@ -143,7 +143,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 			sprite.centerOn(position);
 
 			// spawn debris
-			particle_manager.newDebris(sprite);
+			new particle_manager.Debris(sprite);
 
 			// check if the unit is wrecked
 			if (this.hullCurrent <= 0) {
