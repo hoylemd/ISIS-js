@@ -1,8 +1,6 @@
 // code file for particle managers
 
 function ISIS_ParticleManager () {
-	var manager_proto = new ISIS.Manager();
-
 	// particle object prototype
 	var particle_prototype = {
 		update : function (elapsed) {
@@ -44,43 +42,39 @@ function ISIS_ParticleManager () {
 		}
 	};
 
-	// manager prototype
-	var particleManager_prototype = {
-		__proto__ : manager_proto,
-		create : function (sprite, origin, destination, time, rotation, fade) {
-			// prototype the object
-			var new_particle = {
-				__proto__ : particle_prototype,
-				manager : this
-			}
-
+	// particle constructor
+	var particleConstructor = function (manager) {
+		return function (sprite, destination, time, rotation, fade) {
 			// set the fields
-			if (sprite && origin && destination && time) {
-				new_particle.sprite = sprite;
-				new_particle.destination = destination;
-				new_particle.done = false;
-				new_particle.time = time;
-				new_particle.remaining = time;
-				new_particle.rotation = rotation;
-				new_particle.fade = fade;
+			if (sprite && destination && time) {
 
-				sprite.centerOn(origin);
-				new_particle.position = sprite.position;
+				// link to other objects
+				this.__proto__ = particle_prototype;
+				manager.add(this);
+				this.manager = manager;
+				this.sprite = sprite;
 
-				new_particle.vector = {x: destination.x - origin.x,
-					y: destination.y - origin.y};
+				// set up animation
+				this.destination = destination;
+				this.done = false;
+				this.time = time;
+				this.remaining = time;
+				this.rotation = rotation;
+				this.fade = fade;
+				this.position = sprite.position;
+				this.vector = {x: destination.x - sprite.position.x,
+					y: destination.y - sprite.position.y};
 
 			// handle errors
 			} else {
 				console.log("particle is missing some arguments");
-				new_particle = null;
 			}
+		};
+	};
 
-			return this.add(new_particle);
-		},
-
-		// constructor for debris type particles from an existing sprite
-		newDebris : function(sprite) {
+	// debris constructor
+	var debrisConstructor = function (manager) {
+		return function(sprite) {
 			var position = sprite.center();
 
 			// choose rotation rate
@@ -91,22 +85,16 @@ function ISIS_ParticleManager () {
 				y: position.y + (Math.random() * 300) - 150};
 
 			// cascade into the particle constructor
-			this.create(sprite, position, destination, 1000, rate, true);
-		},
+			this.__proto__ = new manager.Particle(sprite, destination, 1000,
+				rate, true);
+		};
 
-		// update method
-		update : function (elapsed) {
-			var index = "";
-			var particle = null;
-			for (index in this.object_list){
-				particle = this.object_list[index];
+	};
 
-				particle.update(elapsed);
-			}
-		}
-	}
-
+	// manager constructor
 	return function () {
-		this.__proto__ = particleManager_prototype;
+		this.__proto__ = new ISIS.Manager();
+		this.Particle = particleConstructor(this);
+		this.Debris = debrisConstructor(this);
 	}
 }
