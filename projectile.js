@@ -139,6 +139,8 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 				this.weapon = weapon;
 				this.owner = weapon.owner;
 
+				manager.add(this);
+
 				// position the sprite
 				sprite.centerOn(origin);
 				this.position = sprite.position;
@@ -159,17 +161,10 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 		};
 	};
 
-
-	// manager prototype
-	var projectileManager_prototype = {
-		__proto__ : ISIS.Manager(),
-
-		Projectile : projectileConstructor(this)
-	}
-
 	// manager constructor
 	return function () {
-		this.__proto__ = projectileManager_prototype;
+		this.__proto__ = new ISIS.Manager();
+		this.Projectile = projectileConstructor(this);
 		this.object_list = [];
 	}
 }
