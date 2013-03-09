@@ -12,7 +12,7 @@ ISIS_Manager = function () {
 			for (index in this.object_list) {
 				obj = this.object_list[index];
 				if (obj && obj.update) {
-					obj.update();
+					obj.update(elapsed);
 				}
 			}
 		},
