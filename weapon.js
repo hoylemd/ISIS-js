@@ -17,7 +17,8 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 		// make projectile
 		sprite = new spriteManager.Sprite(texture, {x: 1, y: 1}, 0);
 		fire_point = {x: that.owner.position.x, y: that.owner.position.y};
-		projectile_manager.create(sprite, fire_point, that.target, hit, that);
+		new projectile_manager.Projectile(
+			sprite, fire_point, that.target, hit, that);
 	};
 
 	// prototype

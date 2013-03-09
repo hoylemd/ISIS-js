@@ -1,7 +1,6 @@
 // code file for projectile managers
 
 function ISIS_ProjectileManager (sprite_manager, particle_manager) {
-	var manager_proto = new ISIS.Manager();
 
 	// function to spawn the hit text sprite
 	var spawnHitText = function (that) {
@@ -107,15 +106,11 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 
 	// encapsulated prototype
 	var projectile_prototype = {
-		__proto__ : manager_proto.type_proto,
 		currentUpdate : updateOutgoing,
 		update : function (elapsed) {
 			if (this.currentUpdate) {
 				this.currentUpdate = this.currentUpdate(this);
 			}
-		},
-		register : function (manager) {
-			this.manager = manager;
 		},
 
 		dispose : function () {
@@ -128,44 +123,48 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 		}
 	};
 
-	// manager prototype
-	var projectileManager_prototype = {
-		__proto__ : manager_proto,
-		type_proto : projectile_prototype,
+	// Constructor constructor
+	var projectileConstructor = function (manager) {
+		return function (sprite, origin, target, hit, weapon) {
+			// chack the args
+			if (sprite && origin && target && weapon) {
+				// prototype it
+				this.__proto__ = projectile_prototype;
+				this.manager = manager;
 
-		create : function (sprite, origin, target, hit, weapon) {
-			var new_projectile = {
-				__proto__ : projectile_prototype,
-				manager : this
-			}
+				// set the links
+				this.sprite = sprite;
+				this.target = target;
+				this.hit = hit ? true : false;
+				this.weapon = weapon;
+				this.owner = weapon.owner;
 
-			if (sprite && origin && target &&
-				(hit != undefined && hit != null) && weapon) {
-				new_projectile.sprite = sprite;
-				new_projectile.target = target;
-				new_projectile.hit = hit;
-				new_projectile.weapon = weapon;
-				new_projectile.owner = weapon.owner;
-
+				// position the sprite
 				sprite.centerOn(origin);
-				new_projectile.position = sprite.position;
-				new_projectile.distance = 3000;
-				new_projectile.targetView = target.fleetView;
+				this.position = sprite.position;
+				this.distance = 3000;
+				this.targetView = target.fleetView;
+				sprite.rotation = weapon.owner.rotation;
 
+				// calculate vectors
 				var vector = Math.calcAngleVector(weapon.owner.rotation);
 				vector.x *= weapon.proj_speed;
 				vector.y *= weapon.proj_speed;
-				new_projectile.displacement = vector;
-
-				sprite.rotation = weapon.owner.rotation;
+				this.displacement = vector;
 
 			} else {
+				// error on bad args
 				console.log("projectile is missing some arguments");
-				new_projectile = null;
 			}
+		};
+	};
 
-			return this.add(new_projectile);
-		},
+
+	// manager prototype
+	var projectileManager_prototype = {
+		__proto__ : ISIS.Manager(),
+
+		Projectile : projectileConstructor(this)
 	}
 
 	// manager constructor
