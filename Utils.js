@@ -2,7 +2,7 @@
 
 // shim to make frame requests easy
 var animFrame = window.requestAnimationFrame ||
-	window.webkit ? window.webkit.RequestAnimationFrame : false ||
+	window.webkitRequestAnimationFrame ||
 	window.mozRequestAnimationFrame ||
 	window.oRequestAnimationFrame ||
 	window.msRequestAnimationFrame ||
