@@ -1,65 +1,61 @@
 // Sprite manager object
 
-function ISIS_sprite_manager (canvas) {
+function ISIS_SpriteManager (canvas) {
+	// get the context and manager prototype
 	var context = canvas.getContext("2d");
-	var manager_proto = ISIS_manager();
+
+	var rotateContext = function (that) {
+		context.translate(0.5 * that.frameDims.x, 0.5 * that.frameDims.y);
+		context.rotate(that.rotation);
+		context.translate(-0.5 * that.frameDims.x, -0.5 * that.frameDims.y);
+	};
+
+	var adjustContext = function (that) {
+		// transform the drawing context
+		context.reset();
+		context.translate(that.position.x, that.position.y);
+		rotateContext(that);
+		context.globalAlpha = that.alpha;
+	};
+
+	// different draw functions
+	var drawStandard = function (that) {
+		context.drawImage(that.image, 0, 0);
+	};
+	var drawText = function (that) {
+		context.font = that.font;
+		context.fillStyle = that.colour;
+		context.textBaseline = "top";
+		context.fillText(that.text, 0, 0);
+	};
+	var drawBar = function (that) {
+		context.fillStyle = that.empty_colour;
+		context.fillRect(0, 0, that.frameDims.x, that.frameDims.y);
+		context.fillStyle = that.value > that.critical_threshold ?
+			that.full_colour : that.critical_colour;
+		context.fillRect(0, 0, that.frameDims.x * that.value,
+			that.frameDims.y);
+	};
+
+
+	// Sprite prototype
 	var sprite_prototype = {
-		__proto__ : manager_proto.type_proto,
-		update : function(elapsedMS) {
+		// updater
+		update : function(elapsed) {
 			var x = 0;
 			var y = 0;
 
+			// animate, if applicable
 			if (this.animated) {
-				this.msSinceLastFrame += elapsedMS;
+				this.msSinceLastFrame += elapsed;
 				x = this.currentFrame.x + 1;
 				this.currentFrame.x = x % this.mapDims.x;
 
-				if (x === 0)
-				{
+				if (x === 0) {
 					y = this.currentFrame.y + 1;
 					this.currentFrame.y = y % this.mapDims.y;
 				}
 			}
-		},
-
-		rotateContext : function () {
-			context.translate(0.5 * this.frameDims.x, 0.5 * this.frameDims.y);
-			context.rotate(this.rotation);
-			context.translate(
-				-0.5 * this.frameDims.x, -0.5 * this.frameDims.y);
-		},
-
-		draw : function()
-		{
-			if (this.hidden) {
-				return;
-			}
-
-			context.reset();
-			context.translate(this.position.x, this.position.y);
-			this.rotateContext();
-			context.globalAlpha = this.alpha;
-			if (this.image)
-			{
-				context.drawImage(this.image, 0, 0);
-			}
-
-			if (this.text) {
-				context.font = this.font;
-				context.fillStyle = this.colour;
-				context.textBaseline = "top";
-				context.fillText(this.text, 0, 0);
-			}
-
-			if (this.value) {
-				context.fillStyle = this.empty_colour;
-				context.fillRect(0, 0, this.frameDims.x, this.frameDims.y);
-				context.fillStyle = this.value > this.critical_threshold ?
-					this.full_colour : this.critical_colour;
-				context.fillRect(0, 0, this.frameDims.x * this.value,
-					this.frameDims.y);
-			}
-
 		},
 
 		rotate : function (rads) {
@@ -112,18 +108,17 @@ function ISIS_sprite_manager (canvas) {
 		animated = (sprite.image != null && sprite.image != undefined) &&
 			(sprite.msBetweenFrames > 0) &&
 			(sprite.mapDims.x > 1 || sprite.mapDims.y > 1);
+
+		return animated;
 	};
 
-	var partialSprite = function () {
-		return {
-			__proto__ : sprite_prototype,
-			position : {x:0, y:0},
-			rotation : 0,
-			animated : false,
-			alpha : 1,
-			hidden : false,
-			manager : this
-		}
+	var initializeSprite = function (that) {
+		that.__proto__ = sprite_prototype;
+		that.position = { x:0, y:0 };
+		that.rotation = 0;
+		that.animated = false;
+		that.alpha = 1;
+		that.hidden = false;
 	};
 
 	var getTextFrameDims = function (text, font) {
@@ -141,74 +136,133 @@ function ISIS_sprite_manager (canvas) {
 		} else {
 			frameDims = null;
 			console.log(
-				"invalid font string passed. cannot calulate frameDims.");
+				"invalid font string passed. cannot calculate frameDims.");
 		}
 
 		return frameDims;
 	};
 
-	var sprite_manager_prototype = {
-		__proto__ : ISIS_manager(),
-		type_proto : sprite_prototype,
-
-		newSprite : function (image, mapDims, msBetweenFrames) {
-			var new_sprite = partialSprite.apply(this);
-
+	// Standard constructor constructor
+	var standardSpriteConstructor = function (manager) {
+		return function (image, mapDims, msBetweenFrames) {
+			// check the arguments
 			if (image && mapDims) {
-				new_sprite.image = image;
-				new_sprite.mapDims = mapDims;
-				new_sprite.msBetweenFrames = msBetweenFrames;
-				new_sprite.msSinceLastFrame = 0;
 
-				new_sprite.frameDims = {};
-				new_sprite.frameDims.x = Math.floor(image.width / mapDims.x);
-				new_sprite.frameDims.y = Math.floor(image.height / mapDims.y);
-				new_sprite.currentFrame = {x:0, y:0};
-				new_sprite.animated = checkAnimated(new_sprite);
+				// set up the common instance variables
+				initializeSprite(this);
+
+				// link to the manager
+				this.manager = manager
+
+				// set up the texture variables
+				this.image = image;
+				this.mapDims = mapDims;
+				this.msBetweenFrames = msBetweenFrames || 0;
+				this.msSinceLastFrame = 0;
+				this.frameDims = {};
+				this.frameDims.x = Math.floor(image.width / mapDims.x);
+				this.frameDims.y = Math.floor(image.height / mapDims.y);
+
+				// set up animation
+				this.currentFrame = {x:0, y:0};
+				this.animated = checkAnimated(this);
+
+				// set the draw method
+				this.draw = function () {
+					if (!this.hidden) {
+						adjustContext(this);
+						drawStandard(this);
+					}
+				};
+
+				// add to the manager
+				manager.add(this);
 			} else {
-				new_sprite = null;
+				// error on invalid arguments
 				console.log("invalid Sprite parameters.");
 			}
-			return this.add(new_sprite);
-		},
+		};
+	};
 
-		newTextSprite : function (text, font, colour) {
-			var new_sprite = partialSprite.apply(this);
-
+	// Text sprite constructor constructor
+	var textSpriteConstructor = function (manager) {
+		return function (text, font, colour) {
+			// check arguments
 			if (text && font && colour) {
-				new_sprite.text = text;
-				new_sprite.font = font;
-				new_sprite.colour = colour;
+				// set up the common instance variables
+				initializeSprite(this);
+				this.manager = manager;
 
-				new_sprite.frameDims = getTextFrameDims(text, font);
+				// set up the text variables
+				this.text = text;
+				this.font = font;
+				this.colour = colour;
+				this.frameDims = getTextFrameDims(text, font);
+
+				// set the draw method
+				this.draw = function () {
+					if (!this.hidden) {
+						adjustContext(this);
+						drawText(this);
+					}
+				};
+
+				// add to the manager
+				manager.add(this);
 			} else {
-				new_sprite = null;
+				// error on invalid parameters
 				console.log("invalid TextSprite parameters.");
 			}
 
-			return this.add(new_sprite);
-		},
+		};
+	};
 
-		newBarSprite : function (dimensions, full_colour, empty_colour,
+	// Bar sprite constructor constructor
+	var barSpriteConstructor = function (manager) {
+		return function (dimensions, full_colour, empty_colour,
 			critical_colour, critical_threshold) {
-			var new_sprite = partialSprite.apply(this);
-
+			// check arguments
 			if (dimensions && full_colour && empty_colour) {
-				new_sprite.frameDims = dimensions;
-				new_sprite.full_colour = full_colour;
-				new_sprite.empty_colour = empty_colour;
-				new_sprite.critical_colour = critical_colour;
-				new_sprite.critical_threshold = critical_threshold;
-				new_sprite.value = 1;
+				// set up common instance variables
+				initializeSprite(this);
+				this.manager = manager;
+
+				// set up bar variables
+				this.frameDims = dimensions;
+				this.full_colour = full_colour;
+				this.empty_colour = empty_colour;
+				this.critical_colour = critical_colour;
+				this.critical_threshold = critical_threshold;
+				this.value = 1;
+
+				// set draw method
+				this.draw = function () {
+					if (!this.hidden) {
+						adjustContext(this);
+						drawBar(this);
+					}
+				};
+
+				// add to the manager
+				manager.add(this);
 			} else {
-				new_sprite = null;
+				// error on invalid parameters
 				console.log("invalid BarSprite parameters.");
 			}
+		};
+	};
 
-			return this.add(new_sprite);
-		},
+	return function () {
+		this.__proto__ = new ISIS.Manager();
+		this.type_proto = sprite_prototype;
 
-		update : function (elapsed) {
+		// set up the sprite constructors, and curry the manager
+		this.Sprite = standardSpriteConstructor(this);
+		this.TextSprite = textSpriteConstructor(this);
+		this.BarSprite = barSpriteConstructor(this);
+
+		// update method
+		this.update = function (elapsed) {
 			var index = "";
 			var sprite = null;
 
@@ -216,6 +270,9 @@ function ISIS_sprite_manager (canvas) {
 				sprite = this.object_list[index];
 				if (sprite) {
 					sprite.update(elapsed);
+
+					// remove sprites who leave the canvas
+					// TODO: this might not be the best idea.
 					if (sprite.position.x > canvas.width ||
 						sprite.position.x < 0 ||
 						sprite.position.y > canvas.height ||
@@ -225,21 +282,14 @@ function ISIS_sprite_manager (canvas) {
 					}
 				}
 			}
-		},
+		};
 
-		draw : function()
-		{
+		// draw method
+		this.draw = function() {
 			var index = "";
 			for (index in this.object_list) {
 				this.object_list[index].draw();
 			}
-		}
-	}
-
-	return function () {
-		return {
-			__proto__: sprite_manager_prototype
 		};
-	}
-
+	};
 }

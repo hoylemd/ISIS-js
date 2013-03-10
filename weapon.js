@@ -1,80 +1,84 @@
 // Weapon object
-
 var ISIS_weapon = function (spriteManager, projectile_manager) {
+	// firing function
+	var fire = function (that) {
+		var roll = 0;
+		var dodge = 0;
+		var hit = 0;
+		var sprite = null;
+		var fire_point = null;
+		var texture = that.proj_texture;
+
+		// make attack rolls
+		roll = Math.d100();
+		dodge = that.target.dodgeRoll();
+		hit = roll + that.hit_bonus > 50 + dodge;
+
+		// make projectile
+		sprite = new spriteManager.Sprite(texture, {x: 1, y: 1}, 0);
+		fire_point = {x: that.owner.position.x, y: that.owner.position.y};
+		new projectile_manager.Projectile(
+			sprite, fire_point, that.target, hit, that);
+	};
+
 	// prototype
 	var weapon_prototype = {
+		// targetting method
 		setTarget : function (target) {
 			this.target = target;
 		},
 
-		fire : function () {
-			var roll;
-			var dodge;
-			var hit;
-			// do attack roll
-			roll = Math.d100();
-			dodge = this.target.dodge();
-			hit = roll + this.hit_bonus > 50 + dodge;
-
-			// make projectile
-			var proj_sprite = spriteManager.newSprite(this.proj_texture,
-				{x: 1, y: 1}, 0);
-			var fire_point =
-				{x: this.owner.position.x, y: this.owner.position.y};
-
-			projectile_manager.create(proj_sprite, fire_point,
-				this.target, hit, this);
-		},
-
-		registerOwner : function (owner) {
+		// installation method
+		install : function (owner) {
 			this.owner = owner;
 		},
 
+		// update method
 		update : function (elapsed_ms) {
-			// update projectile
-			var proj = this.projectile;
-
-			// check for target destroyed
-			if (this.target && this.target.destroyed) {
-				this.target = null;
-			}
-
 			if (this.target) {
+				// increase charge
 				this.current_charge += elapsed_ms;
 
+				// fire if charged
 				if (this.current_charge > this.recycle) {
-					this.fire();
+					fire(this);
 					this.current_charge = 0;
+				}
+
+				// untarget if target is destroyed
+				if (this.target.destroyed) {
+					this.target = null;
 				}
 			}
 		}
 	};
 
 	// constructor
-	return function (name, damage, hit_bonus, recycle, texture, speed)
-	{
-		var new_weapon = {
-			__proto__ : weapon_prototype
-		};
+	return function (name, damage, hit_bonus, recycle, proj_texture, speed) {
+		if (proj_texture) {
+			// set the prototype
+			this.__proto__ = weapon_prototype;
 
-		if (texture) {
-			new_weapon.name = name;
+			// set initialize the instance members
+			this.name = name;
 
-			new_weapon.damage = damage;
-			new_weapon.hit_bonus = hit_bonus;
-			new_weapon.recycle = recycle;
-			new_weapon.current_charge = 0;
+			this.damage = damage;
+			this.hit_bonus = hit_bonus;
+			this.recycle = recycle;
+			this.current_charge = 0;
 
-			new_weapon.proj_texture = texture;
-			new_weapon.proj_speed = speed;
+			this.proj_texture = proj_texture;
+			this.proj_speed = speed;
 
-			new_weapon.owner = null;
-			new_weapon.projectile = null;
+			this.owner = null;
+			this.projectile = null;
 
 		} else {
-			new_weapon = null;
+			// log errors
+			console.log(
+				"Weapon cannot be instantiated without a projectile texture");
+			this = null;
 		}
-			return new_weapon;
 	}
 
 }
