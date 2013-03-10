@@ -9,11 +9,11 @@ var ISIS_order = function(){
 	// construct object
 	return {
 		Attack: function(source, target) {
-			// build the prototype
-			this.__proto__ = order_prototype;
-
 			// add the target and source
 			if (source && target) {
+				// build the prototype
+				this.__proto__ = order_prototype;
+
 				// add cosmetics
 				this.name = "attack";
 				this.colour = "#CC0000";
@@ -27,7 +27,6 @@ var ISIS_order = function(){
 				this.pending = true;
 			} else {
 				console.log("Attack order created without or source.");
-				this = null;
 			}
 		}
 	};
