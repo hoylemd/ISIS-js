@@ -13,18 +13,18 @@ var ISIS_battleState = function (game, canvas, content) {
 	var io = new ISIS_IO();
 
 	// fleet view objects
-	var FleetView = ISIS_fleetView(context);
 	var playerFleetView;
+	var enemyFleetView;
 
 	// sprite objects
 	var spriteManager = new ISIS.SpriteManager(canvas);
 
 	// Particle objects
-	var particle_manager = new (ISIS_ParticleManager())();
+	var particle_manager = new ISIS.ParticleManager();
 
 	// Projectile objects
-	var projectile_manager = new (ISIS_ProjectileManager(spriteManager,
-		particle_manager))();
+	var projectile_manager = new ISIS.ProjectileManager(spriteManager,
+		particle_manager);
 
 	// weapon objects
 	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
@@ -67,16 +67,16 @@ var ISIS_battleState = function (game, canvas, content) {
 		enemy = new Unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
 		enemy.name = "Terran Cruiser";
 		enemy.setHull(150);
-		enemy.addWeapon(new Weapon("Terran Mass Driver", 75, 100, 1000,
+		enemy.addWeapon(new Weapon("Terran Mass Driver", 15, 100, 2000,
 			images["bullet"], 20));
 
-		playerFleetView = new FleetView(images["spaceTile"]);
+		playerFleetView = new ISIS.FleetView(images["spaceTile"]);
 		playerFleetView.moveTo({x: 0, y: 0});
 		playerFleetView.facing = 1/4 * Math.TAU;
 		playerFleetView.resize({x: 500, y: 600});
 		playerFleetView.addShip(player);
 
-		enemyFleetView = new FleetView(images["spaceTile"]);
+		enemyFleetView = new ISIS.FleetView(images["spaceTile"]);
 		enemyFleetView.moveTo({x: 600, y: 0});
 		enemyFleetView.facing = 3/4 * Math.TAU;
 		enemyFleetView.resize({x: 500, y: 600});
@@ -98,8 +98,7 @@ var ISIS_battleState = function (game, canvas, content) {
 	};
 
 	// function to draw the bottom orders bar
-	var drawBar = function()
-	{
+	var drawBar = function() {
 		// set up
 		context.reset();
 		context.fillStyle = "#777777";
@@ -146,18 +145,18 @@ var ISIS_battleState = function (game, canvas, content) {
 		if (player.destroyed) {
 			console.log("you lose!");
 			this.dispose();
-			game.changeState(ISIS_battleState(game, canvas, content));
+			game.changeState(new ISIS_battleState(game, canvas, content));
 			return;
 		} else if (enemy.destroyed) {
 			console.log("you win!");
 			this.dispose();
-			game.changeState(ISIS_battleState(game, canvas, content));
+			game.changeState(new ISIS_battleState(game, canvas, content));
 			return;
 		}
 
 		// update units
-		player.update(elapsed);
-		enemy.update(elapsed);
+		//player.update(elapsed);
+		//enemy.update(elapsed);
 
 		// update projectiles
 		projectile_manager.update(elapsed);
@@ -169,6 +168,9 @@ var ISIS_battleState = function (game, canvas, content) {
 		spriteManager.update(elapsed);
 
 		// draw Fleet views
+		playerFleetView.update(elapsed);
+		enemyFleetView.update(elapsed);
+
 		playerFleetView.draw();
 		enemyFleetView.draw();
 
@@ -186,45 +188,37 @@ var ISIS_battleState = function (game, canvas, content) {
 		drawBar();
 	};
 
-	var dispose = function () {
-		projectile_manager.dispose();
-		particle_manager.dispose();
-		spriteManager.dispose();
-		playerFleetView.dispose();
-		enemyFleetView.dispose();
-		player = null;
-		enemy = null;
-	};
+		var clickHandler = 	function (evt) {
+		// get the mouse position
+		var mousePos = io.getMousePos(canvas, evt);
+
+		// clip to the section of the screen
+		if (mousePos.x < canvas.clientWidth &&
+			mousePos.y < canvas.clientHeight) {
+			if (attackOrder) {
+				// register an attack order if the attack order is active
+				if (enemy.collide(mousePos)) {
+					player.registerOrder(
+						new orders.Attack(player, enemy));
+				} else {
+					player.clearOrder("attack");
+				}
+			}
+			attackOrder = false;
+		}
+		if (mousePos.y > (canvas.clientHeight - barHeight)) {
+			// click on a button
+			if (mousePos.x < buttonWidth) {
+				attackOrder = !attackOrder;
+			} else if (mousePos.x > canvas.clientWidth - buttonWidth) {
+				// Go button
+				player.carryOut();
+			}
+		}
+	}
 
 	// Add an event listener for mouse clicks
-	canvas.addEventListener('click',
-		function (evt) {
-			// get the mouse position
-			var mousePos = io.getMousePos(canvas, evt);
-
-			// clip to the section of the screen
-			if (mousePos.x < canvas.clientWidth &&
-				mousePos.y < canvas.clientHeight) {
-				if (attackOrder) {
-					// register an attack order if the attack order is active
-					if (enemy.collide(mousePos)) {
-						player.registerOrder(new orders.Attack(player, enemy));
-					} else {
-						player.clearOrder("attack");
-					}
-				}
-				attackOrder = false;
-			}
-			if (mousePos.y > (canvas.clientHeight - barHeight)) {
-				// click on a button
-				if (mousePos.x < buttonWidth) {
-					attackOrder = !attackOrder;
-				} else if (mousePos.x > canvas.clientWidth - buttonWidth) {
-					// Go button
-					player.carryOut();
-				}
-			}
-		});
+	canvas.addEventListener('click', clickHandler);
 
 	canvas.addEventListener('onkeydown',
 		function(evt) {
@@ -241,10 +235,19 @@ var ISIS_battleState = function (game, canvas, content) {
 
 		});
 
-	return {
-		update : update,
-		initialize : initialize,
-		dispose : dispose
+	var dispose = function () {
+		projectile_manager.dispose();
+		particle_manager.dispose();
+		spriteManager.dispose();
+		playerFleetView.dispose();
+		enemyFleetView.dispose();
+		player = null;
+		enemy = null;
+		canvas.removeEventListener('click', clickHandler);
 	};
+
+	this.update = update;
+	this.initialize = initialize;
+	this.dispose = dispose;
 
 };
