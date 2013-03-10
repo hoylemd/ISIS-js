@@ -35,7 +35,7 @@ var ISIS_Engine = function (canvas, io) {
 
 	// function to initialize the game
 	this.initialize = function () {
-		current_state = ISIS_battleState(this, canvas, content);
+		current_state = new ISIS_battleState(this, canvas, content);
 		current_state.initialize();
 
 		var that = this;
@@ -70,7 +70,10 @@ var ISIS_Engine = function (canvas, io) {
 
 	// function to transition to a new state
 	this.changeState = function (new_state) {
+		var old_state = current_state;
 		current_state = new_state;
+		new_state.initialize();
+		delete old_state;
 	};
 
 	// function to update the manifest of loaded images
