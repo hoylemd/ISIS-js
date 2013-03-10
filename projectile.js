@@ -1,16 +1,16 @@
 // code file for projectile managers
 
-function ISIS_ProjectileManager (sprite_manager, particle_manager) {
+function ISIS_ProjectileManager () {
 
 	// function to spawn the hit text sprite
 	var spawnHitText = function (that) {
 		var hitText = "" + (that.hit ? that.weapon.damage : "Miss");
-		var sprite = new sprite_manager.TextSprite(hitText, "14pt Courier",
-			"#888888");
+		var sprite = new that.manager.sprite_manager.TextSprite(
+			hitText, "14pt Courier", "#888888");
 		sprite.centerOn(that.position);
 		var destination = {x: that.position.x, y: that.position.y - 15};
-		new particle_manager.Particle(sprite, destination,
-			1500, 0, true);
+		new that.manager.particle_manager.Particle(
+			sprite, destination, 1500, 0, true);
 	};
 
 	// update function for missed projectules
@@ -163,9 +163,11 @@ function ISIS_ProjectileManager (sprite_manager, particle_manager) {
 	};
 
 	// manager constructor
-	return function () {
+	return function (sprite_manager, particle_manager) {
 		this.__proto__ = new ISIS.Manager();
 		this.Projectile = projectileConstructor(this);
+		this.sprite_manager = sprite_manager;
+		this.particle_manager = particle_manager;
 		this.object_list = [];
 	}
 }
