@@ -1,253 +1,253 @@
 // battle state object
-var ISIS_battleState = function (game, canvas, content) {
-	// graphics objects
-	var context = canvas.getContext("2d");
+var ISIS_battleState = function () {
+	return function () {
+		this.__proto__ = new ISIS.GameState();
 
-	// content assets
-	var images = content.images;
+		// content assets
+		var images = this.content.images;
 
-	// game state
-	var paused = false;
-	var initialized = false;
+		// game state
+		var paused = false;
+		var initialized = false;
 
-	var io = new ISIS_IO();
+		// fleet view objects
+		var playerFleetView;
+		var enemyFleetView;
 
-	// fleet view objects
-	var playerFleetView;
-	var enemyFleetView;
+		// Particle objects
+		var particle_manager = new ISIS.ParticleManager();
 
-	// sprite objects
-	var spriteManager = new ISIS.SpriteManager(canvas);
+		// Projectile objects
+		var projectile_manager = new ISIS.ProjectileManager(this.sprite_manager,
+			particle_manager);
 
-	// Particle objects
-	var particle_manager = new ISIS.ParticleManager();
+		// weapon objects
+		var Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
 
-	// Projectile objects
-	var projectile_manager = new ISIS.ProjectileManager(spriteManager,
-		particle_manager);
+		// unit objects
+		var Unit = ISIS_unit(this.context, images, this.sprite_manager,
+			particle_manager);
+		var player = null;
+		var enemy = null;
 
-	// weapon objects
-	var Weapon = ISIS_weapon(spriteManager, projectile_manager);
+		// orders objects
+		var orders = ISIS_order();
 
-	// unit objects
-	var Unit = ISIS_unit(context, images, spriteManager, particle_manager);
-	var player = null;
-	var enemy = null;
+		// Bar data
+		var buttonWidth = 150;
+		var barHeight = 50;
 
-	// orders objects
-	var orders = ISIS_order();
+		// Orders data
+		var attackOrder = false;
 
-	// Bar data
-	var buttonWidth = 150;
-	var barHeight = 50;
+		// Map data
+		var tilesX;
+		var tilesY;
+		var mapWidth;
+		var mapHeight;
+		var clientWidth;
+		var clientHeight;
 
-	// Orders data
-	var attackOrder = false;
+		// function to initialize the game
+		var initialize = function() {
+			// initialize the debris libraries
+			var debris_library = [images["debris1"], images["debris2"],
+				images["debris3"]];
 
-	// Map data
-	var tilesX;
-	var tilesY;
-	var mapWidth;
-	var mapHeight;
-	var clientWidth;
-	var clientHeight;
+			player = new Unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
+			player.name = "Arkadian Cruiser";
+			player.setHull(100);
+			player.addWeapon(new Weapon("Arkadian Railgun", 50, 25, 1500,
+				images["bullet"], 25));
 
-	// function to initialize the game
-	var initialize = function() {
-		// initialize the debris libraries
-		var debris_library = [images["debris1"], images["debris2"],
-			images["debris3"]];
+			enemy = new Unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
+			enemy.name = "Terran Cruiser";
+			enemy.setHull(150);
+			enemy.addWeapon(new Weapon("Terran Mass Driver", 15, 100, 2000,
+				images["bullet"], 20));
 
-		player = new Unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
-		player.name = "Arkadian Cruiser";
-		player.setHull(100);
-		player.addWeapon(new Weapon("Arkadian Railgun", 50, 25, 1500,
-			images["bullet"], 25));
+			playerFleetView = new ISIS.FleetView(images["spaceTile"]);
+			playerFleetView.moveTo({x: 0, y: 0});
+			playerFleetView.facing = 1/4 * Math.TAU;
+			playerFleetView.resize({x: 500, y: 600});
+			playerFleetView.addShip(player);
 
-		enemy = new Unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
-		enemy.name = "Terran Cruiser";
-		enemy.setHull(150);
-		enemy.addWeapon(new Weapon("Terran Mass Driver", 15, 100, 2000,
-			images["bullet"], 20));
+			enemyFleetView = new ISIS.FleetView(images["spaceTile"]);
+			enemyFleetView.moveTo({x: 600, y: 0});
+			enemyFleetView.facing = 3/4 * Math.TAU;
+			enemyFleetView.resize({x: 500, y: 600});
+			enemyFleetView.addShip(enemy);
 
-		playerFleetView = new ISIS.FleetView(images["spaceTile"]);
-		playerFleetView.moveTo({x: 0, y: 0});
-		playerFleetView.facing = 1/4 * Math.TAU;
-		playerFleetView.resize({x: 500, y: 600});
-		playerFleetView.addShip(player);
+			enemy.registerOrder(new orders.Attack(enemy, player));
+			enemy.carryOut();
+			// test text sprites
+			//new spriteManager.TextSprite("test", "12px Courier",
+			//	"red").centerOn({x: 150, y: 150});
 
-		enemyFleetView = new ISIS.FleetView(images["spaceTile"]);
-		enemyFleetView.moveTo({x: 600, y: 0});
-		enemyFleetView.facing = 3/4 * Math.TAU;
-		enemyFleetView.resize({x: 500, y: 600});
-		enemyFleetView.addShip(enemy);
+			// test particle
+			//var part_sprite = new spriteManager.TextSprite("wheee!",
+			//	"16pt Calibri", "blue");
+			//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
+			//	{x: 550, y: 50}, 5000);
+			initialized = true;
 
-		enemy.registerOrder(new orders.Attack(enemy, player));
-		enemy.carryOut();
-		// test text sprites
-		//new spriteManager.TextSprite("test", "12px Courier",
-		//	"red").centerOn({x: 150, y: 150});
+		};
 
-		// test particle
-		//var part_sprite = new spriteManager.TextSprite("wheee!",
-		//	"16pt Calibri", "blue");
-		//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
-		//	{x: 550, y: 50}, 5000);
-		initialized = true;
+		// function to draw the bottom orders bar
+		var drawBar = function(that) {
+			// set up
+			that.context.reset();
+			that.context.fillStyle = "#777777";
 
-	};
+			// calculate position
+			var barTop = clientHeight - barHeight;
 
-	// function to draw the bottom orders bar
-	var drawBar = function() {
-		// set up
-		context.reset();
-		context.fillStyle = "#777777";
+			// draw the bar background
+			that.context.fillRect(0, barTop, clientWidth, barHeight);
 
-		// calculate position
-		var barTop = clientHeight - barHeight;
+			// prepare to draw buttons
+			that.context.reset();
+			that.context.translate(0, barTop);
+			var buttonImage;
 
-		// draw the bar background
-		context.fillRect(0, barTop, clientWidth, barHeight);
+			// draw the Attack button
+			if (attackOrder)
+				buttonImage = images["AttackButtonPressed"];
+			else
+				buttonImage = images["AttackButton"];
+			that.context.drawImage(buttonImage, 0, 0);
 
-		// prepare to draw buttons
-		context.reset();
-		context.translate(0, barTop);
-		var buttonImage;
+			// draw the Go button
+			that.context.translate(clientWidth - buttonWidth, 0);
+			that.context.drawImage(images["GoButton"], 0, 0);
+		};
 
-		// draw the Attack button
-		if (attackOrder)
-			buttonImage = images["AttackButtonPressed"];
-		else
-			buttonImage = images["AttackButton"];
-		context.drawImage(buttonImage, 0, 0);
+		// function to update the screen
+		var update = function (elapsed) {
 
-		// draw the Go button
-		context.translate(clientWidth - buttonWidth, 0);
-		context.drawImage(images["GoButton"], 0, 0);
-	};
+			// reset the window size
+			clientWidth = $(window).width();
+			clientHeight = $(window).height();
 
-	// function to update the screen
-	var update = function (elapsed) {
+			// Prepare for next round of drawing
+			this.context.clearRect(0, 0, clientWidth, clientHeight);
+			this.context.reset();
 
-		// reset the window size
-		clientWidth = $(window).width();
-		clientHeight = $(window).height();
+			if (!initialized) {
+				this.initialize();
+			}
 
-		// Prepare for next round of drawing
-		context.clearRect(0, 0, clientWidth, clientHeight);
-		context.reset();
+			// check for state changes
+			if (player.destroyed) {
+				console.log("you lose!");
+				this.dispose();
+				this.game.changeState(new ISIS.BattleState());
+				return;
+			} else if (enemy.destroyed) {
+				console.log("you win!");
+				this.dispose();
+				this.game.changeState(new ISIS.BattleState());
+				return;
+			}
 
-		if (!initialized) {
-			this.initialize();
-		}
+			// update units
+			//player.update(elapsed);
+			//enemy.update(elapsed);
 
-		// check for state changes
-		if (player.destroyed) {
-			console.log("you lose!");
-			this.dispose();
-			game.changeState(new ISIS_battleState(game, canvas, content));
-			return;
-		} else if (enemy.destroyed) {
-			console.log("you win!");
-			this.dispose();
-			game.changeState(new ISIS_battleState(game, canvas, content));
-			return;
-		}
+			// update projectiles
+			projectile_manager.update(elapsed);
 
-		// update units
-		//player.update(elapsed);
-		//enemy.update(elapsed);
+			// update projectiles
+			particle_manager.update(elapsed);
 
-		// update projectiles
-		projectile_manager.update(elapsed);
+			// update sprites
+			this.sprite_manager.update(elapsed);
 
-		// update projectiles
-		particle_manager.update(elapsed);
+			// draw Fleet views
+			playerFleetView.update(elapsed);
+			enemyFleetView.update(elapsed);
 
-		// update sprites
-		spriteManager.update(elapsed);
+			playerFleetView.draw();
+			enemyFleetView.draw();
 
-		// draw Fleet views
-		playerFleetView.update(elapsed);
-		enemyFleetView.update(elapsed);
+			// draw other sprites
+			this.sprite_manager.draw();
 
-		playerFleetView.draw();
-		enemyFleetView.draw();
-
-		// draw other sprites
-		spriteManager.draw();
-
-		// draw order lines
-		if (!player.destroyed) {
-			player.drawLines();
-		}
-		//enemy.drawLines();
+			// draw order lines
+			if (!player.destroyed) {
+				player.drawLines();
+			}
+			//enemy.drawLines();
 
 
-		// draw the UI
-		drawBar();
-	};
+			// draw the UI
+			drawBar(this);
+		};
 
-		var clickHandler = 	function (evt) {
-		// get the mouse position
-		var mousePos = io.getMousePos(canvas, evt);
+		var clickHandler = ( function (that) {
+			return function (evt) {
+				// get the mouse position
+				var mousePos = that.io.getMousePos(that.canvas, evt);
 
-		// clip to the section of the screen
-		if (mousePos.x < canvas.clientWidth &&
-			mousePos.y < canvas.clientHeight) {
-			if (attackOrder) {
-				// register an attack order if the attack order is active
-				if (enemy.collide(mousePos)) {
-					player.registerOrder(
-						new orders.Attack(player, enemy));
-				} else {
-					player.clearOrder("attack");
+				// clip to the section of the screen
+				if (mousePos.x < that.canvas.clientWidth &&
+					mousePos.y < that.canvas.clientHeight) {
+					if (attackOrder) {
+						// register an attack order if the attack order is active
+						if (enemy.collide(mousePos)) {
+							player.registerOrder(
+								new orders.Attack(player, enemy));
+						} else {
+							player.clearOrder("attack");
+						}
+					}
+					attackOrder = false;
 				}
-			}
-			attackOrder = false;
-		}
-		if (mousePos.y > (canvas.clientHeight - barHeight)) {
-			// click on a button
-			if (mousePos.x < buttonWidth) {
-				attackOrder = !attackOrder;
-			} else if (mousePos.x > canvas.clientWidth - buttonWidth) {
-				// Go button
-				player.carryOut();
-			}
-		}
-	}
+				if (mousePos.y > (that.canvas.clientHeight - barHeight)) {
+					// click on a button
+					if (mousePos.x < buttonWidth) {
+						attackOrder = !attackOrder;
+					} else if (mousePos.x > that.canvas.clientWidth
+						- buttonWidth) {
+						// Go button
+						player.carryOut();
+					}
+				}
+			};
+		} ) (this);
 
-	// Add an event listener for mouse clicks
-	canvas.addEventListener('click', clickHandler);
+		// Add an event listener for mouse clicks
+		this.canvas.addEventListener('click', clickHandler);
 
-	canvas.addEventListener('onkeydown',
-		function(evt) {
+		this.canvas.addEventListener('onkeydown',
+			function(evt) {
 
-		});
+			});
 
-	canvas.addEventListener('onkeyup',
-		function(evt) {
+		this.canvas.addEventListener('onkeyup',
+			function(evt) {
 
-		});
+			});
 
-	canvas.addEventListener('onkeypress',
-		function(evt) {
+		this.canvas.addEventListener('onkeypress',
+			function(evt) {
 
-		});
+			});
 
-	var dispose = function () {
-		projectile_manager.dispose();
-		particle_manager.dispose();
-		spriteManager.dispose();
-		playerFleetView.dispose();
-		enemyFleetView.dispose();
-		player = null;
-		enemy = null;
-		canvas.removeEventListener('click', clickHandler);
+		var dispose = function () {
+			projectile_manager.dispose();
+			particle_manager.dispose();
+			this.sprite_manager.dispose();
+			playerFleetView.dispose();
+			enemyFleetView.dispose();
+			player = null;
+			enemy = null;
+			this.canvas.removeEventListener('click', clickHandler);
+		};
+
+		this.update = update;
+		this.initialize = initialize;
+		this.dispose = dispose;
+
 	};
-
-	this.update = update;
-	this.initialize = initialize;
-	this.dispose = dispose;
-
-};
+}
