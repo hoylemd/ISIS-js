@@ -1,6 +1,6 @@
 // Fleet view
-var ISIS_fleetView = function (context) {
-	var manager_proto = new ISIS.Manager();
+var ISIS_fleetView = function (canvas) {
+	var context = canvas.getContext("2d");
 
 	// function to draw the background
 	var drawBackground = function (that) {
@@ -78,68 +78,59 @@ var ISIS_fleetView = function (context) {
 		context.reset();
 	};
 
-	// prototype
-	var fleetView_prototype = {
-		__proto__ : manager_proto,
-
-		// override the update function to do nothong
-		update: function () {
-		},
-
 		// draw function
-		draw: function() {
-			drawBackground(this);
-			drawGrid(this);
-		},
+	var draw = function () {
+		drawBackground(this);
+		drawGrid(this);
+	};
 
-		// method to register a ship
-		addShip : function(ship) {
+	// method to register a ship
+	var addShip = function (ship) {
 
-			// determine the middle-most tile
-			var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x
-			var posy = Math.floor(this.tiles.y / 2) * this.tileDimensions.y
-			posx += this.position.x;
-			posy += this.position.y;
+		// determine the middle-most tile
+		var posx = Math.floor(this.tiles.x / 2) * this.tileDimensions.x
+		var posy = Math.floor(this.tiles.y / 2) * this.tileDimensions.y
+		posx += this.position.x;
+		posy += this.position.y;
 
-			// position the ship
-			ship.rotateTo(this.facing);
-			ship.moveTo({x: posx, y: posy});
+		// position the ship
+		ship.rotateTo(this.facing);
+		ship.moveTo({x: posx, y: posy});
 
-			// link the ship to this view
-			this.add(ship);
-			ship.registerView(this);
-		},
+		// link the ship to this view
+		this.add(ship);
+		ship.registerView(this);
+	};
 
-		// resize function
-		resize: function (size) {
-			// adjust dimensions
-			this.dimensions.x = size.x;
-			this.dimensions.y = size.y;
+	// resize function
+	var resize = function (size) {
+		// adjust dimensions
+		this.dimensions.x = size.x;
+		this.dimensions.y = size.y;
 
-			// recalsulate tiles
-			this.tiles.x = size.x / this.tileDimensions.x;
-			this.tiles.y = size.y / this.tileDimensions.y;
-		},
+		// recalsulate tiles
+		this.tiles.x = size.x / this.tileDimensions.x;
+		this.tiles.y = size.y / this.tileDimensions.y;
+	};
 
-		// move function
-		moveTo : function (position) {
-			this.position.x = position.x;
-			this.position.y = position.y;
-		},
+	// move function
+	var moveTo = function (position) {
+		this.position.x = position.x;
+		this.position.y = position.y;
+	};
 
-		// method to check if a sprite is bound by this fleetView
-		boundSprite: function (sprite) {
-			// calculate side bounding
-			var left = this.position.x <= sprite.position.x;
-			var right = this.position.x + this.dimensions.x >=
-					sprite.position.x + sprite.frameDims.x;
-			var top_side = 	this.position.y <= sprite.position.y;
-			var bottom = this.position.y + this.dimensions.y >=
-					sprite.position.y + sprite.frameDims.y;
+	// method to check if a sprite is bound by this fleetView
+	var boundSprite = function (sprite) {
+		// calculate side bounding
+		var left = this.position.x <= sprite.position.x;
+		var right = this.position.x + this.dimensions.x >=
+				sprite.position.x + sprite.frameDims.x;
+		var top_side = 	this.position.y <= sprite.position.y;
+		var bottom = this.position.y + this.dimensions.y >=
+				sprite.position.y + sprite.frameDims.y;
 
-			// calculate true or false for bounding
-			return left && right && top_side && bottom;
-		}
+		// calculate true or false for bounding
+		return left && right && top_side && bottom;
 	};
 
 	// constructor
@@ -147,17 +138,24 @@ var ISIS_fleetView = function (context) {
 		var ix = tileImage.width;
 		var iy = tileImage.height;
 
-		this.__proto__ = fleetView_prototype;
+		this.__proto__ = new ISIS.Manager();
 
 		// overall drawing data
 		this.position = {x: 0, y: 0};
 		this.dimensions = {x: 0, y: 0};
 		this.facing = 0;
+		this.moveTo = moveTo;
+		this.resize = resize;
+		this.draw = draw;
 
 		// tile data
 		this.tiles = {x: 0, y: 0};
 		this.tileDimensions = {x: ix, y: iy};
 		this.tileOffset = {x: ix / 2, y: iy / 2};
 		this.tileImage = tileImage;
+
+		// ships data
+		this.addShip = addShip;
+		this.boundSprite = boundSprite;
 	};
 };
