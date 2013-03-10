@@ -1,30 +1,35 @@
-// Manager prototype / factory
-ISIS_manager = function () {
-	// closure - define the prototype
+// Manager class
+// holds a list of objects and manages them.
+// this is intended to be used as a prototype, and extended.
+ISIS_Manager = function () {
+	// prototype
 	var manager_prototype = {
-
-		// update all managed objects
+		// updater
 		update : function (elapsed) {
 			var obj = null;
+
+			// call all child objects update method if it exists
 			for (index in this.object_list) {
 				obj = this.object_list[index];
 				if (obj && obj.update) {
-					obj.update();
+					obj.update(elapsed);
 				}
 			}
 		},
 
-		// add the object to the list,
-		// return the object for cascading calls
+		// function to add an object to the managed list
 		add : function (obj) {
 			this.object_list.push(obj);
+
+			// return it for cascading / external handling
 			return obj
 		},
 
-		// remove an object
-		// returns this manager for cascading calls
+		// function to remove an object from managment
 		remove : function (obj) {
 			var index = null;
+
+			// find the object in the list
 			if (obj) {
 				for (index in this.object_list){
 					if (this.object_list[index] === obj) {
@@ -32,30 +37,33 @@ ISIS_manager = function () {
 					}
 				}
 			}
+
+			// return this for cascading calls
 			return this;
 		},
 
-		type_proto : {
-			manager : this
-		},
-
-		// create a basic managed object with link to this manager
-		// automatically manages the object
+		// function to create a new managed object
 		create : function () {
 			var new_object = {
-				__proto__ : this.type_proto,
-				manager : null
+				manager : this
 			};
 
 			return this.add(new_object);
 		},
 
+		// destructor
+		dispose : function () {
+			var i = 0;
+			for (i in this.object_list) {
+				this.object_list[i].dispose()
+				delete this.object_list[i]
+			}
+		}
 	};
 
+	// return the constructor
 	return function () {
-		return new_manager = {
-			__proto__ : manager_prototype,
-			object_list : []
-		};
+		this.__proto__ = manager_prototype;
+		this.object_list = [];
 	};
-}();
+};

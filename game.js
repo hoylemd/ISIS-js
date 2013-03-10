@@ -1,31 +1,18 @@
-// main game engine
-// author: hoylemd
-
-// ISIS main engine builder
-var ISIS_engine = function () {
-	var canvas = document.getElementById("myCanvas");
-	var context = canvas.getContext("2d");
-
-	var io = ISIS_IO();
-
-	var current_state = {};
+// ISIS main engine
+var ISIS_Engine = function (canvas, io) {
+	// state pointer
+	var current_state = null;
 
 	// content assets
-	var images = {};
+	var content = {
+		images : {}
+	};
 
 	// timing data
 	var lastTime;
 
-	// Add animFrame jig
-	var animFrame = window.requestAnimationFrame ||
-		window.webkit.RequestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.oRequestAnimationFrame ||
-		window.msRequestAnimationFrame ||
-		null ;
-
 	// image manifest
-	var objImageManifest = {
+	var image_manifest = {
 		"spaceTile" : {id: "spaceTile", path : "space.png", loaded: false},
 		"ArkadianCruiser" : {id: "ArkadianCruiser", path: "ark-cru.png",
 			loaded: false},
@@ -47,58 +34,30 @@ var ISIS_engine = function () {
 	};
 
 	// function to initialize the game
-	var funInitGame = function(){
-		current_state = ISIS_battleState(canvas, {images : images});
+	this.initialize = function () {
+		// initialize class library
+		ISIS.Manager = ISIS_Manager();
+		ISIS.SpriteManager = ISIS_SpriteManager(canvas);
+		ISIS.ParticleManager = ISIS_ParticleManager();
+		ISIS.ProjectileManager = ISIS_ProjectileManager();
+		ISIS.FleetView = ISIS_fleetView(canvas);
+		ISIS.GameState = ISIS_gameState(this, io, canvas, content);
+		ISIS.BattleState = ISIS_battleState();
+
+		current_state = new ISIS.BattleState();
 		current_state.initialize();
 
+		var that = this;
 		var mainLoop = function() {
-			funUpdate();
+			that.update();
 			animFrame(mainLoop);
 		};
 
 		animFrame(mainLoop);
 	};
 
-	// function to update the manifest of loaded images
-	// id: the id of the image that's finsihed loading
-	var funImageLoaded = function(id){
-		var newSprite = null;
-
-		// assume done until proven otherwise
-		var blnDone = true;
-
-		// set the specified image loaded flag to true
-		objImageManifest[id].loaded = true;
-
-		// look over the manifest looking for unleaded images
-		for (var ent in objImageManifest) {
-			// set done flag to done if some are unloaded
-			if (objImageManifest[ent].loaded == false)
-			{
-				blnDone = false;
-				break;
-			}
-		}
-
-		// if done, initialize game.
-		if (blnDone) {
-			funInitGame();
-		}
-	};
-
-	// Load up all neccesary content
-	for ( i in objImageManifest ) {
-		images[i] = io.loadImage(objImageManifest[i], funImageLoaded);
-	}
-
-	// augment the context with a reset function
-	context.reset = function () {
-		this.setTransform(1, 0, 0, 1, 0, 0);
-		this.globalAlpha = 1;
-	};
-
 	// function to update the screen
-	var funUpdate = function () {
+	this.update = function () {
 		var now = new Date();
 		var elapsed = 0;
 
@@ -118,10 +77,51 @@ var ISIS_engine = function () {
 		current_state.update(elapsed);
 	};
 
-	// Expose objects
-	return {
-		context : context,
-		images : images
+	// function to transition to a new state
+	this.changeState = function (new_state) {
+		var old_state = current_state;
+		current_state = new_state;
+		new_state.initialize();
+		old_state.dispose();
+		delete old_state;
 	};
 
+	// function to update the manifest of loaded images
+	// id: the id of the image that's finsihed loading
+	var imageLoaded = ( function () {
+		var that = this;
+		return function(id){
+			// assume done until proven otherwise
+			var blnDone = true;
+
+			// set the specified image loaded flag to true
+			image_manifest[id].loaded = true;
+
+			// look over the manifest looking for unleaded images
+			for (var ent in image_manifest) {
+				// set done flag to done if some are unloaded
+				if (image_manifest[ent].loaded == false)
+				{
+					blnDone = false;
+					break;
+				}
+			}
+
+			// if done, initialize game.
+			if (blnDone) {
+				that.initialize();
+			}
+		};
+	} )();
+
+	// Load up all neccesary content
+	for ( i in image_manifest ) {
+		content.images[i] = io.loadImage(image_manifest[i], imageLoaded);
+	}
+
+	// augment the context with a reset function
+	canvas.getContext("2d").reset = function () {
+		this.setTransform(1, 0, 0, 1, 0, 0);
+		this.globalAlpha = 1;
+	};
 };
