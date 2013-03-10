@@ -170,7 +170,7 @@ var ISIS_unit = function(context, content, spriteManager, particle_manager)
 
 		// order cancelling function
 		clearOrder : function(key) {
-			this.orders[key] = null;
+			delete this.orders[key];
 		},
 
 		// update function
