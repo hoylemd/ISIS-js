@@ -1,5 +1,5 @@
 // game state object
-var ISIS_gameState = function (game, canvas, content) {
+var ISIS_gameState = function () {
 	// prototype
 	var game_state_prototype = {
 		// function to add a component
@@ -32,7 +32,7 @@ var ISIS_gameState = function (game, canvas, content) {
 	};
 
 	// return the constructor
-	return function () {
+	return function (game, canvas, content) {
 		this.__proto__ = game_state_prototype;
 
 		// component list
@@ -41,7 +41,7 @@ var ISIS_gameState = function (game, canvas, content) {
 
 		// graphics objects
 		this.context = canvas.getContext("2d");
-		this.sprite_manager = new ISIS_sprite_manager(canvas)();
+		this.sprite_manager = new ISIS.SpriteManager();
 
 		// content assets
 		this.images = content.images;
@@ -52,6 +52,6 @@ var ISIS_gameState = function (game, canvas, content) {
 		// state
 		this.initialized = false;
 
-		this.addComponent(sprite_manager);
+		this.addComponent(this.sprite_manager);
 	};
-}
+};
