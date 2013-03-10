@@ -44,6 +44,7 @@ var ISIS_battleState = function () {
 			var debris_library = [images["debris1"], images["debris2"],
 				images["debris3"]];
 
+			// set up the units
 			player = new Unit("ArkadianCruiser", {x:1, y:1}, 0,
 				debris_library);
 			player.name = "Arkadian Cruiser";
@@ -57,6 +58,7 @@ var ISIS_battleState = function () {
 			enemy.addWeapon(new Weapon("Terran Mass Driver", 15, 100, 2000,
 				images["bullet"], 20));
 
+			// set up the fleet views
 			playerFleetView = new ISIS.FleetView(images["spaceTile"]);
 			playerFleetView.moveTo({x: 0, y: 0});
 			playerFleetView.facing = 1/4 * Math.TAU;
@@ -72,18 +74,11 @@ var ISIS_battleState = function () {
 			this.addComponent(playerFleetView, 100);
 			this.addComponent(enemyFleetView, 100);
 
+			// enable the ai
 			enemy.registerOrder(new orders.Attack(enemy, player));
 			enemy.carryOut();
-			// test text sprites
-			//new spriteManager.TextSprite("test", "12px Courier",
-			//	"red").centerOn({x: 150, y: 150});
 
-			// test particle
-			//var part_sprite = new spriteManager.TextSprite("wheee!",
-			//	"16pt Calibri", "blue");
-			//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
-			//	{x: 550, y: 50}, 5000);
-
+			// call base initializer
 			this.__proto__.initialize.call(this);
 
 		};
@@ -117,7 +112,7 @@ var ISIS_battleState = function () {
 			that.context.drawImage(images["GoButton"], 0, 0);
 		};
 
-		// function to update the screen
+		// function to update the state
 		var update = function (elapsed) {
 
 			// reset the window size
@@ -128,6 +123,7 @@ var ISIS_battleState = function () {
 			this.context.clearRect(0, 0, clientWidth, clientHeight);
 			this.context.reset();
 
+			// initialize if needed
 			if (!this.initialized) {
 				this.initialize();
 			}
@@ -145,6 +141,7 @@ var ISIS_battleState = function () {
 				return;
 			}
 
+			// call the base updater (updates all components
 			this.__proto__.update.call(this, elapsed);
 
 			// draw order lines
@@ -156,6 +153,7 @@ var ISIS_battleState = function () {
 			drawBar(this);
 		};
 
+		// function for setting up attack orders
 		var registerAttackOrder = function(mousePos) {
 			// register an attack order if the attack order is active
 			if (enemy.collide(mousePos)) {
@@ -165,26 +163,24 @@ var ISIS_battleState = function () {
 			}
 		};
 
+		// click handers
 		var clickMainView = null;
-
 		var clickBar = null;
-
 		var clickHandler = null;
 
+		// disposer
 		var dispose = null;
 
+		// get the prototype
 		this.__proto__ = new ISIS.GameState();
 
 		// content assets
 		images = this.content.images;
 
-		// Particle objects
+		// set up components
 		particle_manager = new ISIS.ParticleManager();
-
-		// Projectile objects
 		projectile_manager =
 			new ISIS.ProjectileManager(this.sprite_manager, particle_manager);
-
 		this.addComponent(particle_manager);
 		this.addComponent(projectile_manager);
 
@@ -198,6 +194,7 @@ var ISIS_battleState = function () {
 		// orders objects
 		orders = ISIS_order();
 
+		// main view click handler
 		clickMainView = ( function (that) {
 			return function(mousePos) {
 				if (attackOrder) {
@@ -207,20 +204,20 @@ var ISIS_battleState = function () {
 			};
 		} )(this);
 
+		// bottom bar click handler
 		clickBar = ( function (that) {
 			return function(mousePos) {
 				// click on a button
 				if (mousePos.x < buttonWidth) {
 					attackOrder = !attackOrder;
-				} else if (mousePos.x > that.canvas.clientWidth
-					- buttonWidth) {
+				} else if (mousePos.x > that.canvas.clientWidth - buttonWidth) {
 					// Go button
 					player.carryOut();
 				}
 			};
 		} )(this);
 
-
+		// main click handler
 		clickHandler = ( function (that) {
 			return function (evt) {
 				// get the mouse position
@@ -241,6 +238,7 @@ var ISIS_battleState = function () {
 		// Add an event listener for mouse clicks
 		this.canvas.addEventListener('click', clickHandler);
 
+		// define disposal function
 		dispose = function () {
 			projectile_manager.dispose();
 			particle_manager.dispose();
@@ -252,9 +250,9 @@ var ISIS_battleState = function () {
 			this.canvas.removeEventListener('click', clickHandler);
 		};
 
+		// expose interface
 		this.update = update;
 		this.initialize = initialize;
 		this.dispose = dispose;
-
 	};
-}
+};
