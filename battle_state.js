@@ -5,7 +5,6 @@ var ISIS_battleState = function () {
 
 		// game state
 		var paused = false;
-		var initialized = false;
 
 		// fleet view objects
 		var playerFleetView = null;
@@ -70,6 +69,9 @@ var ISIS_battleState = function () {
 			enemyFleetView.resize({x: 500, y: 600});
 			enemyFleetView.addShip(enemy);
 
+			this.addComponent(playerFleetView, 100);
+			this.addComponent(enemyFleetView, 100);
+
 			enemy.registerOrder(new orders.Attack(enemy, player));
 			enemy.carryOut();
 			// test text sprites
@@ -81,7 +83,8 @@ var ISIS_battleState = function () {
 			//	"16pt Calibri", "blue");
 			//particle_manager.newParticle(part_sprite, {x: 50, y: 50},
 			//	{x: 550, y: 50}, 5000);
-			initialized = true;
+
+			this.__proto__.initialize.call(this);
 
 		};
 
@@ -125,7 +128,7 @@ var ISIS_battleState = function () {
 			this.context.clearRect(0, 0, clientWidth, clientHeight);
 			this.context.reset();
 
-			if (!initialized) {
+			if (!this.initialized) {
 				this.initialize();
 			}
 
@@ -142,35 +145,12 @@ var ISIS_battleState = function () {
 				return;
 			}
 
-			// update units
-			//player.update(elapsed);
-			//enemy.update(elapsed);
-
-			// update projectiles
-			projectile_manager.update(elapsed);
-
-			// update projectiles
-			particle_manager.update(elapsed);
-
-			// update sprites
-			this.sprite_manager.update(elapsed);
-
-			// draw Fleet views
-			playerFleetView.update(elapsed);
-			enemyFleetView.update(elapsed);
-
-			playerFleetView.draw();
-			enemyFleetView.draw();
-
-			// draw other sprites
-			this.sprite_manager.draw();
+			this.__proto__.update.call(this, elapsed);
 
 			// draw order lines
 			if (!player.destroyed) {
 				player.drawLines();
 			}
-			//enemy.drawLines();
-
 
 			// draw the UI
 			drawBar(this);
@@ -204,6 +184,9 @@ var ISIS_battleState = function () {
 		// Projectile objects
 		projectile_manager =
 			new ISIS.ProjectileManager(this.sprite_manager, particle_manager);
+
+		this.addComponent(particle_manager);
+		this.addComponent(projectile_manager);
 
 		// weapon objects
 		Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
