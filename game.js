@@ -35,7 +35,16 @@ var ISIS_Engine = function (canvas, io) {
 
 	// function to initialize the game
 	this.initialize = function () {
-		current_state = new ISIS_battleState(this, canvas, content);
+		// initialize class library
+		ISIS.Manager = ISIS_Manager();
+		ISIS.SpriteManager = ISIS_SpriteManager(canvas);
+		ISIS.ParticleManager = ISIS_ParticleManager();
+		ISIS.ProjectileManager = ISIS_ProjectileManager();
+		ISIS.FleetView = ISIS_fleetView(canvas);
+		ISIS.GameState = ISIS_gameState(this, io, canvas, content);
+		ISIS.BattleState = ISIS_battleState();
+
+		current_state = new ISIS.BattleState();
 		current_state.initialize();
 
 		var that = this;
@@ -73,6 +82,7 @@ var ISIS_Engine = function (canvas, io) {
 		var old_state = current_state;
 		current_state = new_state;
 		new_state.initialize();
+		old_state.dispose();
 		delete old_state;
 	};
 
