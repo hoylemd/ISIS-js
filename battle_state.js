@@ -1,37 +1,28 @@
 // battle state object
 var ISIS_battleState = function () {
 	return function () {
-		this.__proto__ = new ISIS.GameState();
-
-		// content assets
-		var images = this.content.images;
+		var images = null;
 
 		// game state
 		var paused = false;
 		var initialized = false;
 
 		// fleet view objects
-		var playerFleetView;
-		var enemyFleetView;
+		var playerFleetView = null;
+		var enemyFleetView = null;
 
-		// Particle objects
-		var particle_manager = new ISIS.ParticleManager();
-
-		// Projectile objects
-		var projectile_manager = new ISIS.ProjectileManager(this.sprite_manager,
-			particle_manager);
-
-		// weapon objects
-		var Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
-
-		// unit objects
-		var Unit = ISIS_unit(this.context, images, this.sprite_manager,
-			particle_manager);
+		// units
 		var player = null;
 		var enemy = null;
 
-		// orders objects
-		var orders = ISIS_order();
+		// components
+		var particle_manager = null;
+		var projectile_manager = null;
+
+		// classes
+		var Weapon = null;
+		var Unit = null;
+		var orders = null;
 
 		// Bar data
 		var buttonWidth = 150;
@@ -54,7 +45,8 @@ var ISIS_battleState = function () {
 			var debris_library = [images["debris1"], images["debris2"],
 				images["debris3"]];
 
-			player = new Unit("ArkadianCruiser", {x:1, y:1}, 0, debris_library);
+			player = new Unit("ArkadianCruiser", {x:1, y:1}, 0,
+				debris_library);
 			player.name = "Arkadian Cruiser";
 			player.setHull(100);
 			player.addWeapon(new Weapon("Arkadian Railgun", 50, 25, 1500,
@@ -184,7 +176,69 @@ var ISIS_battleState = function () {
 			drawBar(this);
 		};
 
-		var clickHandler = ( function (that) {
+		var registerAttackOrder = function(mousePos) {
+			// register an attack order if the attack order is active
+			if (enemy.collide(mousePos)) {
+				player.registerOrder( new orders.Attack(player, enemy));
+			} else {
+				player.clearOrder("attack");
+			}
+		};
+
+		var clickMainView = null;
+
+		var clickBar = null;
+
+		var clickHandler = null;
+
+		var dispose = null;
+
+		this.__proto__ = new ISIS.GameState();
+
+		// content assets
+		images = this.content.images;
+
+		// Particle objects
+		particle_manager = new ISIS.ParticleManager();
+
+		// Projectile objects
+		projectile_manager =
+			new ISIS.ProjectileManager(this.sprite_manager, particle_manager);
+
+		// weapon objects
+		Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
+
+		// unit objects
+		Unit = ISIS_unit(this.context, images, this.sprite_manager,
+			particle_manager);
+
+		// orders objects
+		orders = ISIS_order();
+
+		clickMainView = ( function (that) {
+			return function(mousePos) {
+				if (attackOrder) {
+					registerAttackOrder(mousePos);
+				}
+				attackOrder = false;
+			};
+		} )(this);
+
+		clickBar = ( function (that) {
+			return function(mousePos) {
+				// click on a button
+				if (mousePos.x < buttonWidth) {
+					attackOrder = !attackOrder;
+				} else if (mousePos.x > that.canvas.clientWidth
+					- buttonWidth) {
+					// Go button
+					player.carryOut();
+				}
+			};
+		} )(this);
+
+
+		clickHandler = ( function (that) {
 			return function (evt) {
 				// get the mouse position
 				var mousePos = that.io.getMousePos(that.canvas, evt);
@@ -192,49 +246,19 @@ var ISIS_battleState = function () {
 				// clip to the section of the screen
 				if (mousePos.x < that.canvas.clientWidth &&
 					mousePos.y < that.canvas.clientHeight) {
-					if (attackOrder) {
-						// register an attack order if the attack order is active
-						if (enemy.collide(mousePos)) {
-							player.registerOrder(
-								new orders.Attack(player, enemy));
-						} else {
-							player.clearOrder("attack");
-						}
-					}
-					attackOrder = false;
+					clickMainView(mousePos);
 				}
 				if (mousePos.y > (that.canvas.clientHeight - barHeight)) {
-					// click on a button
-					if (mousePos.x < buttonWidth) {
-						attackOrder = !attackOrder;
-					} else if (mousePos.x > that.canvas.clientWidth
-						- buttonWidth) {
-						// Go button
-						player.carryOut();
-					}
+					clickBar(mousePos);
 				}
 			};
-		} ) (this);
+		} )(this);
+
 
 		// Add an event listener for mouse clicks
 		this.canvas.addEventListener('click', clickHandler);
 
-		this.canvas.addEventListener('onkeydown',
-			function(evt) {
-
-			});
-
-		this.canvas.addEventListener('onkeyup',
-			function(evt) {
-
-			});
-
-		this.canvas.addEventListener('onkeypress',
-			function(evt) {
-
-			});
-
-		var dispose = function () {
+		dispose = function () {
 			projectile_manager.dispose();
 			particle_manager.dispose();
 			this.sprite_manager.dispose();
