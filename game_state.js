@@ -1,11 +1,18 @@
 // game state object
 var ISIS_gameState = function (game, io, canvas, content) {
 
+	var last_z = 1000;
+
 	// function to add a component
-	var	addComponent = function (component) {
+	var	addComponent = function (component, z) {
 		this.components.push(component);
 		if (component.draw) {
-			this.drawable_components.push(component);
+			z = z || last_z + 1;
+			while (this.drawable_components[z]) {
+				z += 1;
+			}
+			this.drawable_components[z] = component;
+			last_z = z > last_z ? z : last_z;
 		}
 	};
 
@@ -72,6 +79,6 @@ var ISIS_gameState = function (game, io, canvas, content) {
 		// state
 		this.initialized = false;
 
-		this.addComponent(this.sprite_manager);
+		this.addComponent(this.sprite_manager, last_z);
 	};
 };
