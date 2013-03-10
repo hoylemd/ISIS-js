@@ -1,53 +1,73 @@
 // game state object
-var ISIS_gameState = function () {
-	// prototype
-	var game_state_prototype = {
-		// function to add a component
-		addComponent : function (component) {
-			this.components.push(component);
-			if (component.draw) {
-				this.drawable_components.push(component);
-			}
-		},
+var ISIS_gameState = function (game, io, canvas, content) {
 
-		// initializer
-		initialize : function () {
-			this.initialized = true;
-		},
-
-		// updater
-		update : function (elapsed) {
-			var i = 0;
-
-			// update all the child components
-			for (i in this.components) {
-				this.components[i].update(elapsed);
-			}
-
-			// draw all the drawable components
-			for (i in this.drawable_components) {
-				this.drawable_components[i].draw();
-			}
+	// function to add a component
+	var	addComponent = function (component) {
+		this.components.push(component);
+		if (component.draw) {
+			this.drawable_components.push(component);
 		}
 	};
 
+	// initializer
+	var initialize = function () {
+		this.initialized = true;
+	};
+
+	// updater
+	var update = function (elapsed) {
+		var i = 0;
+
+		// update all the child components
+		for (i in this.components) {
+			this.components[i].update(elapsed);
+		}
+
+		// draw all the drawable components
+		for (i in this.drawable_components) {
+			this.drawable_components[i].draw();
+		}
+	};
+
+	// disposer
+	var dispose = function () {
+		var i = 0;
+
+		for (i in this.components) {
+			this.components[i].dispose();
+			delete this.components[i];
+		}
+	};
+
+	// prototype
+	var game_state_prototype = {
+		addComponent : addComponent,
+		initialize : initialize,
+		update : update,
+		dispose : dispose
+	};
+
 	// return the constructor
-	return function (game, canvas, content) {
+	return function () {
 		this.__proto__ = game_state_prototype;
 
-		// component list
+		// game reference
+		this.game = game;
+
+		// component lists
 		this.components = [];
 		this.drawable_components = [];
 
 		// graphics objects
+		this.canvas = canvas;
 		this.context = canvas.getContext("2d");
 		this.sprite_manager = new ISIS.SpriteManager();
 
 		// content assets
-		this.images = content.images;
+		this.content = content;
 
 		// I/O object
-		this.io = new ISIS_IO();
+		this.io = io;
 
 		// state
 		this.initialized = false;
