@@ -78,10 +78,18 @@ var ISIS_fleetView = function (canvas) {
 		context.reset();
 	};
 
-		// draw function
+	// draw function
 	var draw = function () {
 		drawBackground(this);
 		drawGrid(this);
+	};
+
+	var update = function (elapsed) {
+
+	};
+
+	var dispose = function (elapsed) {
+
 	};
 
 	// method to register a ship
@@ -98,7 +106,7 @@ var ISIS_fleetView = function (canvas) {
 		ship.moveTo({x: posx, y: posy});
 
 		// link the ship to this view
-		this.add(ship);
+		this.ship_list.push(ship);
 		ship.registerView(this);
 	};
 
@@ -138,8 +146,6 @@ var ISIS_fleetView = function (canvas) {
 		var ix = tileImage.width;
 		var iy = tileImage.height;
 
-		this.__proto__ = new ISIS.Manager();
-
 		// overall drawing data
 		this.position = {x: 0, y: 0};
 		this.dimensions = {x: 0, y: 0};
@@ -147,6 +153,8 @@ var ISIS_fleetView = function (canvas) {
 		this.moveTo = moveTo;
 		this.resize = resize;
 		this.draw = draw;
+		this.update = update;
+		this.dispose = dispose;
 
 		// tile data
 		this.tiles = {x: 0, y: 0};
@@ -155,6 +163,7 @@ var ISIS_fleetView = function (canvas) {
 		this.tileImage = tileImage;
 
 		// ships data
+		this.ship_list = [];
 		this.addShip = addShip;
 		this.boundSprite = boundSprite;
 	};
