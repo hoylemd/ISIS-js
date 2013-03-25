@@ -78,6 +78,10 @@ Math.calcVector = function (p1, p2) {
 Math.calcVectorAngle = function (vector) {
 	return Math.atan2(vector.x, -1 * vector.y);
 };
+Math.multVector = function (vector, magnitude) {
+	return {x: vector.x * magnitude,
+		y: vector.y * magnitude};
+};
 
 // Function to get the angle in radians between two points
 Math.calculateLineAngle = function (p1, p2) {
@@ -85,6 +89,15 @@ Math.calculateLineAngle = function (p1, p2) {
 	var dy = p2.y - p1.y;
 
 	return Math.atan2(dx, dy);
+};
+
+// function to calculate the distance between 2 points in 2d
+Math.calcDistancePoints = function (p1, p2) {
+	var dx = p2.x - p1.x;
+	var dy = p2.y - p1.y;
+
+	// pythagorean theorem wooo
+	return Math.sqrt(dx*dx + dy*+dy);
 };
 
 // Adapted from http://my.opera.com/emoller/blog/2011/12/20/reauestanimationframe-for-smart-er-animating
