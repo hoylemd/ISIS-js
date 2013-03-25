@@ -5,9 +5,9 @@ var ISIS_UnitManager = function (canvas, content) {
 
 	// check the params
 	if (!context) {
-		throw "no context given to Pokemon class constructor";
+		throw "no context given to Unit class constructor";
 	} else if (!content) {
-		throw "no content given to Pokemon class constructor";
+		throw "no content given to Unit class constructor";
 	}
 
 	// tile constant
