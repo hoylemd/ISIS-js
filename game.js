@@ -41,6 +41,7 @@ var ISIS_Engine = function (canvas, io) {
 		ISIS.ParticleManager = ISIS_ParticleManager();
 		ISIS.ProjectileManager = ISIS_ProjectileManager();
 		ISIS.FleetView = ISIS_fleetView(canvas);
+		ISIS.UnitManager = ISIS_UnitManager(canvas, content);
 		ISIS.GameState = ISIS_gameState(this, io, canvas, content);
 		ISIS.BattleState = ISIS_battleState();
 
@@ -123,5 +124,12 @@ var ISIS_Engine = function (canvas, io) {
 	canvas.getContext("2d").reset = function () {
 		this.setTransform(1, 0, 0, 1, 0, 0);
 		this.globalAlpha = 1;
+	};
+
+	canvas.boundSprite = function (sprite) {
+		return sprite.position.x < this.width &&
+		sprite.position.x > 0 &&
+		sprite.position.y < this.height &&
+		sprite.position.y > 0;
 	};
 };
