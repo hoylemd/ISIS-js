@@ -17,10 +17,10 @@ var ISIS_battleState = function () {
 		// components
 		var particle_manager = null;
 		var projectile_manager = null;
+		var unit_manager = null;
 
 		// classes
 		var Weapon = null;
-		var Unit = null;
 		var orders = null;
 
 		// Bar data
@@ -38,6 +38,16 @@ var ISIS_battleState = function () {
 		var clientWidth;
 		var clientHeight;
 
+		var enemyAI = function (unit) {
+			return function(elapsed) {
+				if (!unit.orders.attack) {
+					unit.registerOrder(new orders.Attack(unit, player));
+					unit.carryOut();
+				}
+			};
+		};
+
+
 		// function to initialize the game
 		var initialize = function() {
 			// initialize the debris libraries
@@ -45,18 +55,19 @@ var ISIS_battleState = function () {
 				images["debris3"]];
 
 			// set up the units
-			player = new Unit("ArkadianCruiser", {x:1, y:1}, 0,
+			player = new unit_manager.Unit("ArkadianCruiser", {x:1, y:1}, 0,
 				debris_library);
 			player.name = "Arkadian Cruiser";
 			player.setHull(100);
 			player.addWeapon(new Weapon("Arkadian Railgun", 50, 25, 1500,
 				images["bullet"], 25));
 
-			enemy = new Unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
+			enemy = new unit_manager.Unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
 			enemy.name = "Terran Cruiser";
 			enemy.setHull(150);
 			enemy.addWeapon(new Weapon("Terran Mass Driver", 15, 100, 2000,
 				images["bullet"], 20));
+
 
 			// set up the fleet views
 			playerFleetView = new ISIS.FleetView(images["spaceTile"]);
@@ -74,13 +85,15 @@ var ISIS_battleState = function () {
 			this.addComponent(playerFleetView, 100);
 			this.addComponent(enemyFleetView, 100);
 
+			// add the enemy AI
+			enemy.AI = enemyAI(enemy);
+
 			// enable the ai
-			enemy.registerOrder(new orders.Attack(enemy, player));
-			enemy.carryOut();
+			// enemy.registerOrder(new orders.Attack(enemy, player));
+			// enemy.carryOut();
 
 			// call base initializer
 			this.__proto__.initialize.call(this);
-
 		};
 
 		// function to draw the bottom orders bar
@@ -153,20 +166,11 @@ var ISIS_battleState = function () {
 			drawBar(this);
 		};
 
-		// function for setting up attack orders
-		var registerAttackOrder = function(mousePos) {
-			// register an attack order if the attack order is active
-			if (enemy.collide(mousePos)) {
-				player.registerOrder( new orders.Attack(player, enemy));
-			} else {
-				player.clearOrder("attack");
-			}
-		};
-
 		// click handers
 		var clickMainView = null;
 		var clickBar = null;
 		var clickHandler = null;
+		var rightClickHandler = null;
 
 		// disposer
 		var dispose = null;
@@ -179,17 +183,17 @@ var ISIS_battleState = function () {
 
 		// set up components
 		particle_manager = new ISIS.ParticleManager();
+		unit_manager = new ISIS.UnitManager(this.sprite_manager,
+			particle_manager);
 		projectile_manager =
-			new ISIS.ProjectileManager(this.sprite_manager, particle_manager);
+			new ISIS.ProjectileManager(this.sprite_manager, particle_manager,
+				unit_manager);
 		this.addComponent(particle_manager);
+		this.addComponent(unit_manager);
 		this.addComponent(projectile_manager);
 
-		// weapon objects
+		// set up classes
 		Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
-
-		// unit objects
-		Unit = ISIS_unit(this.context, images, this.sprite_manager,
-			particle_manager);
 
 		// orders objects
 		orders = ISIS_order();
@@ -198,7 +202,12 @@ var ISIS_battleState = function () {
 		clickMainView = ( function (that) {
 			return function(mousePos) {
 				if (attackOrder) {
-					registerAttackOrder(mousePos);
+					// register an attack order if the attack order is active
+					if (enemy.collide(mousePos)) {
+						player.registerOrder( new orders.Attack(player, enemy));
+					} else {
+						player.clearOrder("attack");
+					}
 				}
 				attackOrder = false;
 			};
@@ -234,17 +243,35 @@ var ISIS_battleState = function () {
 			};
 		} )(this);
 
+		// main right click handler
+		rightClickHandler = ( function (that) {
+			return function (evt) {
+				// get the mouse position
+				var mousePos = that.io.getMousePos(that.canvas, evt);
+
+				player.registerOrder(new orders.Attack(player, mousePos));
+
+				player.carryOut();
+				// handle based on position
+			};
+		} )(this);
 
 		// Add an event listener for mouse clicks
 		this.canvas.addEventListener('click', clickHandler);
+
+		this.canvas.oncontextmenu = function (evt) {
+			rightClickHandler(evt);
+			return false;
+		};
 
 		// define disposal function
 		dispose = function () {
 			projectile_manager.dispose();
 			particle_manager.dispose();
-			this.sprite_manager.dispose();
+			unit_manager.dispose();
 			playerFleetView.dispose();
 			enemyFleetView.dispose();
+			this.sprite_manager.dispose();
 			player = null;
 			enemy = null;
 			this.canvas.removeEventListener('click', clickHandler);
