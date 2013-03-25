@@ -1,7 +1,6 @@
 // Sprite manager object
-
 function ISIS_SpriteManager (canvas) {
-	// get the context and manager prototype
+	// get the context prototype
 	var context = canvas.getContext("2d");
 
 	var rotateContext = function (that) {
@@ -152,7 +151,7 @@ function ISIS_SpriteManager (canvas) {
 				initializeSprite(this);
 
 				// link to the manager
-				this.manager = manager
+				this.manager = manager;
 
 				// set up the texture variables
 				this.image = image;
@@ -169,7 +168,7 @@ function ISIS_SpriteManager (canvas) {
 
 				// set the draw method
 				this.draw = function () {
-					if (!this.hidden) {
+					if (!this.hidden && !this.external) {
 						adjustContext(this);
 						drawStandard(this);
 					}
@@ -209,6 +208,7 @@ function ISIS_SpriteManager (canvas) {
 
 				// add to the manager
 				manager.add(this);
+				this.canvas = canvas;
 			} else {
 				// error on invalid parameters
 				console.log("invalid TextSprite parameters.");
@@ -271,14 +271,11 @@ function ISIS_SpriteManager (canvas) {
 				if (sprite) {
 					sprite.update(elapsed);
 
-					// remove sprites who leave the canvas
-					// TODO: this might not be the best idea.
-					if (sprite.position.x > canvas.width ||
-						sprite.position.x < 0 ||
-						sprite.position.y > canvas.height ||
-						sprite.position.y < 0) {
-						sprite.dispose();
-						sprite = null;
+					// set the external flag for sprites who leave the canvas
+					if (!canvas.boundSprite(sprite)) {
+						sprite.external = true;
+					} else {
+						sprite.external = false;
 					}
 				}
 			}
@@ -291,5 +288,8 @@ function ISIS_SpriteManager (canvas) {
 				this.object_list[index].draw();
 			}
 		};
+
+		// link to the canvas
+		this.canvas = canvas;
 	};
 }
