@@ -4,7 +4,7 @@
 var ISIS = {};
 
 window.onload = function () {
-	var canvas = document.getElementById("myCanvas");
+	var canvas = document.getElementById("canvas");
 	var io = new ISIS_IO();
 
 	// set up the main engine
