@@ -1,10 +1,8 @@
-body 
-{
+body {
 	background-color:#220022;
 }
 
-canvas#myCanvas
-{
+.canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
