@@ -178,7 +178,7 @@ function ISIS_SpriteManager (canvas) {
 				manager.add(this);
 			} else {
 				// error on invalid arguments
-				console.log("invalid Sprite parameters.");
+				throw "invalid Sprite parameters.";
 			}
 		};
 	};
@@ -211,7 +211,7 @@ function ISIS_SpriteManager (canvas) {
 				this.canvas = canvas;
 			} else {
 				// error on invalid parameters
-				console.log("invalid TextSprite parameters.");
+				throw "invalid TextSprite parameters.";
 			}
 
 		};
@@ -247,7 +247,7 @@ function ISIS_SpriteManager (canvas) {
 				manager.add(this);
 			} else {
 				// error on invalid parameters
-				console.log("invalid BarSprite parameters.");
+				throw "invalid BarSprite parameters.";
 			}
 		};
 	};
