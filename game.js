@@ -5,14 +5,55 @@ var ISIS_Engine = function (canvas, io) {
 
 	// content assets
 	var content = {
-		images : {}
+		images : {},
+
+		// function to load an image from a content manifest entry
+		loadImage : function (manifest_entry) {
+			var image = new Image();
+			var that = this;
+			image.onload = function () {
+				that.images[manifest_entry.id] = this;
+				that.imageLoaded(manifest_entry.id);
+			};
+			image.src = manifest_entry.path;
+		},
+
+		imageLoaded : function (id){
+			// assume done until proven otherwise
+			var blnDone = true;
+
+			// set the specified image loaded flag to true
+			this.manifest[id].loaded = true;
+
+			// look over the manifest looking for unleaded images
+			for (var ent in this.manifest) {
+				// set done flag to done if some are unloaded
+				if (this.manifest[ent].loaded == false)
+				{
+					blnDone = false;
+					break;
+				}
+			}
+
+			// if done, invoke callback.
+			if (blnDone) {
+				this.doneCallback();
+			}
+
+		},
+
+		load : function (callback) {
+			this.doneCallback = callback
+
+			for (var i in this.manifest) {
+				this.images[i] = this.loadImage(this.manifest[i]);
+			}
+		}
 	};
 
-	// timing data
-	var lastTime;
 
 	// image manifest
-	var image_manifest = {
+	content.manifest = {
 		"spaceTile" : {id: "spaceTile", path : "space.png", loaded: false},
 		"ArkadianCruiser" : {id: "ArkadianCruiser", path: "ark-cru.png",
 			loaded: false},
@@ -32,6 +73,9 @@ var ISIS_Engine = function (canvas, io) {
 		"debris2" : {id: "debris2", path: "debris2.png", loaded: false},
 		"debris3" : {id: "debris3", path: "debris3.png", loaded: false}
 	};
+
+	// timing data
+	var lastTime;
 
 	// function to initialize the game
 	this.initialize = function () {
@@ -87,38 +131,15 @@ var ISIS_Engine = function (canvas, io) {
 		delete old_state;
 	};
 
-	// function to update the manifest of loaded images
-	// id: the id of the image that's finsihed loading
-	var imageLoaded = ( function () {
-		var that = this;
-		return function(id){
-			// assume done until proven otherwise
-			var blnDone = true;
-
-			// set the specified image loaded flag to true
-			image_manifest[id].loaded = true;
-
-			// look over the manifest looking for unleaded images
-			for (var ent in image_manifest) {
-				// set done flag to done if some are unloaded
-				if (image_manifest[ent].loaded == false)
-				{
-					blnDone = false;
-					break;
-				}
-			}
-
-			// if done, initialize game.
-			if (blnDone) {
-				that.initialize();
-			}
+	// package the initialize function
+	var initializer = function (that) {
+		return function() {
+			that.initialize();
 		};
-	} )();
+	}(this);
 
-	// Load up all neccesary content
-	for ( i in image_manifest ) {
-		content.images[i] = io.loadImage(image_manifest[i], imageLoaded);
-	}
+	// load content
+	content.load(initializer);
 
 	// augment the context with a reset function
 	canvas.getContext("2d").reset = function () {
