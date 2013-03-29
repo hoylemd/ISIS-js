@@ -11,16 +11,6 @@ var animFrame = window.requestAnimationFrame ||
 // Io object
 var ISIS_IO = function () {
 	var IO_prototype = {
-		// function to load an image from a content manifest entry
-		loadImage : function (manifest_entry, callback) {
-			var image = new Image();
-			image.onload = function () {
-				callback(manifest_entry.id);
-			};
-			image.src = manifest_entry.path;
-
-			return image;
-		},
 
 		// function to get the position of the mouse pointer
 		getMousePos : function (context, evt) {
