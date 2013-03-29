@@ -1,5 +1,5 @@
 // ISIS main engine
-var ISIS_Engine = function (canvas, io) {
+var ISIS_Engine = function (canvas, wrapper) {
 	// state pointer
 	var current_state = null;
 
@@ -86,7 +86,7 @@ var ISIS_Engine = function (canvas, io) {
 		ISIS.ProjectileManager = ISIS_ProjectileManager();
 		ISIS.FleetView = ISIS_fleetView(canvas);
 		ISIS.UnitManager = ISIS_UnitManager(canvas, content);
-		ISIS.GameState = ISIS_gameState(this, io, canvas, content);
+		ISIS.GameState = ISIS_gameState(this, canvas, content);
 		ISIS.BattleState = ISIS_battleState();
 
 		current_state = new ISIS.BattleState();
@@ -153,4 +153,39 @@ var ISIS_Engine = function (canvas, io) {
 		sprite.position.y < this.height &&
 		sprite.position.y > 0;
 	};
+
+	var clickHandler = function (evt) {
+		if (current_state && current_state.IO) {
+			current_state.IO.click(evt);
+		}
+	};
+
+	var rightClickHander = function (evt) {
+		if (current_state && current_state.IO) {
+			current_state.IO.rightCLick(evt);
+		}
+	};
+
+	var keyDownHandler = function (evt) {
+		if (current_state && current_state.IO) {
+			current_state.IO.keyDown(evt);
+		}
+	};
+
+	var keyUpHandler = function (evt) {
+		if (current_state && current_state.IO) {
+			current_state.IO.keyUp(evt);
+		}
+	};
+
+
+	// Add an event listener for mouse clicks
+	canvas.addEventListener('click', clickHandler);
+	canvas.oncontextmenu = function (evt) {
+		rightClickHandler(evt);
+		return false;
+	};
+	wrapper.addEventListener('keyDown', keyDownHandler);
+	wrapper.addEventListener('keyUp', keyUpHandler);
+
 };
