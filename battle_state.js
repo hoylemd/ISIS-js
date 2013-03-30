@@ -230,7 +230,7 @@ var ISIS_battleState = function () {
 		clickHandler = ( function (that) {
 			return function (evt) {
 				// get the mouse position
-				var mousePos = that.io.getMousePos(that.canvas, evt);
+				var mousePos = that.IO.getMousePos(evt);
 
 				// clip to the section of the screen
 				if (mousePos.x < that.canvas.clientWidth &&
@@ -247,7 +247,7 @@ var ISIS_battleState = function () {
 		rightClickHandler = ( function (that) {
 			return function (evt) {
 				// get the mouse position
-				var mousePos = that.io.getMousePos(that.canvas, evt);
+				var mousePos = that.IO.getMousePos(evt);
 
 				player.registerOrder(new orders.Attack(player, mousePos));
 
@@ -257,12 +257,8 @@ var ISIS_battleState = function () {
 		} )(this);
 
 		// Add an event listener for mouse clicks
-		this.canvas.addEventListener('click', clickHandler);
-
-		this.canvas.oncontextmenu = function (evt) {
-			rightClickHandler(evt);
-			return false;
-		};
+		this.IO.click = clickHandler;
+		this.IO.rightClick = rightClickHandler;
 
 		// define disposal function
 		dispose = function () {

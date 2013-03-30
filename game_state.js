@@ -1,5 +1,5 @@
 // game state object
-var ISIS_gameState = function (game, io, canvas, content) {
+var ISIS_gameState = function (game, canvas, content) {
 
 	var last_z = 1000;
 
@@ -74,7 +74,7 @@ var ISIS_gameState = function (game, io, canvas, content) {
 		this.content = content;
 
 		// I/O object
-		this.io = io;
+		this.IO = new ISIS.IO();
 
 		// state
 		this.initialized = false;

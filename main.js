@@ -4,10 +4,10 @@
 var ISIS = {};
 
 window.onload = function () {
-	var canvas = document.getElementById("myCanvas");
-	var io = new ISIS_IO();
+	var canvas = $("#canvas")[0];
+	var wrapper = $("#canvasWrapper")[0];
 
 	// set up the main engine
-	ISIS.Engine = ISIS_Engine(canvas, io);
-
+	ISIS.IO = new ISIS_IO(canvas);
+	ISIS.Engine = ISIS_Engine(canvas, wrapper);
 }

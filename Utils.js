@@ -9,26 +9,16 @@ var animFrame = window.requestAnimationFrame ||
 	null;
 
 // Io object
-var ISIS_IO = function () {
+var ISIS_IO = function (canvas) {
+	var context = canvas.getContext("2D");
 	var IO_prototype = {
-		// function to load an image from a content manifest entry
-		loadImage : function (manifest_entry, callback) {
-			var image = new Image();
-			image.onload = function () {
-				callback(manifest_entry.id);
-			};
-			image.src = manifest_entry.path;
-
-			return image;
-		},
-
 		// function to get the position of the mouse pointer
-		getMousePos : function (context, evt) {
+		getMousePos : function (evt) {
 			// get canvas position
 			var context_top = 0;
 			var context_left = 0;
 			while (context && context.tagName != 'BODY') {
-				context_top += context.offsetTop;
+				context_top += context.offsetTop
 				context_left += context.offsetLeft;
 				context = context.offsetParent;
 			}
@@ -40,10 +30,15 @@ var ISIS_IO = function () {
 			};
 		},
 
-
 	};
 
-	this.__proto__ = IO_prototype;
+	return function () {
+		this.__proto__ = IO_prototype;
+		this.click = null;
+		this.rightClick = null;
+		this.keyDown = null;
+		this.keyUp = null;
+	};
 };
 
 // Modify Math object
