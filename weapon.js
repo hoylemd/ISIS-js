@@ -75,9 +75,7 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 
 		} else {
 			// log errors
-			console.log(
-				"Weapon cannot be instantiated without a projectile texture");
-			this = null;
+			throw new "Weapon cannot be instantiated without a projectile texture";
 		}
 	}
 
