@@ -100,7 +100,7 @@ var ISIS_battleState = function () {
 						"active_colour" : "red",
 						"inactive_colour" : "grey",
 						"text" : "button",
-						"font" : "16pt Laconic",
+						"font" : "18px Laconic",
 						"font_active_colour" : "black",
 						"font_inactive_colour" : "black"
 					}
