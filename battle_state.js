@@ -47,6 +47,8 @@ var ISIS_battleState = function () {
 			};
 		};
 
+		// test stuff
+		var testClickable = null;
 
 		// function to initialize the game
 		var initialize = function() {
@@ -93,20 +95,26 @@ var ISIS_battleState = function () {
 			// enemy.carryOut();
 
 			// test button
-			var test_button =
-				new this.sprite_manager.ButtonSprite(
-					{
-						"frameDims" : {x: 100, y:40},
-						"active_colour" : "red",
-						"inactive_colour" : "grey",
-						"text" : "button",
-						"font" : "18px Laconic",
-						"font_active_colour" : "black",
-						"font_inactive_colour" : "black"
-					}
-				);
-
-			test_button.moveTo({x: 200, y: 200});
+			var button_dims = {x: 100, y:40};
+			var button_pos = {x: 200, y: 200};
+			var test_button = new this.sprite_manager.ButtonSprite({
+				"frameDims" : button_dims,
+				"position" : button_pos,
+				"active_colour" : "red",
+				"inactive_colour" : "grey",
+				"text" : "button",
+				"font" : "18px Laconic",
+				"font_active_colour" : "black",
+				"font_inactive_colour" : "black"
+			});
+			var testHandler = function () {
+				console.log("click");
+			};
+			testClickable = new ISIS.Clickable({
+				"position" : button_pos,
+				"dimensions" : button_dims,
+				"handler" : testHandler
+			});
 
 			// call base initializer
 			this.__proto__.initialize.call(this);
@@ -256,6 +264,8 @@ var ISIS_battleState = function () {
 				if (mousePos.y > (that.canvas.clientHeight - barHeight)) {
 					clickBar(mousePos);
 				}
+
+				testClickable.check(mousePos);
 			};
 		} )(this);
 
