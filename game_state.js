@@ -79,6 +79,8 @@ var ISIS_gameState = function (game, canvas, content) {
 		this.canvas = canvas;
 		this.context = canvas.getContext("2d");
 		this.sprite_manager = new ISIS.SpriteManager();
+		// UI objects
+		this.clickable_manager = new ISIS.ClickableManager();
 
 		// content assets
 		this.content = content;
@@ -90,5 +92,6 @@ var ISIS_gameState = function (game, canvas, content) {
 		this.initialized = false;
 
 		this.addComponent(this.sprite_manager, last_z);
+		this.addComponent(this.clickable_manager);
 	};
 };
