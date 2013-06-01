@@ -82,6 +82,7 @@ var ISIS_Engine = function (canvas, wrapper) {
 		// initialize class library
 		ISIS.Manager = ISIS_Manager();
 		ISIS.SpriteManager = ISIS_SpriteManager(canvas);
+		ISIS.Clickable = ISIS_Clickable();
 		ISIS.ParticleManager = ISIS_ParticleManager();
 		ISIS.ProjectileManager = ISIS_ProjectileManager();
 		ISIS.FleetView = ISIS_fleetView(canvas);
@@ -174,7 +175,6 @@ var ISIS_Engine = function (canvas, wrapper) {
 			current_state.IO.keyUp(evt);
 		}
 	};
-
 
 	// Add an event listener for mouse clicks
 	canvas.addEventListener('click', clickHandler);
