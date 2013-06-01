@@ -21,6 +21,7 @@ var ISIS_battleState = function () {
 
 		// classes
 		var Weapon = null;
+		var Button = null;
 		var orders = null;
 
 		// Bar data
@@ -97,22 +98,18 @@ var ISIS_battleState = function () {
 			// test button
 			var button_dims = {x: 100, y:40};
 			var button_pos = {x: 200, y: 200};
-			var test_button = new this.sprite_manager.ButtonSprite({
-				"frameDims" : button_dims,
+			var testHandler = function () {
+				console.log("click");
+			};
+			var test_button = new Button({
+				"dimensions" : button_dims,
 				"position" : button_pos,
 				"active_colour" : "red",
 				"inactive_colour" : "grey",
 				"text" : "button",
 				"font" : "18px Laconic",
 				"font_active_colour" : "black",
-				"font_inactive_colour" : "black"
-			});
-			var testHandler = function () {
-				console.log("click");
-			};
-			testClickable = new ISIS.Clickable({
-				"position" : button_pos,
-				"dimensions" : button_dims,
+				"font_inactive_colour" : "black",
 				"handler" : testHandler
 			});
 
@@ -218,6 +215,7 @@ var ISIS_battleState = function () {
 
 		// set up classes
 		Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
+		Button = ISIS_Button(this.sprite_manager, this.clickable_manager);
 
 		// orders objects
 		orders = ISIS_order();
@@ -265,7 +263,7 @@ var ISIS_battleState = function () {
 					clickBar(mousePos);
 				}
 
-				testClickable.check(mousePos);
+				that.clickable_manager.check(mousePos);
 			};
 		} )(this);
 
