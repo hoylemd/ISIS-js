@@ -52,7 +52,7 @@ var ISIS_UnitManager = function (canvas, content) {
 
 			// move the sprites
 			this.sprite.centerOn(this.position);
-			bar_y = (this.position.y + 0.5 * this.sprite.frameDims.y) - 15;
+			bar_y = (this.position.y + 0.5 * this.sprite.dimensions.y) - 15;
 			this.health_bar.centerOn({x: this.position.x, y: bar_y });
 		},
 
@@ -237,7 +237,7 @@ var ISIS_UnitManager = function (canvas, content) {
 			// prepare sprites
 			var sprite = new manager.sprite_manager.Sprite(
 				content.images[texture], mapDims, msBetweenFrames);
-			var health_bar_dims = {x: sprite.frameDims.x * 0.8, y: 10};
+			var health_bar_dims = {x: sprite.dimensions.x * 0.8, y: 10};
 			var health_bar = new manager.sprite_manager.BarSprite(health_bar_dims,
 				"green", "red", "yellow", 0.2);
 
