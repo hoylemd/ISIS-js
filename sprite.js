@@ -29,6 +29,10 @@ function ISIS_SpriteManager (canvas) {
 		context.drawImage(that.image, 0, 0);
 	};
 	var drawText = function (that) {
+		if (TEXT_SPRITE_BACKGROUNDS) {
+			context.fillStyle = "red";
+			context.fillRect(0, 0, that.frameDims.x, that.frameDims.y);
+		}
 		context.font = that.font;
 		context.fillStyle = that.colour;
 		context.textBaseline = "top";
@@ -157,8 +161,7 @@ function ISIS_SpriteManager (canvas) {
 			frameDims.y = parseFloat(font.substring(size_index));
 		} else {
 			frameDims = null;
-			console.log(
-				"invalid font string passed. cannot calculate frameDims.");
+			throw new "invalid font string passed. cannot calculate frameDims.";
 		}
 
 		return frameDims;
