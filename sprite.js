@@ -294,8 +294,10 @@ function ISIS_SpriteManager (canvas) {
 				// set up the common instance variables
 				initializeSprite(this);
 				this.manager = manager;
-
 				this.frameDims = params['frameDims'];
+				if (params["position"]) {
+					this.moveTo(params["position"]);
+				}
 				this.active_colour = params['active_colour'];
 				this.inactive_colour = params['inactive_colour'];
 				this.font_active_colour =
