@@ -1,0 +1,1 @@
+var TEXT_SPRITE_BACKGROUNDS = false;
