@@ -1,5 +1,5 @@
 // Clickable class
-function ISIS_Clickable () {
+function ISIS_ClickableManager () {
 	var clickable_proto = {
 		check : function (point) {
 			if (point.x >= this.position.x &&
@@ -12,19 +12,51 @@ function ISIS_Clickable () {
 		}
 	}
 
-	return function (params) {
-		this.__proto__ = clickable_proto;
+	var clickableConstructor = function (manager) {
+		return function (params) {
+			this.__proto__ = clickable_proto;
+			this.manager = manager;
 
-		// check the params
-		if (params["position"] &&
-			params["dimensions"] &&
-			params["handler"])
-		{
-			this.position = params["position"];
-			this.dimensions = params["dimensions"];
-			this.handler = params["handler"];
-		} else {
-			throw new "Invalid clickable parameters";
+			// check the params
+			if (params["position"] &&
+				params["dimensions"] &&
+				params["handler"])
+			{
+				this.position = params["position"];
+				this.dimensions = params["dimensions"];
+				this.handler = params["handler"];
+
+				if (!params["do_not_register"]) {
+					manager.add(this);
+				}
+
+			} else {
+				throw new "Invalid clickable parameters";
+			}
 		}
+	};
+
+	var clickableManagerUpdate = function (elapsed) {
+
+	};
+
+	var check = function (point) {
+		for (var i in this.object_list) {
+			this.object_list[i].check(point);
+		}
+	};
+
+	return function () {
+		this.__proto__ = new ISIS.Manager();
+		this.type_proto = clickable_proto;
+
+		// set up the constructor
+		this.Clickable = clickableConstructor(this);
+
+		// update method
+		this.update = clickableManagerUpdate
+
+		// click checker
+		this.check = check;
 	}
 }
