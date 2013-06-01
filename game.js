@@ -112,13 +112,10 @@ var ISIS_Engine = function (canvas, wrapper) {
 		lastTime = now;
 
 		// reset the window size
-		clientWidth = $(window).width();
-		clientHeight = $(window).height();
+		canvas.width = $(document).width();
+		canvas.height = $(document).height();
 
-		// resize the canvas
-		canvas.width = clientWidth;
-		canvas.height = clientHeight;
-
+		// update the state
 		current_state.update(elapsed);
 	};
 
