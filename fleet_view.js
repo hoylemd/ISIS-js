@@ -10,13 +10,6 @@ var ISIS_fleetView = function (canvas) {
 
 		context.reset();
 
-		// clear the screen
-		context.clearRect(that.position.x, that.position.y,
-			that.dimensions.x, that.dimensions.y);
-		context.fillStyle = "#000000";
-		context.fillRect(that.position.x, that.position.y,
-			that.dimensions.x, that.dimensions.y);
-
 		// set the context to the tile offset
 		context.translate(that.tileOffset.x, that.tileOffset.y);
 
