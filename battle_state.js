@@ -92,6 +92,22 @@ var ISIS_battleState = function () {
 			// enemy.registerOrder(new orders.Attack(enemy, player));
 			// enemy.carryOut();
 
+			// test button
+			var test_button =
+				new this.sprite_manager.ButtonSprite(
+					{
+						"frameDims" : {x: 100, y:40},
+						"active_colour" : "red",
+						"inactive_colour" : "grey",
+						"text" : "button",
+						"font" : "16pt Laconic",
+						"font_active_colour" : "black",
+						"font_inactive_colour" : "black"
+					}
+				);
+
+			test_button.moveTo({x: 200, y: 200});
+
 			// call base initializer
 			this.__proto__.initialize.call(this);
 		};

@@ -9,15 +9,22 @@ function ISIS_SpriteManager (canvas) {
 		context.translate(-0.5 * that.frameDims.x, -0.5 * that.frameDims.y);
 	};
 
-	var adjustContext = function (that) {
+	var adjustContext = function (that, do_not_reset) {
 		// transform the drawing context
-		context.reset();
+		if (!do_not_reset) {
+			context.reset();
+		}
 		context.translate(that.position.x, that.position.y);
 		rotateContext(that);
 		context.globalAlpha = that.alpha;
 	};
 
 	// different draw functions
+	var drawComplex = function (that) {
+		for (var i in that.children) {
+			that.children[i].draw();
+		};
+	};
 	var drawStandard = function (that) {
 		context.drawImage(that.image, 0, 0);
 	};
@@ -35,8 +42,16 @@ function ISIS_SpriteManager (canvas) {
 		context.fillRect(0, 0, that.frameDims.x * that.value,
 			that.frameDims.y);
 	};
+	var drawButton = function (that) {
+		// draw background
+		if (that.active) {
+			context.fillStyle = that.active_colour;
+		} else {
+			context.fillStyle = that.inactive_colour;
+		}
+		context.fillRect(0, 0, that.frameDims.x, that.frameDims.y);
 
-
+	}
 	// Sprite prototype
 	var sprite_prototype = {
 		// updater
@@ -98,6 +113,14 @@ function ISIS_SpriteManager (canvas) {
 			if (this.manager) {
 				this.manager.remove(this);
 			}
+		},
+		addChild : function (child) {
+			if (!this.children) {
+				this.children = [];
+			}
+
+			this.children.push(child);
+			child.parent = this;
 		}
 	};
 
@@ -169,7 +192,7 @@ function ISIS_SpriteManager (canvas) {
 				// set the draw method
 				this.draw = function () {
 					if (!this.hidden && !this.external) {
-						adjustContext(this);
+						adjustContext(this, this.parent);
 						drawStandard(this);
 					}
 				};
@@ -185,7 +208,7 @@ function ISIS_SpriteManager (canvas) {
 
 	// Text sprite constructor constructor
 	var textSpriteConstructor = function (manager) {
-		return function (text, font, colour) {
+		return function (text, font, colour, do_not_register) {
 			// check arguments
 			if (text && font && colour) {
 				// set up the common instance variables
@@ -201,13 +224,15 @@ function ISIS_SpriteManager (canvas) {
 				// set the draw method
 				this.draw = function () {
 					if (!this.hidden) {
-						adjustContext(this);
+						adjustContext(this, this.parent);
 						drawText(this);
 					}
 				};
 
 				// add to the manager
-				manager.add(this);
+				if (!do_not_register) {
+					manager.add(this);
+				}
 				this.canvas = canvas;
 			} else {
 				// error on invalid parameters
@@ -238,7 +263,7 @@ function ISIS_SpriteManager (canvas) {
 				// set draw method
 				this.draw = function () {
 					if (!this.hidden) {
-						adjustContext(this);
+						adjustContext(this, this.parent);
 						drawBar(this);
 					}
 				};
@@ -252,6 +277,64 @@ function ISIS_SpriteManager (canvas) {
 		};
 	};
 
+	// Button sprite constructor constructor
+	var buttonSpriteConstructor = function (manager) {
+		return function (params) {
+			// check arguments
+			if (params['frameDims'] &&
+				params['active_colour'] &&
+				params['inactive_colour'] &&
+				params['text'] &&
+				params['font'] &&
+				params['font_active_colour'] &&
+				params['font_inactive_colour']) {
+				// set up the common instance variables
+				initializeSprite(this);
+				this.manager = manager;
+
+				this.frameDims = params['frameDims'];
+				this.active_colour = params['active_colour'];
+				this.inactive_colour = params['inactive_colour'];
+				this.font_active_colour =
+					params['font_active_colour'];
+				this.font_inactive_colour =
+					params['font_inactive_colour'];
+				// set up the text variables
+				this.text = new manager.TextSprite(
+					params['text'],
+					params['font'],
+					this.font_inactive_colour,
+					true
+				);
+				this.addChild(this.text);
+				this.text.moveTo({
+					x: (this.frameDims.x - this.text.frameDims.x)
+						/ 2,
+					y: (this.frameDims.y - this.text.frameDims.y)
+						/ 2}
+				);
+
+				// set the draw method
+				this.draw = function () {
+					if (!this.hidden) {
+						adjustContext(this, this.parent);
+						drawButton(this);
+						drawComplex(this);
+					}
+				};
+
+				// add to the manager
+				if (!params['do_not_register']) {
+					manager.add(this);
+				}
+				this.canvas = canvas;
+			} else {
+				// error on invalid parameters
+				throw "invalid ButtonSprite parameters.";
+			}
+
+		};
+	};
 	return function () {
 		this.__proto__ = new ISIS.Manager();
 		this.type_proto = sprite_prototype;
@@ -260,6 +343,7 @@ function ISIS_SpriteManager (canvas) {
 		this.Sprite = standardSpriteConstructor(this);
 		this.TextSprite = textSpriteConstructor(this);
 		this.BarSprite = barSpriteConstructor(this);
+		this.ButtonSprite = buttonSpriteConstructor(this);
 
 		// update method
 		this.update = function (elapsed) {
