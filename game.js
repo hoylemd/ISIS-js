@@ -83,6 +83,7 @@ var ISIS_Engine = function (canvas, wrapper) {
 		ISIS.Manager = ISIS_Manager();
 		ISIS.SpriteManager = ISIS_SpriteManager(canvas);
 		ISIS.ClickableManager = ISIS_ClickableManager();
+		ISIS.ButtonManager = ISIS_ButtonManager();
 		ISIS.ParticleManager = ISIS_ParticleManager();
 		ISIS.ProjectileManager = ISIS_ProjectileManager();
 		ISIS.FleetView = ISIS_fleetView(canvas);
