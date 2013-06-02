@@ -2,7 +2,12 @@
 var ISIS_ButtonManager = function () {
 	var buttonAnimation = function (that, handler) {
 		return function (params) {
-			that.sprite.animate(100);
+			if (that.toggle) {
+				that.active = !that.active;
+				that.sprite.active = that.active;
+			} else {
+				that.sprite.animate(100);
+			}
 			handler(params);
 		};
 	};
@@ -22,12 +27,20 @@ var ISIS_ButtonManager = function () {
 				params['font_active_colour'] &&
 				params['font_inactive_colour'] &&
 				params['handler']){
+
+				// build the sprite
 				this.sprite = new manager.sprite_manager.ButtonSprite(params);
+
+				// save the type
+				this.toggle = params['toggle'];
+				this.active = false;
 
 				// wrap the handler
 				params['handler'] = buttonAnimation(this, params['handler']);
 
-				this.clickable = new manager.clickable_manager.Clickable(params);
+				// make it clickable
+				this.clickable =
+					new manager.clickable_manager.Clickable(params);
 
 			} else {
 				throw new "Invalid Button Parameters";
