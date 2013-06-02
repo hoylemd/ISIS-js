@@ -10,6 +10,10 @@ var ISIS_battleState = function () {
 		var playerFleetView = null;
 		var enemyFleetView = null;
 
+		// buttons
+		var attack_button;
+		var go_button;
+
 		// units
 		var player = null;
 		var enemy = null;
@@ -96,6 +100,42 @@ var ISIS_battleState = function () {
 			// enemy.registerOrder(new orders.Attack(enemy, player));
 			// enemy.carryOut();
 
+			// add the attack button
+			var bar_top = clientHeight - barHeight;
+			var attackHandler = function () {
+				attackOrder = !attackOrder;
+			};
+			attack_button = new button_manager.Button({
+				"dimensions" : {x: buttonWidth, y: barHeight},
+				"position" : {x: 0, y: bar_top},
+				"active_colour" : "#444444",
+				"inactive_colour" : "#666666",
+				"text" : "Attack",
+				"font" : "18px Laconic",
+				"font_active_colour" : "green",
+				"font_inactive_colour" : "black",
+				"handler" : attackHandler,
+				"toggle" : true
+			});
+
+			// add the Go button
+			var goHandler = function () {
+				player.carryOut();
+			};
+			go_button = new button_manager.Button({
+				"dimensions" : {x: buttonWidth, y: barHeight},
+				"position" : {x: clientWidth - buttonWidth, y: bar_top},
+				"active_colour" : "#444444",
+				"inactive_colour" : "#666666",
+				"text" : "Go",
+				"font" : "18px Laconic",
+				"font_active_colour" : "green",
+				"font_inactive_colour" : "black",
+				"handler" : goHandler
+			});
+
+
+
 
 			// test button
 			if (TEST_BUTTON) {
@@ -159,12 +199,12 @@ var ISIS_battleState = function () {
 			var buttonImage;
 
 			// draw the Attack button
-			if (attackOrder)
+/*			if (attackOrder)
 				buttonImage = images["AttackButtonPressed"];
 			else
 				buttonImage = images["AttackButton"];
 			that.context.drawImage(buttonImage, 0, 0);
-
+*/
 			// draw the Go button
 			that.context.translate(clientWidth - buttonWidth, 0);
 			that.context.drawImage(images["GoButton"], 0, 0);
@@ -180,6 +220,11 @@ var ISIS_battleState = function () {
 			// Prepare for next round of drawing
 			this.context.clearRect(0, 0, clientWidth, clientHeight);
 			this.context.reset();
+
+			// update button position
+			var barTop = clientHeight - barHeight;
+			attack_button.moveTo({x: 0, y: barTop});
+			go_button.moveTo({x: clientWidth - buttonWidth, y: barTop});
 
 			// initialize if needed
 			if (!this.initialized) {
@@ -208,7 +253,7 @@ var ISIS_battleState = function () {
 			}
 
 			// draw the UI
-			drawBar(this);
+			//drawBar(this);
 		};
 
 		// click handers
@@ -240,6 +285,7 @@ var ISIS_battleState = function () {
 		this.addComponent(particle_manager);
 		this.addComponent(unit_manager);
 		this.addComponent(projectile_manager);
+		this.addComponent(button_manager);
 
 		// set up classes
 		Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
@@ -259,6 +305,7 @@ var ISIS_battleState = function () {
 					}
 				}
 				attackOrder = false;
+				attack_button.toggle(false);
 			};
 		} )(this);
 
@@ -267,7 +314,7 @@ var ISIS_battleState = function () {
 			return function(mousePos) {
 				// click on a button
 				if (mousePos.x < buttonWidth) {
-					attackOrder = !attackOrder;
+			//		attackOrder = !attackOrder;
 				} else if (mousePos.x > that.canvas.clientWidth - buttonWidth) {
 					// Go button
 					player.carryOut();
@@ -281,16 +328,16 @@ var ISIS_battleState = function () {
 				// get the mouse position
 				var mousePos = that.IO.getMousePos(evt);
 
-				// clip to the section of the screen
-				if (mousePos.x < that.canvas.clientWidth &&
-					mousePos.y < that.canvas.clientHeight) {
-					clickMainView(mousePos);
+				if (!that.clickable_manager.check(mousePos)) {
+					// clip to the section of the screen
+					if (mousePos.x < that.canvas.clientWidth &&
+						mousePos.y < that.canvas.clientHeight) {
+						clickMainView(mousePos);
+					}
+					if (mousePos.y > (that.canvas.clientHeight - barHeight)) {
+						clickBar(mousePos);
+					}
 				}
-				if (mousePos.y > (that.canvas.clientHeight - barHeight)) {
-					clickBar(mousePos);
-				}
-
-				that.clickable_manager.check(mousePos);
 			};
 		} )(this);
 
