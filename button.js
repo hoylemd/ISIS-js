@@ -3,8 +3,7 @@ var ISIS_ButtonManager = function () {
 	var buttonAnimation = function (that, handler) {
 		return function (params) {
 			if (that.toggle) {
-				that.active = !that.active;
-				that.sprite.active = that.active;
+				that.toggle();
 			} else {
 				that.sprite.animate(100);
 			}
@@ -12,8 +11,24 @@ var ISIS_ButtonManager = function () {
 		};
 	};
 
-	var button_prototype = {
+	var toggle = function (value) {
+		if (value || value === false) {
+			this.active = value;
+		} else {
+			this.active = !this.active;
+		}
+	}
 
+	var button_prototype = {
+		update : function (elapsed) {
+			if (this.toggle) {
+				this.sprite.active = this.active;
+			}
+		},
+		moveTo : function (destination) {
+			this.sprite.moveTo(destination);
+			this.clickable.moveTo(destination);
+		}
 	};
 
 	var buttonConstructor = function (manager) {
@@ -28,13 +43,17 @@ var ISIS_ButtonManager = function () {
 				params['font_inactive_colour'] &&
 				params['handler']){
 
+				// register the manager
+				this.manager = manager
+
 				// build the sprite
 				this.sprite = new manager.sprite_manager.ButtonSprite(params);
 
 				// save the type
-				this.toggle = params['toggle'];
-				this.active = false;
-
+				if (params['toggle']) {
+					this.toggle = toggle;
+					this.active = false;
+				}
 				// wrap the handler
 				params['handler'] = buttonAnimation(this, params['handler']);
 
@@ -42,8 +61,12 @@ var ISIS_ButtonManager = function () {
 				this.clickable =
 					new manager.clickable_manager.Clickable(params);
 
+				// register to the manager
+				if (!params['do_not_register']) {
+					manager.add(this);
+				}
 			} else {
-				throw new "Invalid Button Parameters";
+				throw "Invalid Button Parameters";
 			}
 		};
 	};
