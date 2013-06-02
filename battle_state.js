@@ -18,6 +18,7 @@ var ISIS_battleState = function () {
 		var particle_manager = null;
 		var projectile_manager = null;
 		var unit_manager = null;
+		var button_manager = null;
 
 		// classes
 		var Weapon = null;
@@ -101,7 +102,7 @@ var ISIS_battleState = function () {
 			var testHandler = function () {
 				console.log("click");
 			};
-			var test_button = new Button({
+			var test_button = new button_manager.Button({
 				"dimensions" : button_dims,
 				"position" : button_pos,
 				"active_colour" : "red",
@@ -209,13 +210,14 @@ var ISIS_battleState = function () {
 		projectile_manager =
 			new ISIS.ProjectileManager(this.sprite_manager, particle_manager,
 				unit_manager);
+		button_manager = ISIS.ButtonManager(this.sprite_manager,
+			this.clickable_manager);
 		this.addComponent(particle_manager);
 		this.addComponent(unit_manager);
 		this.addComponent(projectile_manager);
 
 		// set up classes
 		Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
-		Button = ISIS_Button(this.sprite_manager, this.clickable_manager);
 
 		// orders objects
 		orders = ISIS_order();
