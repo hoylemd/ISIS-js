@@ -290,6 +290,12 @@ function ISIS_SpriteManager (canvas) {
 				this.countdown = 0;
 			}
 		}
+
+		if (this.active) {
+			this.text.colour = this.font_active_colour
+		} else {
+			this.text.colour = this.font_inactive_colour
+		}
 	};
 	var animateButtonClick = function (countdown) {
 		this.active = true;
