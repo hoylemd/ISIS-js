@@ -181,35 +181,6 @@ var ISIS_battleState = function () {
 			this.__proto__.initialize.call(this);
 		};
 
-		// function to draw the bottom orders bar
-		var drawBar = function(that) {
-			// set up
-			that.context.reset();
-			that.context.fillStyle = "#777777";
-
-			// calculate position
-			var barTop = clientHeight - barHeight;
-
-			// draw the bar background
-			that.context.fillRect(0, barTop, clientWidth, barHeight);
-
-			// prepare to draw buttons
-			that.context.reset();
-			that.context.translate(0, barTop);
-			var buttonImage;
-
-			// draw the Attack button
-/*			if (attackOrder)
-				buttonImage = images["AttackButtonPressed"];
-			else
-				buttonImage = images["AttackButton"];
-			that.context.drawImage(buttonImage, 0, 0);
-*/
-			// draw the Go button
-			that.context.translate(clientWidth - buttonWidth, 0);
-			that.context.drawImage(images["GoButton"], 0, 0);
-		};
-
 		// function to update the state
 		var update = function (elapsed) {
 
@@ -251,14 +222,10 @@ var ISIS_battleState = function () {
 			if (!player.destroyed) {
 				player.drawLines();
 			}
-
-			// draw the UI
-			//drawBar(this);
 		};
 
 		// click handers
 		var clickMainView = null;
-		var clickBar = null;
 		var clickHandler = null;
 		var rightClickHandler = null;
 
@@ -299,26 +266,15 @@ var ISIS_battleState = function () {
 				if (attackOrder) {
 					// register an attack order if the attack order is active
 					if (enemy.collide(mousePos)) {
-						player.registerOrder( new orders.Attack(player, enemy));
+						player.registerOrder(
+							new orders.Attack(player, enemy)
+						);
 					} else {
 						player.clearOrder("attack");
 					}
 				}
 				attackOrder = false;
 				attack_button.toggle(false);
-			};
-		} )(this);
-
-		// bottom bar click handler
-		clickBar = ( function (that) {
-			return function(mousePos) {
-				// click on a button
-				if (mousePos.x < buttonWidth) {
-			//		attackOrder = !attackOrder;
-				} else if (mousePos.x > that.canvas.clientWidth - buttonWidth) {
-					// Go button
-					player.carryOut();
-				}
 			};
 		} )(this);
 
