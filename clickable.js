@@ -8,7 +8,12 @@ function ISIS_ClickableManager () {
 				point.y <= this.position.y + this.dimensions.y)
 			{
 				this.handler();
+				return true;
 			}
+			return false;
+		},
+		moveTo : function (destination) {
+			this.position = {x: destination.x, y: destination.y};
 		}
 	}
 
@@ -41,9 +46,11 @@ function ISIS_ClickableManager () {
 	};
 
 	var check = function (point) {
+		var handled = false;
 		for (var i in this.object_list) {
-			this.object_list[i].check(point);
+			handled = handled || this.object_list[i].check(point);
 		}
+		return handled;
 	};
 
 	return function () {
