@@ -11,26 +11,28 @@ var ISIS_ButtonManager = function () {
 
 	};
 
-	var Button = function (params) {
-		this.__proto__ = button_prototype;
-		if (params['dimensions'] &&
-			params['active_colour'] &&
-			params['inactive_colour'] &&
-			params['text'] &&
-			params['font'] &&
-			params['font_active_colour'] &&
-			params['font_inactive_colour'] &&
-			params['handler']){
-			this.sprite = new manager.sprite_manager.ButtonSprite(params);
+	var buttonConstructor = function (manager) {
+		return function (params) {
+			this.__proto__ = button_prototype;
+			if (params['dimensions'] &&
+				params['active_colour'] &&
+				params['inactive_colour'] &&
+				params['text'] &&
+				params['font'] &&
+				params['font_active_colour'] &&
+				params['font_inactive_colour'] &&
+				params['handler']){
+				this.sprite = new manager.sprite_manager.ButtonSprite(params);
 
-			// wrap the handler
-			params['handler'] = buttonAnimation(params['handler']);
+				// wrap the handler
+				params['handler'] = buttonAnimation(params['handler']);
 
-			this.clickable = new manager.clickable_manager.Clickable(params);
+				this.clickable = new manager.clickable_manager.Clickable(params);
 
-		} else {
-			throw new "Invalid Button Parameters";
-		}
+			} else {
+				throw new "Invalid Button Parameters";
+			}
+		};
 	};
 
 	var ButtonManager = function (params) {
@@ -41,7 +43,7 @@ var ISIS_ButtonManager = function () {
 		this.clickable_manager = params["clickable_manager"];
 
 		// install the Button Constructor
-		this.Button = Button;
+		this.Button = buttonConstructor(this);
 	}
 
 	return ButtonManager;
