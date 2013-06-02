@@ -96,43 +96,46 @@ var ISIS_battleState = function () {
 			// enemy.registerOrder(new orders.Attack(enemy, player));
 			// enemy.carryOut();
 
+
 			// test button
-			var button_dims = {x: 100, y:40};
-			var button_pos = {x: 200, y: 200};
-			var toggle_pos = {x: 200, y: 50};
-			var testHandler = function () {
-				console.log("click");
-			};
-			var toggleHandler = function () {
-				var stat = false;
-				return function () {
-					stat = !stat;
-					console.log ("toggle " + (stat ? "on" : "off") );
+			if (TEST_BUTTON) {
+				var button_dims = {x: 100, y:40};
+				var button_pos = {x: 200, y: 200};
+				var toggle_pos = {x: 200, y: 50};
+				var testHandler = function () {
+					console.log("click");
 				};
-			};
-			var test_button = new button_manager.Button({
-				"dimensions" : button_dims,
-				"position" : button_pos,
-				"active_colour" : "red",
-				"inactive_colour" : "grey",
-				"text" : "button",
-				"font" : "18px Laconic",
-				"font_active_colour" : "black",
-				"font_inactive_colour" : "black",
-				"handler" : testHandler
-			});
-			var toggle_button = new button_manager.Button({
-				"dimensions" : button_dims,
-				"position" : toggle_pos,
-				"active_colour" : "red",
-				"inactive_colour" : "grey",
-				"text" : "toggle",
-				"font" : "18px Laconic",
-				"font_active_colour" : "black",
-				"font_inactive_colour" : "black",
-				"handler" : toggleHandler(),
-				"toggle" : true
-			});
+				var toggleHandler = function () {
+					var stat = false;
+					return function () {
+						stat = !stat;
+						console.log ("toggle " + (stat ? "on" : "off") );
+					};
+				};
+				var test_button = new button_manager.Button({
+					"dimensions" : button_dims,
+					"position" : button_pos,
+					"active_colour" : "red",
+					"inactive_colour" : "grey",
+					"text" : "button",
+					"font" : "18px Laconic",
+					"font_active_colour" : "black",
+					"font_inactive_colour" : "black",
+					"handler" : testHandler
+				});
+				var toggle_button = new button_manager.Button({
+					"dimensions" : button_dims,
+					"position" : toggle_pos,
+					"active_colour" : "red",
+					"inactive_colour" : "grey",
+					"text" : "toggle",
+					"font" : "18px Laconic",
+					"font_active_colour" : "black",
+					"font_inactive_colour" : "black",
+					"handler" : toggleHandler(),
+					"toggle" : true
+				});
+			}
 
 			// call base initializer
 			this.__proto__.initialize.call(this);
