@@ -210,8 +210,10 @@ var ISIS_battleState = function () {
 		projectile_manager =
 			new ISIS.ProjectileManager(this.sprite_manager, particle_manager,
 				unit_manager);
-		button_manager = ISIS.ButtonManager(this.sprite_manager,
-			this.clickable_manager);
+		button_manager = new ISIS.ButtonManager({
+			"sprite_manager" : this.sprite_manager,
+			"clickable_manager" : this.clickable_manager
+		});
 		this.addComponent(particle_manager);
 		this.addComponent(unit_manager);
 		this.addComponent(projectile_manager);
