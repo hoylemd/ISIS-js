@@ -10,13 +10,6 @@ var ISIS_fleetView = function (canvas) {
 
 		context.reset();
 
-		// clear the screen
-		context.clearRect(that.position.x, that.position.y,
-			that.dimensions.x, that.dimensions.y);
-		context.fillStyle = "#000000";
-		context.fillRect(that.position.x, that.position.y,
-			that.dimensions.x, that.dimensions.y);
-
 		// set the context to the tile offset
 		context.translate(that.tileOffset.x, that.tileOffset.y);
 
@@ -132,10 +125,10 @@ var ISIS_fleetView = function (canvas) {
 		// calculate side bounding
 		var left = this.position.x <= sprite.position.x;
 		var right = this.position.x + this.dimensions.x >=
-				sprite.position.x + sprite.frameDims.x;
+				sprite.position.x + sprite.dimensions.x;
 		var top_side = 	this.position.y <= sprite.position.y;
 		var bottom = this.position.y + this.dimensions.y >=
-				sprite.position.y + sprite.frameDims.y;
+				sprite.position.y + sprite.dimensions.y;
 
 		// calculate true or false for bounding
 		return left && right && top_side && bottom;

@@ -82,6 +82,8 @@ var ISIS_Engine = function (canvas, wrapper) {
 		// initialize class library
 		ISIS.Manager = ISIS_Manager();
 		ISIS.SpriteManager = ISIS_SpriteManager(canvas);
+		ISIS.ClickableManager = ISIS_ClickableManager();
+		ISIS.ButtonManager = ISIS_ButtonManager();
 		ISIS.ParticleManager = ISIS_ParticleManager();
 		ISIS.ProjectileManager = ISIS_ProjectileManager();
 		ISIS.FleetView = ISIS_fleetView(canvas);
@@ -112,13 +114,10 @@ var ISIS_Engine = function (canvas, wrapper) {
 		lastTime = now;
 
 		// reset the window size
-		clientWidth = $(window).width();
-		clientHeight = $(window).height();
+		canvas.width = $(document).width();
+		canvas.height = $(document).height();
 
-		// resize the canvas
-		canvas.width = clientWidth;
-		canvas.height = clientHeight;
-
+		// update the state
 		current_state.update(elapsed);
 	};
 
@@ -177,7 +176,6 @@ var ISIS_Engine = function (canvas, wrapper) {
 			current_state.IO.keyUp(evt);
 		}
 	};
-
 
 	// Add an event listener for mouse clicks
 	canvas.addEventListener('click', clickHandler);
