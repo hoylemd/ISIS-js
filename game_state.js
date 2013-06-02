@@ -8,11 +8,19 @@ var ISIS_gameState = function (game, canvas, content) {
 		this.components.push(component);
 		if (component.draw) {
 			z = z || last_z + 1;
-			while (this.drawable_components[z]) {
+
+			while (this.z_map[z]) {
 				z += 1;
 			}
-			this.drawable_components[z] = component;
+			component.z = z;
+			this.drawable_components.push(component);
+			this.z_map[z] = component;
 			last_z = z > last_z ? z : last_z;
+
+			this.drawable_components.sort(function (a, b) {
+					return a.z - b.z
+				}
+			);
 		}
 	};
 
@@ -64,11 +72,15 @@ var ISIS_gameState = function (game, canvas, content) {
 		// component lists
 		this.components = [];
 		this.drawable_components = [];
+		this.z_map = {};
+
 
 		// graphics objects
 		this.canvas = canvas;
 		this.context = canvas.getContext("2d");
 		this.sprite_manager = new ISIS.SpriteManager();
+		// UI objects
+		this.clickable_manager = new ISIS.ClickableManager();
 
 		// content assets
 		this.content = content;
@@ -80,5 +92,6 @@ var ISIS_gameState = function (game, canvas, content) {
 		this.initialized = false;
 
 		this.addComponent(this.sprite_manager, last_z);
+		this.addComponent(this.clickable_manager);
 	};
 };
