@@ -280,6 +280,22 @@ function ISIS_SpriteManager (canvas) {
 		};
 	};
 
+	// updater for button sprites
+	var updateButton = function (elapsed) {
+		if (this.countdown) {
+			this.countdown -= elapsed;
+
+			if (this.countdown <= 0) {
+				this.active = !this.active;
+				this.countdown = 0;
+			}
+		}
+	};
+	var animateButtonClick = function (countdown) {
+		this.active = true;
+		this.countdown = countdown;
+	};
+
 	// Button sprite constructor constructor
 	var buttonSpriteConstructor = function (manager) {
 		return function (params) {
@@ -327,6 +343,10 @@ function ISIS_SpriteManager (canvas) {
 						drawComplex(this);
 					}
 				};
+
+				// add the update and animate methods
+				this.update = updateButton;
+				this.animate = animateButtonClick;
 
 				// add to the manager
 				if (!params['do_not_register']) {
