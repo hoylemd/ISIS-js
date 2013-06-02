@@ -1,8 +1,8 @@
 // code file for button managers
 var ISIS_ButtonManager = function () {
-	var buttonAnimation = function (handler) {
+	var buttonAnimation = function (that, handler) {
 		return function (params) {
-			console.log("button pressed");
+			that.sprite.animate(100);
 			handler(params);
 		};
 	};
@@ -25,7 +25,7 @@ var ISIS_ButtonManager = function () {
 				this.sprite = new manager.sprite_manager.ButtonSprite(params);
 
 				// wrap the handler
-				params['handler'] = buttonAnimation(params['handler']);
+				params['handler'] = buttonAnimation(this, params['handler']);
 
 				this.clickable = new manager.clickable_manager.Clickable(params);
 
