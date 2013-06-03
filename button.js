@@ -28,6 +28,11 @@ var ISIS_ButtonManager = function () {
 		moveTo : function (destination) {
 			this.sprite.moveTo(destination);
 			this.clickable.moveTo(destination);
+		},
+		dispose : function () {
+			if (this.manager) {
+				this.manager.remove(this);
+			}
 		}
 	};
 
