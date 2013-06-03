@@ -248,18 +248,23 @@ function ISIS_SpriteManager (canvas) {
 
 	// Text sprite constructor constructor
 	var textSpriteConstructor = function (manager) {
-		return function (text, font, colour, do_not_register) {
+		return function (params) {
 			// check arguments
-			if (text && font && colour) {
+			if (params["text"] &&
+				params["font"] &&
+				params["colour"]) {
 				// set up the common instance variables
 				initializeSprite(this);
 				this.manager = manager;
 
 				// set up the text variables
-				this.text = text;
-				this.font = font;
-				this.colour = colour;
-				this.dimensions = getTextFrameDims(text, font);
+				this.text = params["text"];
+				this.font = params["font"];
+				this.colour = params["colour"];
+				this.dimensions = getTextFrameDims(this.text, this.font);
+				if (params["position"]) {
+					this.moveTo(params["position"]);
+				}
 
 				// set the draw method
 				this.draw = function () {
@@ -270,7 +275,7 @@ function ISIS_SpriteManager (canvas) {
 				};
 
 				// add to the manager
-				if (!do_not_register) {
+				if (!params["do_not_register"]) {
 					manager.add(this);
 				}
 				this.canvas = canvas;
@@ -355,7 +360,10 @@ function ISIS_SpriteManager (canvas) {
 				// set up the common instance variables
 				initializeSprite(this);
 				this.manager = manager;
-				this.dimensions = params['dimensions'];
+				this.dimensions = {
+					x: params['dimensions'].x,
+					y: params['dimensions'].y
+				};
 				if (params["position"]) {
 					this.moveTo(params["position"]);
 				}
@@ -373,19 +381,19 @@ function ISIS_SpriteManager (canvas) {
 				});
 				this.addChild(this.rectangle);
 				// set up the text variables
-				this.text = new manager.TextSprite(
-					params['text'],
-					params['font'],
-					this.font_inactive_colour,
-					true
-				);
+				this.text = new manager.TextSprite({
+					"text": params['text'],
+					"font": params['font'],
+					"colour": this.font_inactive_colour,
+					"do_not_register": true
+				});
 				this.addChild(this.text);
-				this.text.moveTo({
-					x: (this.dimensions.x - this.text.dimensions.x)
-						/ 2,
-					y: (this.dimensions.y - this.text.dimensions.y)
-						/ 2}
-				);
+				var textPos = {
+					x: (this.dimensions.x - this.text.dimensions.x) / 2,
+					y: (this.dimensions.y - this.text.dimensions.y) / 2
+				};
+
+				this.text.moveTo(textPos);
 
 				// set the draw method
 				this.draw = function () {
