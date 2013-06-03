@@ -32,8 +32,14 @@ function ISIS_ClickableManager () {
 				params["dimensions"] &&
 				params["handler"])
 			{
-				this.position = params["position"];
-				this.dimensions = params["dimensions"];
+				this.position = {
+					x: params["position"].x,
+					y: params["position"].y
+				}
+				this.dimensions = {
+					x: params["dimensions"].x,
+					y: params["dimensions"].y
+				}
 				this.handler = params["handler"];
 
 				if (!params["do_not_register"]) {
