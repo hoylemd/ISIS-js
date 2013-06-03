@@ -28,6 +28,10 @@ function ISIS_SpriteManager (canvas) {
 	var drawStandard = function (that) {
 		context.drawImage(that.image, 0, 0);
 	};
+	var drawRectangle = function (that) {
+		context.fillStyle = that.colour;
+		context.fillRect(0, 0, that.dimensions.x, that.dimensions.y);
+	};
 	var drawText = function (that) {
 		if (TEXT_SPRITE_BACKGROUNDS) {
 			context.fillStyle = "red";
@@ -55,7 +59,7 @@ function ISIS_SpriteManager (canvas) {
 		}
 		context.fillRect(0, 0, that.dimensions.x, that.dimensions.y);
 
-	}
+	};
 	// Sprite prototype
 	var sprite_prototype = {
 		// updater
@@ -209,6 +213,39 @@ function ISIS_SpriteManager (canvas) {
 		};
 	};
 
+	// Rectangle sprite constructor constructor
+	var rectangleSpriteConstructor = function (manager) {
+		return function (params) {
+			// check params
+			if (params['dimensions'] &&
+				params['colour']) {
+				// set up the common instance variables
+				initializeSprite(this);
+				this.manager = manager;
+				this.dimensions = params['dimensions'];
+				this.colour = params['colour'];
+				if (params["position"]) {
+					this.moveTo(params["position"]);
+				}
+
+				// set the draw method
+				this.draw = function () {
+					if (!this.hidden) {
+						adjustContext(this, this.parent);
+						drawRectangle(this);
+					}
+				};
+
+				// add to the manager
+				if (!params['do_not_register']) {
+					manager.add(this);
+				}
+			} else {
+				throw "invalid rectangle params"
+			}
+		};
+	};
+
 	// Text sprite constructor constructor
 	var textSpriteConstructor = function (manager) {
 		return function (text, font, colour, do_not_register) {
@@ -292,9 +329,11 @@ function ISIS_SpriteManager (canvas) {
 		}
 
 		if (this.active) {
-			this.text.colour = this.font_active_colour
+			this.text.colour = this.font_active_colour;
+			this.rectangle.colour = this.active_colour;
 		} else {
-			this.text.colour = this.font_inactive_colour
+			this.text.colour = this.font_inactive_colour;
+			this.rectangle.colour = this.inactive_colour;
 		}
 	};
 	var animateButtonClick = function (countdown) {
@@ -326,6 +365,13 @@ function ISIS_SpriteManager (canvas) {
 					params['font_active_colour'];
 				this.font_inactive_colour =
 					params['font_inactive_colour'];
+				// set up the rectangle
+				this.rectangle = new manager.RectangleSprite({
+					"dimensions" : this.dimensions,
+					"colour" : this.inactive_colour,
+					"do_not_register" : true
+				});
+				this.addChild(this.rectangle);
 				// set up the text variables
 				this.text = new manager.TextSprite(
 					params['text'],
@@ -345,7 +391,6 @@ function ISIS_SpriteManager (canvas) {
 				this.draw = function () {
 					if (!this.hidden) {
 						adjustContext(this, this.parent);
-						drawButton(this);
 						drawComplex(this);
 					}
 				};
@@ -375,6 +420,7 @@ function ISIS_SpriteManager (canvas) {
 		this.TextSprite = textSpriteConstructor(this);
 		this.BarSprite = barSpriteConstructor(this);
 		this.ButtonSprite = buttonSpriteConstructor(this);
+		this.RectangleSprite = rectangleSpriteConstructor(this);
 
 		// update method
 		this.update = function (elapsed) {
