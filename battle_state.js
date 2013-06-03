@@ -5,6 +5,7 @@ var ISIS_battleState = function () {
 
 		// game state
 		var paused = false;
+		var substate = null;
 
 		// fleet view objects
 		var playerFleetView = null;
@@ -46,7 +47,7 @@ var ISIS_battleState = function () {
 
 		var enemyAI = function (unit) {
 			return function(elapsed) {
-				if (!unit.orders.attack) {
+				if (!unit.orders.attack && !unit.destroyed) {
 					unit.registerOrder(new orders.Attack(unit, player));
 					unit.carryOut();
 				}
@@ -200,16 +201,18 @@ var ISIS_battleState = function () {
 			}
 
 			// check for state changes
-			if (player.destroyed) {
-				console.log("you lose!");
-				this.dispose();
-				this.game.changeState(new ISIS.BattleState());
-				return;
-			} else if (enemy.destroyed) {
-				console.log("you win!");
-				this.dispose();
-				this.game.changeState(new ISIS.BattleState());
-				return;
+			if (!substate) {
+				if (player.destroyed) {
+					console.log("you lose!");
+					substate = new ISIS.VictoryState(this);
+					this.game.changeState(substate);
+					return;
+				} else if (enemy.destroyed) {
+					console.log("you win!");
+					substate = new ISIS.VictoryState(this);
+					this.game.changeState(substate);
+					return;
+				}
 			}
 
 			// call the base updater (updates all components
