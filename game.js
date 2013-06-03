@@ -91,6 +91,7 @@ var ISIS_Engine = function (canvas, wrapper) {
 		ISIS.GameState = ISIS_gameState(this, canvas, content);
 		ISIS.BattleState = ISIS_battleState();
 		ISIS.VictoryState = ISIS_VictoryState();
+		ISIS.DefeatState = ISIS_DefeatState();
 
 		current_state = new ISIS.BattleState();
 		current_state.initialize();
