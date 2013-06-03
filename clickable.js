@@ -14,6 +14,11 @@ function ISIS_ClickableManager () {
 		},
 		moveTo : function (destination) {
 			this.position = {x: destination.x, y: destination.y};
+		},
+		dispose : function () {
+			if (this.manager) {
+				this.manager.remove(this);
+			}
 		}
 	}
 
