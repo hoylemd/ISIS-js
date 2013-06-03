@@ -53,9 +53,6 @@ var ISIS_battleState = function () {
 			};
 		};
 
-		// test stuff
-		var testClickable = null;
-
 		// function to initialize the game
 		var initialize = function() {
 			// initialize the debris libraries
@@ -185,8 +182,8 @@ var ISIS_battleState = function () {
 		var update = function (elapsed) {
 
 			// reset the window size
-			clientWidth = $(window).width();
-			clientHeight = $(window).height();
+			clientWidth = $(document).width();
+			clientHeight = $(document).height();
 
 			// Prepare for next round of drawing
 			this.context.clearRect(0, 0, clientWidth, clientHeight);
@@ -316,15 +313,12 @@ var ISIS_battleState = function () {
 
 		// define disposal function
 		dispose = function () {
-			projectile_manager.dispose();
-			particle_manager.dispose();
-			unit_manager.dispose();
 			playerFleetView.dispose();
 			enemyFleetView.dispose();
-			this.sprite_manager.dispose();
 			player = null;
 			enemy = null;
 			this.canvas.removeEventListener('click', clickHandler);
+			this.__proto__.dispose.call(this);
 		};
 
 		// expose interface
