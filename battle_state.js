@@ -204,7 +204,7 @@ var ISIS_battleState = function () {
 			if (!substate) {
 				if (player.destroyed) {
 					console.log("you lose!");
-					substate = new ISIS.VictoryState(this);
+					substate = new ISIS.DefeatState(this);
 					this.game.changeState(substate);
 					return;
 				} else if (enemy.destroyed) {
