@@ -5,8 +5,11 @@ function ISIS_ProjectileManager () {
 	// function to spawn the hit text sprite
 	var spawnHitText = function (that) {
 		var hitText = "" + (that.hit ? that.weapon.damage : "Miss");
-		var sprite = new that.manager.sprite_manager.TextSprite(
-			hitText, "16px Laconic", "#888888");
+		var sprite = new that.manager.sprite_manager.TextSprite({
+			"text": hitText,
+			"font": "16px Laconic",
+			"colour": "#888888"
+		});
 		sprite.centerOn(that.position);
 		var destination = {x: that.position.x, y: that.position.y - 15};
 		new that.manager.particle_manager.Particle(
