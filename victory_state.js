@@ -10,7 +10,7 @@ var ISIS_VictoryState = function () {
 			clientWidth = $(document).width();
 			clientHeight = $(document).height();
 
-			var background_dims = {x: 500, y: 300};
+			var background_dims = {x: 500, y: 175};
 			var background_pos = {
 					x: (clientWidth - 500) / 2,
 					y: (clientHeight - 300) / 2
@@ -18,8 +18,21 @@ var ISIS_VictoryState = function () {
 			background = new this.sprite_manager.RectangleSprite({
 				"dimensions" : background_dims,
 				"position" : background_pos,
-				"color" : "#444444"
+				"colour" : "#444444"
 			});
+
+			var win_text = new this.sprite_manager.TextSprite({
+				"text" : "You Win!",
+				"font" : "45px Laconic",
+				"colour": "#00EE00"
+			});
+			var text_pos = {
+				x: background_pos.x +
+					(background_dims.x - win_text.dimensions.x) / 2,
+				y: background_pos.y + 25
+			};
+			win_text.moveTo(text_pos);
+
 
 			// add the again button
 			var button_dims = {x: 150, y: 50};
@@ -28,9 +41,12 @@ var ISIS_VictoryState = function () {
 				y: (background_pos.y + background_dims.y) -
 					(button_dims.y + 25)
 			};
-			var againHandler = function () {
-				this.gane.changeState(new ISIS.BattleState());
-			};
+			var againHandler = function (that) {
+				return function () {
+					that.game.changeState(new ISIS.BattleState(), true);
+					that.dispose();
+				};
+			}(this);
 			var again_button = new button_manager.Button({
 				"dimensions" : button_dims,
 				"position" : button_pos,
@@ -44,9 +60,12 @@ var ISIS_VictoryState = function () {
 			});
 			button_pos.x = (background_pos.x + background_dims.x) -
 					(button_dims.x + 25)
-			var backHandler = function () {
-				$(window).location = "http://www.michaelhoyle.com";
-			};
+			var backHandler = function (that) {
+				return function () {
+					window.location = "http://www.michaelhoyle.com";
+					that.dispose();
+				};
+			}(this);
 			back_button = new button_manager.Button({
 				"dimensions" : button_dims,
 				"position" : button_pos,
@@ -89,9 +108,9 @@ var ISIS_VictoryState = function () {
 			"sprite_manager" : this.sprite_manager,
 			"clickable_manager" : this.clickable_manager
 		});
-		this.addComponsne(button_manager);
+		this.addComponent(button_manager);
 
-		this.clickHandler = ( function (that) {
+		var clickHandler = ( function (that) {
 			return function (evt) {
 				var mousePos = that.IO.getMousePos(evt);
 
@@ -99,9 +118,12 @@ var ISIS_VictoryState = function () {
 			};
 		} )(this);
 
+		this.IO.click = clickHandler;
+
 		this. dispose = function () {
 			button_manager.dispose();
 			this.canvas.removeEventListener('click', clickHandler);
+			previous_state.dispose();
 			this.__proto__.dispose.call(this);
 		};
 
