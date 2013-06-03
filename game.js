@@ -90,6 +90,7 @@ var ISIS_Engine = function (canvas, wrapper) {
 		ISIS.UnitManager = ISIS_UnitManager(canvas, content);
 		ISIS.GameState = ISIS_gameState(this, canvas, content);
 		ISIS.BattleState = ISIS_battleState();
+		ISIS.VictoryState = ISIS_VictoryState();
 
 		current_state = new ISIS.BattleState();
 		current_state.initialize();
@@ -122,12 +123,14 @@ var ISIS_Engine = function (canvas, wrapper) {
 	};
 
 	// function to transition to a new state
-	this.changeState = function (new_state) {
+	this.changeState = function (new_state, delete_old) {
 		var old_state = current_state;
 		current_state = new_state;
 		new_state.initialize();
-		old_state.dispose();
-		delete old_state;
+		if (delete_old) {
+			old_state.dispose();
+			delete old_state;
+		}
 	};
 
 	// package the initialize function
