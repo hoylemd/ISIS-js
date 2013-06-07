@@ -99,7 +99,7 @@ var ISIS_UnitManager = function (canvas, content) {
 		// weapon registration
 		addWeapon : function (weapon) {
 			if (weapon) {
-				this.weapon = weapon;
+				this.weapons.push(weapon);
 				weapon.install(this);
 			} else {
 				throw "Cannot add a null weapon";
@@ -125,20 +125,18 @@ var ISIS_UnitManager = function (canvas, content) {
 			var attack = this.orders.attack;
 
 			// attack order
-			if (this.weapon) {
+			if (this.weapons.length > 0) {
 				if (attack) {
 					if (attack.pending) {
-						if (this.weapon) {
-							this.weapon.setTarget(attack.target);
-							attack.pending = false;
-						} else {
-							console.log(this.name +
-								" has no weapon! It cannot attack!");
-							this.orders.attack = null;
+						for (var i in this.weapons) {
+							this.weapons[i].setTarget(attack.target);
 						}
+						attack.pending = false;
 					}
 				} else {
-					this.weapon.setTarget(null);
+					for (var i in this.weapons) {
+						this.weapons[i].setTarget(null);
+					}
 				}
 			}
 		},
@@ -192,8 +190,10 @@ var ISIS_UnitManager = function (canvas, content) {
 		// update function
 		update : function (elapsed_ms) {
 			// update children
-			if (this.weapon) {
-				this.weapon.update(elapsed_ms);
+			if (this.weapons.length > 0) {
+				for (var i in this.weapons) {
+					this.weapons[i].update(elapsed_ms);
+				}
 			}
 			this.health_bar.value = this.hullCurrent / this.hullMax;
 
@@ -263,7 +263,7 @@ var ISIS_UnitManager = function (canvas, content) {
 			this.hullMax = 5;
 			this.hullCurrent = 5;
 			this.dodgeBonus = 10;
-			this.weapon = null;
+			this.weapons = [];
 			this.destroyed = false
 
 			// add to the manager
