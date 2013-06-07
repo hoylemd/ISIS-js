@@ -96,13 +96,13 @@ var ISIS_UnitManager = function (canvas, content) {
 			}
 		},
 
-		// weapon registration
-		addWeapon : function (weapon) {
-			if (weapon) {
-				this.weapons.push(weapon);
-				weapon.install(this);
+		// hardpoint registration
+		addHardpoint : function (hardpoint) {
+			if (hardpoint) {
+				this.hardpoints.push(hardpoint);
+				hardpoint.install(this);
 			} else {
-				throw "Cannot add a null weapon";
+				throw "Cannot add a null hardpoint";
 			}
 		},
 
@@ -125,17 +125,17 @@ var ISIS_UnitManager = function (canvas, content) {
 			var attack = this.orders.attack;
 
 			// attack order
-			if (this.weapons.length > 0) {
+			if (this.hardpoints.length > 0) {
 				if (attack) {
 					if (attack.pending) {
-						for (var i in this.weapons) {
-							this.weapons[i].setTarget(attack.target);
+						for (var i in this.hardpoints) {
+							this.hardpoints[i].setTarget(attack.target);
 						}
 						attack.pending = false;
 					}
 				} else {
-					for (var i in this.weapons) {
-						this.weapons[i].setTarget(null);
+					for (var i in this.hardpoints) {
+						this.hardpoints[i].setTarget(null);
 					}
 				}
 			}
@@ -190,9 +190,9 @@ var ISIS_UnitManager = function (canvas, content) {
 		// update function
 		update : function (elapsed_ms) {
 			// update children
-			if (this.weapons.length > 0) {
-				for (var i in this.weapons) {
-					this.weapons[i].update(elapsed_ms);
+			if (this.hardpoints.length > 0) {
+				for (var i in this.hardpoints) {
+					this.hardpoints[i].update(elapsed_ms);
 				}
 			}
 			this.health_bar.value = this.hullCurrent / this.hullMax;
@@ -263,7 +263,7 @@ var ISIS_UnitManager = function (canvas, content) {
 			this.hullMax = 5;
 			this.hullCurrent = 5;
 			this.dodgeBonus = 10;
-			this.weapons = [];
+			this.hardpoints = [];
 			this.destroyed = false
 
 			// add to the manager
