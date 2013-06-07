@@ -16,7 +16,7 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 
 		// make projectile
 		sprite = new spriteManager.Sprite(texture, {x: 1, y: 1}, 0);
-		fire_point = {x: that.owner.position.x, y: that.owner.position.y};
+		fire_point = that.hardpoint.getAbsolutePosition();
 		new projectile_manager.Projectile(
 			sprite, fire_point, that.target, hit, that);
 	};
@@ -29,8 +29,11 @@ var ISIS_weapon = function (spriteManager, projectile_manager) {
 		},
 
 		// installation method
-		install : function (owner) {
+		setOwner : function (owner) {
 			this.owner = owner;
+		},
+		install : function (hardpoint) {
+			this.hardpoint = hardpoint;
 		},
 
 		// update method
