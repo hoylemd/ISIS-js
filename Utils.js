@@ -54,6 +54,15 @@ Math.d100 = function () {
 };
 
 // Vector math wooo
+Math.normalizeAngle = function(theta) {
+	while (theta < 0) {
+		theta += Math.TAU;
+	}
+	while (theta >= Math.TAU) {
+		theta -= Math.TAU;
+	}
+	return theta;
+};
 Math.calcAngleVector = function (theta) {
 	return {
 		x: Math.sin(theta),
@@ -77,6 +86,37 @@ Math.multVector = function (vector, magnitude) {
 	return {x: vector.x * magnitude,
 		y: vector.y * magnitude};
 };
+Math.addVectors = function (v1, v2) {
+	return {
+		x: v1.x + v2.x,
+		y: v1.y + v2.y
+	}
+};
+Math.composeVector = function (angle, magnitude) {
+	var unit = Math.calcAngleVector(angle);
+	return Math.multVector(unit, magnitude);
+};
+Math.vectorMagnitude = function (vector) {
+	return Math.sqrt(vector.x * vector.x + vector.y*vector.y);
+};
+Math.vectorMetrics = function (vector) {
+	var angle = Math.atan2(vector.x, vector.y);
+	var unitVector = Math.calcAngleVector(angle);
+	var magnitude = Math.vectorMagnitude(vector);
+	return {
+		"angle" : angle,
+		"untiVector" : unitVector,
+		"magnitude" : magnitude,
+		"vector" : vector
+	};
+};
+
+Math.rotateVector = function (vector, theta) {
+	var theta_not = Math.calcVectorAngle(vector);
+	var theta_prime = Math.normalizeAngle(theta_not + theta);
+	return Math.composeVector(theta_prime, Math.vectorMagnitude(vector));
+}
+
 
 // Function to get the angle in radians between two points
 Math.calculateLineAngle = function (p1, p2) {
