@@ -26,6 +26,7 @@ var ISIS_battleState = function () {
 		var button_manager = null;
 
 		// classes
+		var Hardpoint = null;
 		var Weapon = null;
 		var Button = null;
 		var orders = null;
@@ -47,15 +48,19 @@ var ISIS_battleState = function () {
 
 		var enemyAI = function (unit) {
 			return function(elapsed) {
-				if (!unit.orders.attack && !unit.destroyed) {
+				if (player.destroyed) {
+					unit.clearOrder("attack");
+				} else if (!unit.orders.attack && !unit.destroyed) {
 					unit.registerOrder(new orders.Attack(unit, player));
-					unit.carryOut();
 				}
+				unit.carryOut();
 			};
 		};
 
 		// function to initialize the game
 		var initialize = function() {
+			var weapon = null;
+
 			// initialize the debris libraries
 			var debris_library = [images["debris1"], images["debris2"],
 				images["debris3"]];
@@ -65,15 +70,31 @@ var ISIS_battleState = function () {
 				debris_library);
 			player.name = "Arkadian Cruiser";
 			player.setHull(100);
-			player.addWeapon(new Weapon("Arkadian Railgun", 50, 25, 1500,
-				images["bullet"], 25));
+			weapon = new Weapon("Arkadian Railgun", 20, 25, 1500,
+				images["bullet"], 5);
+			player.addHardpoint(new Hardpoint({
+				"position" : {x: -37, y: -38},
+				"weapon" : weapon,
+				"unit" : player
+			}));
+			weapon = new Weapon("Arkadian Railgun", 20, 25, 1500,
+				images["bullet"], 5);
+			player.addHardpoint(new Hardpoint({
+				"position" : {x: 37, y: -38},
+				"weapon" : weapon,
+				"unit" : player
+			}));
 
 			enemy = new unit_manager.Unit("TerranCruiser", {x:1, y:1}, 0, debris_library);
 			enemy.name = "Terran Cruiser";
 			enemy.setHull(150);
-			enemy.addWeapon(new Weapon("Terran Mass Driver", 15, 100, 2000,
-				images["bullet"], 20));
-
+			weapon = new Weapon("Terran Mass Driver", 15, 100, 2000,
+				images["bullet"], 5);
+			enemy.addHardpoint(new Hardpoint({
+				"position" : {x: 23, y: -34},
+				"weapon" : weapon,
+				"unit" : enemy
+			}));
 
 			// set up the fleet views
 			playerFleetView = new ISIS.FleetView(images["spaceTile"]);
@@ -256,6 +277,7 @@ var ISIS_battleState = function () {
 
 		// set up classes
 		Weapon = ISIS_weapon(this.sprite_manager, projectile_manager);
+		Hardpoint = ISIS_hardpoint();
 
 		// orders objects
 		orders = ISIS_order();
