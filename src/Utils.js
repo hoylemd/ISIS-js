@@ -57,9 +57,10 @@ Math.d100 = function () {
 };
 
 // Vector math wooo
-Math.toPrecision4 = function(theta) {
-	return Math.round(theta * 10000) / 10000
+Math.toPrecision4 = function(value) {
+	return Math.round(value * 10000) / 10000
 }
+// Normalize an angle in radianrst to be between 0 and TAU radians
 Math.normalizeAngle = function(theta) {
 	while (theta < 0) {
 		theta += Math.TAU;
@@ -67,17 +68,29 @@ Math.normalizeAngle = function(theta) {
 	while (theta >= Math.TAU) {
 		theta -= Math.TAU;
 	}
-	return theta;
+	return Math.toPrecision4(theta);
 };
+
+// calculate a unit vecotr from an angle in radians
 Math.calcAngleVector = function (theta) {
-	return {
-		x: Math.sin(theta),
-		y: Math.cos(theta) * (Math.invertY ? -1 : 1)
+	var vector = {
+		x: Math.toPrecision4(Math.sin(theta)),
+		y: Math.toPrecision4(Math.cos(theta) * (Math.invertY ? -1 : 1))
 	};
+
+	return vector;
 };
+
+//calculate a unit vector from a given vector
 Math.calcUnitVector = function (delta) {
-	var theta = Math.atan2(delta.x, delta.y);
-	return Math.calcAngleVector(theta);
+	var vector = {x: delta.x, y: delta.y};
+	if (Math.invertY) {
+		vector.y *= -1;
+	}
+	var theta = Math.atan2(vector.x, vector.y);
+	var unit =  Math.calcAngleVector(theta);
+	console.log(unit);
+	return unit;
 };
 Math.calcVector = function (p1, p2) {
 	return Math.calcUnitVector({
