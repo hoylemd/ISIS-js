@@ -41,11 +41,18 @@ var ISIS_IO = function (canvas) {
 	};
 };
 
-// set Math's invertY flag
-Math.invertY = false;
+// add the global isNumeric function
+window.isNumeric = function(thing) {
+	if (thing || thing == 0) {
+		return !isNaN(+thing);
+	}
+}
 
 // Modify Math object
 Math.TAU = 2 * Math.PI;
+
+// set Math's invertY flag
+Math.invertY = false;
 
 // dx function : generate random integer between 0 and x
 Math.dx = function (x) {
