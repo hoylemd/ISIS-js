@@ -41,6 +41,9 @@ var ISIS_IO = function (canvas) {
 	};
 };
 
+// set Math's invertY flag
+Math.invertY = false;
+
 // Modify Math object
 Math.TAU = 2 * Math.PI;
 
@@ -54,6 +57,9 @@ Math.d100 = function () {
 };
 
 // Vector math wooo
+Math.toPrecision4 = function(theta) {
+	return Math.round(theta * 10000) / 10000
+}
 Math.normalizeAngle = function(theta) {
 	while (theta < 0) {
 		theta += Math.TAU;
@@ -66,7 +72,7 @@ Math.normalizeAngle = function(theta) {
 Math.calcAngleVector = function (theta) {
 	return {
 		x: Math.sin(theta),
-		y: Math.cos(theta)
+		y: Math.cos(theta) * (Math.invertY ? -1 : 1)
 	};
 };
 Math.calcUnitVector = function (delta) {
