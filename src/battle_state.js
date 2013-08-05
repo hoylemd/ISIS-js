@@ -99,7 +99,7 @@ var ISIS_battleState = function () {
 			// set up the fleet views
 			playerFleetView = new ISIS.FleetView(images["spaceTile"]);
 			playerFleetView.moveTo({x: 0, y: 0});
-			playerFleetView.facing = 1/4 * Math.TAU;
+			playerFleetView.facing = 1/8 * Math.TAU;
 			playerFleetView.resize({x: 500, y: 600});
 			playerFleetView.addShip(player);
 
