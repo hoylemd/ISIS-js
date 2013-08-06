@@ -54,8 +54,21 @@ ISIS_Vector = function () {
 		}
 	};
 
+	// function to convert a vector object to a magnitude
+	var vectorToMagnitude = function (vector) {
+		// uses pythagorean theorem:
+		// c^2 = x^2 + y^2
+
+		// calculate the squares of the x and y coords
+		var x2 = Math.pow(vector.x(), 2);
+		var y2 = Math.pow(vector.y(), 2);
+
+		// calculate the hypotenuse
+		return Math.sqrt(x2 + y2);
+	};
+
 	// Calculate a vector's x and y coords from it's other fields
-	var calculateCoordinates = function(vector) {
+	var calculateCoordinates = function (vector) {
 		if (vector) {
 			// make sure there is a magnitude, default to unit vector (magnitude 1)
 			if (!isNumeric(vector._internals.magnitude)) {
@@ -169,12 +182,17 @@ ISIS_Vector = function () {
 			return this._internals.angle;
 		},
 		magnitude: function (new_value) {
-			// determine if we are getting or setting
+			// determine if we are setting
 			if (new_value || new_value === 0) {
 				this._internals.magnitude = new_value;
 
 				// recalculate the coordinates
 				calculateCoordinates(this);
+			}
+
+			// calculate the magnitude on-the-fly
+			if (!isNumeric(this._internals.magnitude)) {
+				this._internals.magnitude = vectorToMagnitude(this);
 			}
 
 			return this._internals.magnitude;
