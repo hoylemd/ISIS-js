@@ -26,6 +26,10 @@ describe("Vectors", function () {
 			expect(vector._internals.magnitude).toBeNull();
 			expect(vector.magnitude()).toEqual(magnitude);
 		});
+		it("calculates the angle on-the-fly", function () {
+			expect(vector._internals.angle).toBeNull();
+			expect(vector.angle()).toEqual(angle);
+		});
 	});
 	describe("constructed by a unit vector and magnitude", function () {
 		it("creates a vector object", function() {
